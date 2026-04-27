@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Khách Hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px;
+  --topbar-h: 52px;
+  --blue: #3b82f6;
+  --blue-light: #dbeafe;
+  --blue-pale: #eff6ff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #0f172a;
+  --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg, #e879f9 0%, #818cf8 50%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; line-height: 1.5; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover  { background: var(--blue-pale); color: var(--blue); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* ── TOPBAR ── */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 90; }
+.search-wrap { flex: 1; max-width: 320px; margin: 0 auto; display: flex; align-items: center; gap: 8px; background: var(--gray-100); border-radius: 8px; padding: 6px 12px; color: var(--gray-400); }
+.search-wrap input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-wrap svg { width: 13px; height: 13px; flex-shrink: 0; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; transition: background .15s; position: relative; }
+.notif-btn:hover { background: var(--gray-100); }
+.notif-btn svg { width: 15px; height: 15px; }
+.notif-dot { position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; border: 1.5px solid white; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; transition: background .15s; }
+.profile-btn:hover { background: var(--gray-200); }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
+
+/* ── PAGE HEADER ── */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--blue); color: white; border: none; border-radius: 8px; padding: 8px 16px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-primary:hover { background: #2563eb; }
+.btn-primary svg { width: 15px; height: 15px; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.search-field { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; color: var(--gray-400); min-width: 260px; transition: border-color .15s, box-shadow .15s; }
+.search-field:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+.search-field input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-field input::placeholder { color: var(--gray-400); }
+.search-field svg { width: 13px; height: 13px; flex-shrink: 0; }
+.search-clear { background: none; border: none; cursor: pointer; color: var(--gray-300); display: none; align-items: center; padding: 0; flex-shrink: 0; transition: color .15s; }
+.search-clear:hover { color: var(--gray-500); }
+.search-clear svg { width: 13px; height: 13px; }
+.search-clear.show { display: flex; }
+.no-result { grid-column: 1/-1; text-align: center; padding: 48px 20px; color: var(--gray-400); }
+.no-result svg { width: 40px; height: 40px; margin-bottom: 12px; color: var(--gray-300); }
+.no-result p { font-size: 14px; font-weight: 600; color: var(--gray-500); margin-bottom: 4px; }
+.no-result span { font-size: 12.5px; }
+.filter-select { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; outline: none; }
+.filter-count { margin-left: auto; font-size: 12px; color: var(--gray-400); font-weight: 500; }
+.filter-count span { font-weight: 700; color: var(--gray-700); }
+
+/* ── CUSTOMER GRID ── */
+.customer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.customer-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.04); transition: box-shadow .15s, transform .15s; cursor: pointer; }
+.customer-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
+.card-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 10px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; }
+.card-name { font-size: 13px; font-weight: 700; color: var(--gray-900); line-height: 1.3; }
+.card-phone { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+.status-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; margin-bottom: 8px; }
+.status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .7; }
+.status-active { background: #dcfce7; color: #16a34a; }
+.status-pause  { background: #fee2e2; color: #dc2626; }
+.card-meta { display: flex; flex-direction: column; gap: 4px; }
+.meta-row { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--gray-500); }
+.meta-row svg { width: 11px; height: 11px; color: var(--gray-400); flex-shrink: 0; }
+.meta-label { color: var(--gray-400); }
+.type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1.5px 7px; border-radius: 99px; }
+.type-dl1  { background: #ede9fe; color: #7c3aed; }
+.type-dl2  { background: #d1fae5; color: #059669; }
+.type-le   { background: #fff7ed; color: #ea580c; }
+.card-footer { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--gray-100); font-size: 11px; color: var(--gray-400); }
+.card-footer span { color: var(--gray-600, #475569); font-weight: 500; }
+.customer-card.hidden { display: none; }
+
+/* ── NOTIFICATION PANEL ── */
+.notif-wrap { position: relative; }
+.notif-panel { position: absolute; top: calc(100% + 10px); right: 0; width: 320px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 500; display: none; }
+.notif-panel.open { display: block; }
+.notif-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px 10px; border-bottom: 1px solid var(--gray-100); }
+.notif-panel-head h4 { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+.notif-count-badge { background: #ef4444; color: white; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px; display: none; }
+.notif-mark { font-size: 11.5px; color: var(--blue); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+.notif-mark:hover { text-decoration: underline; }
+.notif-list { max-height: 300px; overflow-y: auto; }
+.notif-item { display: flex; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background .12s; }
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--gray-50); }
+.notif-item.unread { background: #eff6ff; }
+.notif-item-ico { width: 32px; height: 32px; border-radius: 8px; background: #fee2e2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #dc2626; }
+.notif-item-ico svg { width: 14px; height: 14px; }
+.notif-item-body { flex: 1; min-width: 0; }
+.notif-item-msg { font-size: 12px; color: var(--gray-700); line-height: 1.5; }
+.notif-item-time { font-size: 10.5px; color: var(--gray-400); margin-top: 3px; }
+.notif-empty { padding: 28px 16px; text-align: center; font-size: 12.5px; color: var(--gray-400); }
+.notif-dot-count { position: absolute; top: 3px; right: 4px; min-width: 14px; height: 14px; border-radius: 99px; background: #ef4444; border: 1.5px solid white; font-size: 9px; font-weight: 800; color: white; display: flex; align-items: center; justify-content: center; padding: 0 2px; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 600; background: #1e293b; color: white; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 28px rgba(0,0,0,.22); transform: translateY(70px); opacity: 0; transition: all .35s cubic-bezier(.34,1.3,.64,1); min-width: 300px; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-ico { width: 34px; height: 34px; border-radius: 8px; background: #ef4444; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toast-ico svg { width: 16px; height: 16px; color: white; }
+.toast-text { flex: 1; line-height: 1.5; color: #e2e8f0; }
+
+/* ── MODAL THÊM KHÁCH HÀNG ── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--white); border-radius: 14px; width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(12px); transition: transform .2s; }
+.modal-backdrop.open .modal { transform: translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.modal-header h3 { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.modal-close-btn { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.modal-close-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+.modal-close-btn svg { width: 15px; height: 15px; }
+.modal-body { padding: 18px 22px; overflow-y: auto; flex: 1; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+.form-group-m { display: flex; flex-direction: column; gap: 5px; }
+.form-label-m { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.form-label-m em { color: #ef4444; font-style: normal; margin-left: 2px; }
+.form-input-m, .form-select-m, .form-textarea-m {
+  border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px;
+  font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none;
+  background: var(--white); transition: border-color .15s, box-shadow .15s; width: 100%;
+}
+.form-input-m:focus, .form-select-m:focus, .form-textarea-m:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+.form-input-m.err, .form-select-m.err { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+.form-textarea-m { resize: vertical; min-height: 72px; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 22px 18px; border-top: 1px solid var(--gray-100); flex-shrink: 0; }
+.btn-cancel-m { padding: 8px 18px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all .15s; }
+.btn-cancel-m:hover { border-color: var(--gray-400); color: var(--gray-700); }
+.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--blue); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; }
+.btn-save-m:hover { background: #2563eb; }
+.field-err-msg { font-size: 11px; color: #ef4444; display: none; }
+.field-err-msg.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-info">
+      <strong>NexLify</strong>
+      <small>Hệ thống quản lý bán hàng</small>
+    </div>
+  </div>
+
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Tổng Quan
+  </a>
+  <div class="nav-item nav-parent open" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub open">
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Báo Giá
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </a>
+    <a class="nav-item active" href="customers.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Khách Hàng
+    </a>
+  </div>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="products.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản Phẩm
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Danh Mục Sản Phẩm
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><polyline points="4 4 9 4 9 9"/></svg>
+      Biến Thể Sản Phẩm
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Bảng Giá
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Khuyến Mãi
+    </a>
+  </div>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Hóa Đơn
+  </a>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Báo Cáo
+  </a>
+
+</aside>
+
+<!-- ── TOPBAR ── -->
+<header class="topbar">
+  <div class="topbar-right">
+    <div class="notif-wrap">
+      <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-dot-count" id="notifDotCount" style="display:none"></span>
+      </button>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-panel-head">
+          <h4>Thông báo <span class="notif-count-badge" id="notifBadge"></span></h4>
+          <button class="notif-mark" onclick="markAllRead()">Đánh dấu đã đọc</button>
+        </div>
+        <div class="notif-list" id="notifList">
+          <div class="notif-empty">Không có thông báo nào</div>
+        </div>
+      </div>
+    </div>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">Khách Hàng</div>
+    <button class="btn-primary" onclick="openAddModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Thêm khách hàng
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Tìm tên, SĐT, email, khu vực..." oninput="filterCards(); toggleClearBtn()" />
+      <button class="search-clear" id="clearBtn" onclick="clearSearch()" title="Xoá tìm kiếm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <select class="filter-select" id="statusFilter" onchange="filterCards()">
+      <option value="">Trạng thái: Tất cả</option>
+      <option value="active">Đang hoạt động</option>
+      <option value="pause">Ngưng hoạt động</option>
+    </select>
+    <select class="filter-select" id="typeFilter" onchange="filterCards()">
+      <option value="">Nhóm: Tất cả</option>
+      <option value="dl1">Đại lý cấp 1</option>
+      <option value="dl2">Đại lý cấp 2</option>
+      <option value="le">Khách lẻ</option>
+    </select>
+    <select class="filter-select" id="khtypeFilter" onchange="filterCards()">
+      <option value="">Loại KH: Tất cả</option>
+      <option value="dn">Doanh nghiệp</option>
+      <option value="cn">Cá nhân</option>
+    </select>
+    <div class="filter-count">Hiển thị <span id="countShow">20</span> / <span id="countTotal">20</span> khách hàng</div>
+  </div>
+
+  <div class="customer-grid" id="customerGrid">
+
+    <!-- ── ĐẠI LÝ CẤP 1 ── -->
+
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="công ty tnhh vtnn minh đức long an" onclick="window.location.href='customer-detail.html'">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)">MD</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Cty TNHH VTNN Minh Đức</div>
+          <div class="card-phone">0272 391 456</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Long An</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> minhduc.vtnn@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm nay</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="cửa hàng vtnn thành phát tiền giang">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#a78bfa,#6d28d9)">TP</div>
+        <div class="card-name-wrap">
+          <div class="card-name">CH VTNN Thành Phát</div>
+          <div class="card-phone">0273 512 890</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Tiền Giang</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> thanhphat.ag@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm qua</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="đại lý phân bón phúc nguyên đồng tháp">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#34d399,#065f46)">PN</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Phân Bón Phúc Nguyên</div>
+          <div class="card-phone">0277 638 124</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Đồng Tháp</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> phucnguyen.pb@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>2 ngày trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="công ty cp vtnn đồng bằng cần thơ">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#2dd4bf,#0f766e)">DB</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Cty CP VTNN Đồng Bằng</div>
+          <div class="card-phone">0292 741 308</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Cần Thơ</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> dongbang.vtnn@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm nay</span></div>
+    </div>
+
+    <div class="customer-card" data-status="pause" data-type="dl1" data-khtype="dn" data-name="đại lý hoàng gia nông sản vĩnh long">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#f87171,#b91c1c)">HG</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Hoàng Gia Nông Sản</div>
+          <div class="card-phone">0270 854 217</div>
+        </div>
+      </div>
+      <span class="status-badge status-pause">Ngưng hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Vĩnh Long</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> hoanggia.ns@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span style="color:#dc2626">1 năm trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="công ty tnhh nông sản thuận phát bến tre">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#fb923c,#c2410c)">TP</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Cty TNHH NS Thuận Phát</div>
+          <div class="card-phone">0275 963 540</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Bến Tre</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> thuanphat.ns@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl1">Đại lý cấp 1</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>3 ngày trước</span></div>
+    </div>
+
+    <!-- ── ĐẠI LÝ CẤP 2 ── -->
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="dn" data-name="cửa hàng vtnn hồng phát hậu giang">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#86efac,#15803d)">HP</div>
+        <div class="card-name-wrap">
+          <div class="card-name">CH VTNN Hồng Phát</div>
+          <div class="card-phone">0293 417 825</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Hậu Giang</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> hongphat.hg@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm nay</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="cn" data-name="đại lý phân bón tuấn anh sóc trăng">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#fcd34d,#b45309)">TA</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Phân Bón Tuấn Anh</div>
+          <div class="card-phone">0299 526 183</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Sóc Trăng</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> tuananh.pb.st@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm qua</span></div>
+    </div>
+
+    <div class="customer-card" data-status="pause" data-type="dl2" data-khtype="dn" data-name="cửa hàng vtnn bảo ngọc trà vinh">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#fca5a5,#b91c1c)">BN</div>
+        <div class="card-name-wrap">
+          <div class="card-name">CH VTNN Bảo Ngọc</div>
+          <div class="card-phone">0294 635 971</div>
+        </div>
+      </div>
+      <span class="status-badge status-pause">Ngưng hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Trà Vinh</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> baongoc.vtnn@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span style="color:#dc2626">1 năm trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="dn" data-name="đại lý việt nông kiên giang">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#7dd3fc,#0369a1)">VN</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Việt Nông Kiên Giang</div>
+          <div class="card-phone">0297 748 362</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Kiên Giang</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> vietnong.kg@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>4 ngày trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="cn" data-name="cửa hàng vtnn nhật minh bạc liêu">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#c084fc,#7e22ce)">NM</div>
+        <div class="card-name-wrap">
+          <div class="card-name">CH VTNN Nhật Minh</div>
+          <div class="card-phone">0291 859 274</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Bạc Liêu</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> nhatminh.bl@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm qua</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="dn" data-name="đại lý phân bón an khang cà mau">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#818cf8,#4338ca)">AK</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Phân Bón An Khang</div>
+          <div class="card-phone">0290 962 485</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Cà Mau</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> ankhang.cm@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>5 ngày trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="cn" data-name="đại lý phú hưng an giang">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#f9a8d4,#be185d)">PH</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Phú Hưng An Giang</div>
+          <div class="card-phone">0296 174 693</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> An Giang</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> phuhung.vtnn@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm nay</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="dn" data-name="cửa hàng nông sản tân phát bình dương">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#4ade80,#166534)">TP</div>
+        <div class="card-name-wrap">
+          <div class="card-name">CH Nông Sản Tân Phát</div>
+          <div class="card-phone">0274 283 816</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Bình Dương</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> tanphat.bd@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>2 ngày trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="dl2" data-khtype="cn" data-name="đại lý minh phát đồng nai">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#fdba74,#c2410c)">MP</div>
+        <div class="card-name-wrap">
+          <div class="card-name">ĐL Minh Phát Đồng Nai</div>
+          <div class="card-phone">0251 374 629</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Đồng Nai</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> minhphat.dn@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-dl2">Đại lý cấp 2</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>6 ngày trước</span></div>
+    </div>
+
+    <!-- ── KHÁCH LẺ ── -->
+
+    <div class="customer-card" data-status="active" data-type="le" data-khtype="cn" data-name="nguyễn văn tâm long an">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#93c5fd,#2563eb)">NT</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Nguyễn Văn Tâm</div>
+          <div class="card-phone">0918 374 152</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Long An</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> nguyenvantam93@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-le">Khách lẻ</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>1 tuần trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="le" data-khtype="cn" data-name="trần thị lan tiền giang">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#e879f9,#a21caf)">TL</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Trần Thị Lan</div>
+          <div class="card-phone">0907 485 263</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Tiền Giang</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> tranthilan.tg@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-le">Khách lẻ</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>3 ngày trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="le" data-khtype="cn" data-name="lê văn dũng đồng tháp">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#5eead4,#0f766e)">LD</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Lê Văn Dũng</div>
+          <div class="card-phone">0935 596 374</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Đồng Tháp</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> levandung.dt@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-le">Khách lẻ</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>2 tuần trước</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="le" data-khtype="cn" data-name="phạm thị hồng cần thơ">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#fda4af,#e11d48)">PH</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Phạm Thị Hồng</div>
+          <div class="card-phone">0946 707 485</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Cần Thơ</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> phamthihong.ct@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-le">Khách lẻ</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>Hôm qua</span></div>
+    </div>
+
+    <div class="customer-card" data-status="active" data-type="le" data-khtype="cn" data-name="võ văn khoa vĩnh long">
+      <div class="card-top">
+        <div class="avatar" style="background:linear-gradient(135deg,#a5b4fc,#4f46e5)">VK</div>
+        <div class="card-name-wrap">
+          <div class="card-name">Võ Văn Khoa</div>
+          <div class="card-phone">0912 818 596</div>
+        </div>
+      </div>
+      <span class="status-badge status-active">Đang hoạt động</span>
+      <div class="card-meta">
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> Vĩnh Long</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> vovankhoa.vl@gmail.com</div>
+        <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge type-le">Khách lẻ</span></div>
+      </div>
+      <div class="card-footer">Đơn hàng gần nhất: <span>2 tuần trước</span></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">
+  <div class="toast-ico">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+  </div>
+  <span class="toast-text" id="toastMsg"></span>
+</div>
+
+<!-- ── MODAL THÊM KHÁCH HÀNG ── -->
+<div class="modal-backdrop" id="addModal" onclick="handleBackdropClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Thêm khách hàng mới</h3>
+      <button class="modal-close-btn" onclick="closeAddModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <!-- Tên KH / Công ty -->
+        <div class="form-group-m full">
+          <label class="form-label-m">Tên khách hàng / công ty <em>*</em></label>
+          <input class="form-input-m" id="add_name" placeholder="Nhập tên khách hàng hoặc công ty" />
+          <span class="field-err-msg" id="err_name">Vui lòng nhập tên khách hàng</span>
+        </div>
+
+        <!-- Loại KH -->
+        <div class="form-group-m">
+          <label class="form-label-m">Loại khách hàng</label>
+          <select class="form-select-m" id="add_khtype" onchange="toggleMST(this.value)">
+            <option value="">-- Chọn loại --</option>
+            <option value="dn">Doanh nghiệp</option>
+            <option value="cn">Cá nhân</option>
+          </select>
+        </div>
+
+        <!-- Người liên hệ -->
+        <div class="form-group-m">
+          <label class="form-label-m">Người liên hệ</label>
+          <input class="form-input-m" id="add_contact" placeholder="Họ tên người liên hệ" />
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="form-group-m">
+          <label class="form-label-m">Số điện thoại <em>*</em></label>
+          <input class="form-input-m" id="add_phone" placeholder="0xxx xxx xxx" />
+          <span class="field-err-msg" id="err_phone">Vui lòng nhập số điện thoại</span>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group-m">
+          <label class="form-label-m">Email</label>
+          <input class="form-input-m" id="add_email" placeholder="email@example.com" type="email" />
+        </div>
+
+        <!-- Địa chỉ -->
+        <div class="form-group-m full">
+          <label class="form-label-m">Địa chỉ</label>
+          <input class="form-input-m" id="add_address" placeholder="Số nhà, đường, phường/xã..." />
+        </div>
+
+        <!-- Mã số thuế (chỉ hiện với Doanh nghiệp) -->
+        <div class="form-group-m" id="mst_wrap" style="display:none">
+          <label class="form-label-m">Mã số thuế</label>
+          <input class="form-input-m" id="add_tax" placeholder="Nhập mã số thuế" />
+        </div>
+
+        <!-- Khu vực -->
+        <div class="form-group-m">
+          <label class="form-label-m">Khu vực</label>
+          <select class="form-select-m" id="add_region">
+            <option value="">-- Chọn tỉnh/thành --</option>
+            <option>Bình Dương</option><option>TP. Hồ Chí Minh</option>
+            <option>Đồng Nai</option><option>Bình Phước</option>
+            <option>Tây Ninh</option><option>Long An</option>
+            <option>Tiền Giang</option><option>Bến Tre</option>
+            <option>Vĩnh Long</option><option>Cần Thơ</option>
+            <option>An Giang</option><option>Đồng Tháp</option>
+            <option>Kiên Giang</option><option>Hậu Giang</option>
+            <option>Sóc Trăng</option>
+          </select>
+        </div>
+
+        <!-- Nhóm -->
+        <div class="form-group-m">
+          <label class="form-label-m">Nhóm</label>
+          <select class="form-select-m" id="add_group">
+            <option value="">-- Chọn nhóm --</option>
+            <option value="dl1">Đại lý cấp 1</option>
+            <option value="dl2">Đại lý cấp 2</option>
+            <option value="le">Khách lẻ</option>
+          </select>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="form-group-m">
+          <label class="form-label-m">Trạng thái</label>
+          <select class="form-select-m" id="add_status">
+            <option value="">-- Chọn trạng thái --</option>
+            <option value="active">Đang hoạt động</option>
+            <option value="pause">Ngưng hoạt động</option>
+          </select>
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="form-group-m full">
+          <label class="form-label-m">Ghi chú</label>
+          <textarea class="form-textarea-m" id="add_note" placeholder="Ghi chú thêm về khách hàng..."></textarea>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel-m" onclick="closeAddModal()">Huỷ</button>
+      <button class="btn-save-m" onclick="saveNewCustomer()">Thêm khách hàng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleNav(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ── NOTIFICATION ──
+function formatTimeAgo(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60) return 'Vừa xong';
+  if (diff < 3600) return Math.floor(diff/60) + ' phút trước';
+  if (diff < 86400) return Math.floor(diff/3600) + ' giờ trước';
+  return Math.floor(diff/86400) + ' ngày trước';
+}
+
+function loadNotifications() {
+  const notifs = JSON.parse(localStorage.getItem('nex_notifications') || '[]');
+  const unread = notifs.filter(n => !n.read).length;
+  const dot = document.getElementById('notifDotCount');
+  const badge = document.getElementById('notifBadge');
+  if (unread > 0) {
+    dot.textContent = unread > 9 ? '9+' : unread;
+    dot.style.display = 'flex';
+    badge.textContent = unread;
+    badge.style.display = 'inline';
+  } else {
+    dot.style.display = 'none';
+    badge.style.display = 'none';
+  }
+  const list = document.getElementById('notifList');
+  if (notifs.length === 0) {
+    list.innerHTML = '<div class="notif-empty">Không có thông báo nào</div>';
+    return;
+  }
+  list.innerHTML = notifs.map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}">
+      <div class="notif-item-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </div>
+      <div class="notif-item-body">
+        <div class="notif-item-msg">${n.message}</div>
+        <div class="notif-item-time">${formatTimeAgo(n.time)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) loadNotifications();
+}
+
+function markAllRead() {
+  const notifs = JSON.parse(localStorage.getItem('nex_notifications') || '[]');
+  notifs.forEach(n => n.read = true);
+  localStorage.setItem('nex_notifications', JSON.stringify(notifs));
+  loadNotifications();
+}
+
+// Đóng panel khi click ra ngoài
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('notifBtn')?.closest('.notif-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('notifPanel')?.classList.remove('open');
+  }
+});
+
+// Cập nhật trạng thái Minh Đức nếu đã bị xoá
+(function applyStatusUpdates() {
+  if (localStorage.getItem('nex_minh_duc_paused') !== '1') return;
+  document.querySelectorAll('.customer-card').forEach(card => {
+    const phone = card.querySelector('.card-phone');
+    if (phone && phone.textContent.replace(/\s/g,'').includes('0272391456')) {
+      card.dataset.status = 'pause';
+      const badge = card.querySelector('.status-badge');
+      if (badge) {
+        badge.className = 'status-badge status-pause';
+        badge.textContent = 'Ngưng hoạt động';
+      }
+    }
+  });
+  filterCards();
+})();
+
+// Hiện toast nếu vừa redirect về
+(function checkToast() {
+  const notifs = JSON.parse(localStorage.getItem('nex_notifications') || '[]');
+  const latest = notifs[0];
+  if (latest && !latest.shown) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = latest.message;
+    toast.classList.add('show');
+    latest.shown = true;
+    localStorage.setItem('nex_notifications', JSON.stringify(notifs));
+    loadNotifications();
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+})();
+
+function toggleMST(val) {
+  document.getElementById('mst_wrap').style.display = val === 'dn' ? '' : 'none';
+  if (val !== 'dn') document.getElementById('add_tax').value = '';
+}
+
+function openAddModal() {
+  document.getElementById('addModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeAddModal() {
+  document.getElementById('addModal').classList.remove('open');
+  document.body.style.overflow = '';
+  // reset form
+  ['add_name','add_contact','add_phone','add_email','add_address','add_tax','add_note'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['add_khtype','add_group','add_status','add_region'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.selectedIndex = 0;
+  });
+  document.getElementById('mst_wrap').style.display = 'none';
+  ['err_name','err_phone'].forEach(id => document.getElementById(id).classList.remove('show'));
+  ['add_name','add_phone'].forEach(id => document.getElementById(id).classList.remove('err'));
+}
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('addModal')) closeAddModal();
+}
+function saveNewCustomer() {
+  const name  = document.getElementById('add_name').value.trim();
+  const phone = document.getElementById('add_phone').value.trim();
+  let valid = true;
+
+  document.getElementById('add_name').classList.remove('err');
+  document.getElementById('add_phone').classList.remove('err');
+  document.getElementById('err_name').classList.remove('show');
+  document.getElementById('err_phone').classList.remove('show');
+
+  if (!name)  { document.getElementById('add_name').classList.add('err');  document.getElementById('err_name').classList.add('show');  valid = false; }
+  if (!phone) { document.getElementById('add_phone').classList.add('err'); document.getElementById('err_phone').classList.add('show'); valid = false; }
+  if (!valid) return;
+
+  const group   = document.getElementById('add_group').value;
+  const status  = document.getElementById('add_status').value;
+  const khtype  = document.getElementById('add_khtype').value;
+  const region  = document.getElementById('add_region').value;
+  const email   = document.getElementById('add_email').value.trim();
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const colors = ['linear-gradient(135deg,#60a5fa,#2563eb)','linear-gradient(135deg,#34d399,#059669)','linear-gradient(135deg,#f472b6,#db2777)','linear-gradient(135deg,#a78bfa,#7c3aed)','linear-gradient(135deg,#fbbf24,#d97706)'];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+
+  const groupLabel = { dl1:'Đại lý cấp 1', dl2:'Đại lý cấp 2', le:'Khách lẻ' }[group];
+  const groupClass = { dl1:'type-dl1', dl2:'type-dl2', le:'type-le' }[group];
+  const statusLabel = status === 'active' ? 'Đang hoạt động' : 'Ngưng hoạt động';
+  const statusClass = status === 'active' ? 'status-active' : 'status-pause';
+  const nameSearch  = name.toLowerCase() + ' ' + region.toLowerCase();
+
+  const card = document.createElement('div');
+  card.className = 'customer-card';
+  card.dataset.status = status;
+  card.dataset.type   = group;
+  card.dataset.khtype = khtype;
+  card.dataset.name   = nameSearch;
+  card.innerHTML = `
+    <div class="card-top">
+      <div class="avatar" style="background:${color}">${initials}</div>
+      <div class="card-name-wrap">
+        <div class="card-name">${name}</div>
+        <div class="card-phone">${phone}</div>
+      </div>
+    </div>
+    <span class="status-badge ${statusClass}">${statusLabel}</span>
+    <div class="card-meta">
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="meta-label">Khu vực</span> ${region || '—'}</div>
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="meta-label">Email</span> ${email || '—'}</div>
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="meta-label">Nhóm</span> <span class="type-badge ${groupClass}">${groupLabel}</span></div>
+    </div>
+    <div class="card-footer">Đơn hàng gần nhất: <span>Chưa có</span></div>`;
+
+  document.querySelector('.customer-grid').appendChild(card);
+  closeAddModal();
+  filterCards();
+}
+
+function norm(str) {
+  return str.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đ]/g,'d').replace(/[Đ]/g,'d').toLowerCase().trim();
+}
+
+function filterCards() {
+  const search  = norm(document.getElementById('searchInput').value);
+  const status  = document.getElementById('statusFilter').value;
+  const type    = document.getElementById('typeFilter').value;
+  const khtype  = document.getElementById('khtypeFilter').value;
+  const cards   = document.querySelectorAll('.customer-card');
+  let visible   = 0;
+
+  const old = document.getElementById('noResult');
+  if (old) old.remove();
+
+  cards.forEach(card => {
+    const name       = norm(card.querySelector('.card-name')?.textContent || '');
+    const phone      = (card.querySelector('.card-phone')?.textContent || '').replace(/\s/g,'');
+    const metas      = norm([...card.querySelectorAll('.meta-row')].map(r => r.textContent).join(' '));
+    const badgeText  = norm(card.querySelector('.status-badge')?.textContent || '');
+    const fullText   = name + ' ' + phone + ' ' + metas + ' ' + badgeText;
+
+    const matchSearch = !search || fullText.includes(search) || phone.includes(search.replace(/\s/g,''));
+    const matchStatus = !status || card.dataset.status === status;
+    const matchType   = !type   || card.dataset.type   === type;
+    const matchKhtype = !khtype || card.dataset.khtype === khtype;
+
+    if (matchSearch && matchStatus && matchType && matchKhtype) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('countShow').textContent  = visible;
+  document.getElementById('countTotal').textContent = cards.length;
+
+  // Hiện thông báo nếu không có kết quả
+  if (visible === 0) {
+    const grid = document.querySelector('.customer-grid');
+    const msg = document.createElement('div');
+    msg.id = 'noResult';
+    msg.className = 'no-result';
+    msg.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p>Không tìm thấy khách hàng</p>
+      <span>Thử thay đổi từ khoá hoặc bộ lọc</span>`;
+    grid.appendChild(msg);
+  }
+}
+
+function toggleClearBtn() {
+  const val = document.getElementById('searchInput').value;
+  document.getElementById('clearBtn').classList.toggle('show', val.length > 0);
+}
+
+function syncSearch(val) {
+  document.getElementById('searchInput').value = val;
+  document.getElementById('clearBtn').classList.toggle('show', val.length > 0);
+  filterCards();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  const topbar = document.getElementById('topbarSearch');
+  if (topbar) topbar.value = '';
+  document.getElementById('clearBtn').classList.remove('show');
+  filterCards();
+  document.getElementById('searchInput').focus();
+}
+
+// Chạy filter ngay khi trang load để đồng bộ bộ đếm
+filterCards();
+</script>
+</body>
+</html>

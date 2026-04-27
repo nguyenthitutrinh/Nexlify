@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Hệ thống quản lý bán hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #3b82f6;
+  --blue-dark: #2563eb;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #0f172a;
+  --white: #ffffff;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+}
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: #f0f4f8;
+  color: var(--gray-900);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  padding: 24px 16px;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; width: 100%; max-width: 440px; }
+.screen.active {
+  display: block;
+  animation: fadeUp .25s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid #e8edf2;
+  border-radius: 20px;
+  padding: 40px 44px 36px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
+}
+
+/* ── LOGO ── */
+.logo-wrap { text-align: center; margin-bottom: 24px; }
+.logo-text { font-size: 32px; font-weight: 700; color: var(--blue); line-height: 1; }
+.logo-sub  { font-size: 12px; color: var(--gray-400); font-weight: 400; margin-top: 6px; letter-spacing: .3px; }
+.logo-divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
+
+/* tiêu đề */
+.card-title    { font-size: 18px; font-weight: 700; color: var(--gray-900); text-align: center; margin-bottom: 4px; }
+.card-subtitle { font-size: 12.5px; color: var(--gray-400); text-align: center; margin-bottom: 22px; }
+
+/* ── FORM ── */
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { margin-bottom: 14px; }
+.label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.form-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+.form-label span { color: var(--danger); margin-left: 2px; }
+.form-hint { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+.label-link { font-size: 12px; color: var(--blue); font-weight: 500; text-decoration: none; transition: opacity .15s; }
+.label-link:hover { opacity: .75; }
+
+.input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  padding: 0 14px; background: var(--white);
+  transition: border-color .15s, box-shadow .15s;
+}
+.input-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+.input-wrap.error         { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.10); }
+.input-wrap svg.fi { width: 15px; height: 15px; color: var(--gray-300); flex-shrink: 0; }
+.input-wrap input {
+  border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 13px; color: var(--gray-900);
+  width: 100%; padding: 11px 0;
+}
+.input-wrap input::placeholder { color: var(--gray-300); }
+
+.input-plain {
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  padding: 11px 14px; background: var(--white); width: 100%;
+  font-family: inherit; font-size: 13px; color: var(--gray-900);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.input-plain::placeholder { color: var(--gray-300); }
+.input-plain:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+.input-plain.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.10); }
+
+.toggle-pw {
+  background: none; border: none; cursor: pointer;
+  color: var(--gray-300); padding: 0; display: flex; align-items: center;
+  transition: color .15s; flex-shrink: 0;
+}
+.toggle-pw:hover { color: var(--blue); }
+.toggle-pw svg { width: 15px; height: 15px; }
+
+.field-error {
+  font-size: 11.5px; color: var(--danger); margin-top: 5px;
+  display: none; align-items: center; gap: 4px;
+}
+.field-error.show { display: flex; }
+.field-error svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* remember + forgot */
+.form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; margin-top: 4px; }
+.checkbox-wrap { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.checkbox-wrap input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--blue); cursor: pointer; }
+.checkbox-wrap span { font-size: 12.5px; color: var(--gray-500); font-weight: 500; }
+.forgot-link { font-size: 12.5px; color: var(--blue); font-weight: 500; text-decoration: none; transition: opacity .15s; }
+.forgot-link:hover { opacity: .75; }
+
+/* checkbox đồng ý */
+.agree-wrap { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0 6px; }
+.agree-wrap input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; margin-top: 1px; }
+.agree-wrap label { font-size: 12.5px; color: var(--gray-500); cursor: pointer; line-height: 1.5; }
+.agree-wrap label a { color: var(--blue); font-weight: 600; text-decoration: none; }
+.agree-wrap label a:hover { text-decoration: underline; }
+
+/* alert */
+.alert {
+  display: none; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 9px;
+  font-size: 12.5px; font-weight: 500; margin-bottom: 16px;
+}
+.alert.show { display: flex; }
+.alert svg { width: 14px; height: 14px; flex-shrink: 0; }
+.alert-error   { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
+.alert-success { background: var(--success-light); color: var(--success); border: 1px solid #bbf7d0; }
+
+/* nút chính */
+.btn-primary {
+  width: 100%; padding: 13px;
+  background: var(--blue); color: white; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: background .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+.btn-primary .spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white; border-radius: 50%;
+  animation: spin .7s linear infinite; display: none;
+}
+.btn-primary.loading .spinner { display: block; }
+.btn-primary.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* link chuyển màn */
+.switch-row { text-align: center; font-size: 12.5px; color: var(--gray-400); margin-top: 18px; }
+.switch-row a { color: var(--blue); font-weight: 700; text-decoration: none; cursor: pointer; transition: opacity .15s; }
+.switch-row a:hover { opacity: .75; }
+
+/* footer */
+.card-footer-note { text-align: center; font-size: 11px; color: var(--gray-300); margin-top: 24px; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(15,23,42,.4); backdrop-filter: blur(4px);
+  z-index: 300; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 16px;
+  padding: 32px 30px 28px; width: 100%; max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  animation: modalIn .2s ease;
+}
+.modal.center { text-align: center; }
+@keyframes modalIn {
+  from { opacity:0; transform:scale(.96) translateY(8px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+.modal-title  { font-size: 17px; font-weight: 700; color: var(--gray-900); }
+.modal-close  {
+  width: 28px; height: 28px; border-radius: 7px; border: none;
+  background: transparent; cursor: pointer; color: var(--gray-400);
+  display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0;
+}
+.modal-close:hover { background: var(--gray-100); color: var(--gray-700); }
+.modal-close svg { width: 15px; height: 15px; }
+.modal-desc { font-size: 12.5px; color: var(--gray-500); margin-bottom: 20px; line-height: 1.6; }
+.modal-desc strong { color: var(--gray-700); font-weight: 600; }
+
+.modal-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #dbeafe; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.modal-icon svg { width: 26px; height: 26px; color: var(--blue); }
+
+.btn-modal-primary {
+  width: 100%; padding: 12px; background: var(--blue); color: white;
+  border: none; border-radius: 10px; font-family: inherit; font-size: 13.5px;
+  font-weight: 700; cursor: pointer; transition: background .15s; margin-top: 6px;
+}
+.btn-modal-primary:hover { background: var(--blue-dark); }
+.btn-modal-cancel {
+  width: 100%; padding: 10px; background: transparent;
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  color: var(--gray-500); cursor: pointer; margin-top: 8px; transition: all .15s;
+}
+.btn-modal-cancel:hover { border-color: var(--gray-300); color: var(--gray-700); background: var(--gray-50); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-80px);
+  background: #fff; border: 1px solid #bbf7d0; border-radius: 12px;
+  padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); z-index: 999;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  opacity: 0; min-width: 280px; max-width: 380px;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast-icon { width: 36px; height: 36px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.toast-icon svg { width: 18px; height: 18px; color: #16a34a; }
+.toast-title { font-size: 13.5px; font-weight: 700; color: var(--gray-900); }
+.toast-desc  { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+
+/* OTP */
+.otp-wrap { display: flex; gap: 10px; justify-content: center; margin-bottom: 8px; }
+.otp-input {
+  width: 48px; height: 52px; text-align: center;
+  font-family: inherit; font-size: 20px; font-weight: 700; color: var(--gray-900);
+  border: 1.5px solid var(--gray-200); border-radius: 10px; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.otp-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+.otp-input.filled { border-color: var(--blue); background: #eff6ff; }
+.otp-error { font-size: 12px; color: var(--danger); margin-bottom: 14px; display: none; justify-content: center; align-items: center; gap: 4px; }
+.otp-error.show { display: flex; }
+.otp-resend { font-size: 12px; color: var(--gray-400); margin-bottom: 20px; }
+.otp-resend a { color: var(--blue); font-weight: 600; text-decoration: none; cursor: pointer; }
+.otp-resend a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     MÀN HÌNH ĐĂNG KÝ (mặc định)
+══════════════════════════════════ -->
+<div class="screen active" id="screenRegister">
+  <div class="card">
+    <div class="logo-wrap">
+      <div class="logo-text">NexLify</div>
+      <div class="logo-sub">Hệ thống quản lý bán hàng</div>
+    </div>
+    <div class="logo-divider"></div>
+    <div class="card-title">Đăng ký</div>
+    <div class="card-subtitle">Nhập thông tin bên dưới để tạo tài khoản</div>
+
+    <div class="alert alert-error" id="reg-alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="reg-alert-msg"></span>
+    </div>
+
+    <form id="registerForm" novalidate>
+      <div class="row-2">
+        <div class="form-group">
+          <label class="form-label" for="r-firstName">Họ <span>*</span></label>
+          <input type="text" class="input-plain" id="r-firstName" placeholder="Nhập họ" />
+          <div class="field-error" id="err-firstName"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập họ</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-lastName">Tên <span>*</span></label>
+          <input type="text" class="input-plain" id="r-lastName" placeholder="Nhập tên" />
+          <div class="field-error" id="err-lastName"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập tên</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-email">Email <span>*</span></label>
+        <div class="input-wrap" id="wrap-r-email">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="r-email" placeholder="Nhập email của bạn" />
+        </div>
+        <div class="field-error" id="err-r-email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập email hợp lệ</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-phone">Số điện thoại <span>*</span></label>
+        <div class="input-wrap" id="wrap-r-phone">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.4 2 2 0 0 1 3.62 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <input type="tel" id="r-phone" placeholder="Nhập số điện thoại" />
+        </div>
+        <div class="field-error" id="err-r-phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập số điện thoại</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-password">Mật khẩu <span>*</span></label>
+        <div class="input-wrap" id="wrap-r-password">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="r-password" placeholder="Tạo mật khẩu" />
+          <button type="button" class="toggle-pw" onclick="togglePw('r-password','r-eye1')"><svg id="r-eye1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="form-hint">Tối thiểu 8 ký tự</div>
+        <div class="field-error" id="err-r-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Mật khẩu phải có ít nhất 8 ký tự</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-confirm">Xác nhận mật khẩu <span>*</span></label>
+        <div class="input-wrap" id="wrap-r-confirm">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="r-confirm" placeholder="Xác nhận mật khẩu" />
+          <button type="button" class="toggle-pw" onclick="togglePw('r-confirm','r-eye2')"><svg id="r-eye2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="field-error" id="err-r-confirm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Mật khẩu xác nhận không khớp</div>
+      </div>
+
+      <div class="agree-wrap">
+        <input type="checkbox" id="r-agree" />
+        <label for="r-agree">Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a></label>
+      </div>
+      <div class="field-error" id="err-r-agree" style="margin-bottom:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng đồng ý với điều khoản</div>
+
+      <button type="submit" class="btn-primary" id="btn-register">
+        <div class="spinner"></div>
+        <span class="btn-text">Đăng ký</span>
+      </button>
+    </form>
+
+    <div class="switch-row">Đã có tài khoản? <a onclick="switchTo('login')">Đăng nhập</a></div>
+    <div class="card-footer-note">© 2025 NexLify · Phiên bản 1.0</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MÀN HÌNH ĐĂNG NHẬP
+══════════════════════════════════ -->
+<div class="screen" id="screenLogin">
+  <div class="card">
+    <div class="logo-wrap">
+      <div class="logo-text">NexLify</div>
+      <div class="logo-sub">Hệ thống quản lý bán hàng</div>
+    </div>
+    <div class="logo-divider"></div>
+    <div class="card-title">Đăng nhập</div>
+    <div class="card-subtitle">Vui lòng đăng nhập để tiếp tục</div>
+
+    <div class="alert alert-error" id="login-alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="login-alert-msg"></span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <div class="label-row">
+          <label class="form-label" for="l-username">Tên đăng nhập <span>*</span></label>
+        </div>
+        <div class="input-wrap" id="wrap-l-username">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="l-username" placeholder="Nhập tên đăng nhập" autocomplete="username" />
+        </div>
+        <div class="field-error" id="err-l-username"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập tên đăng nhập</div>
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label class="form-label" for="l-password">Mật khẩu <span>*</span></label>
+          <a href="#" class="label-link" onclick="openForgotModal('reset')">Đặt lại mật khẩu</a>
+        </div>
+        <div class="input-wrap" id="wrap-l-password">
+          <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="l-password" placeholder="Nhập mật khẩu của bạn" autocomplete="current-password" />
+          <button type="button" class="toggle-pw" onclick="togglePw('l-password','l-eye')"><svg id="l-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="field-error" id="err-l-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng nhập mật khẩu</div>
+      </div>
+
+      <div class="form-row">
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="l-remember" />
+          <span>Ghi nhớ đăng nhập</span>
+        </label>
+        <a href="#" class="forgot-link" onclick="openForgotModal('forgot')">Quên mật khẩu?</a>
+      </div>
+
+      <button type="submit" class="btn-primary" id="btn-login">
+        <div class="spinner"></div>
+        <span class="btn-text">Đăng nhập</span>
+      </button>
+    </form>
+
+    <div class="switch-row">Chưa có tài khoản? <a onclick="switchTo('register')">Đăng ký</a></div>
+    <div class="card-footer-note">© 2025 NexLify · Phiên bản 1.0</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: QUÊN / ĐẶT LẠI MẬT KHẨU
+══════════════════════════════════ -->
+<div class="modal-overlay" id="modal-forgot">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="forgot-title">Quên mật khẩu</div>
+      <button class="modal-close" onclick="closeForgotModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-desc" id="forgot-desc">Nhập tên đăng nhập hoặc email. Chúng tôi sẽ gửi mã xác nhận về email của bạn.</div>
+    <div class="form-group">
+      <label class="form-label" for="forgot-input">Email hoặc tên đăng nhập</label>
+      <div class="input-wrap" id="wrap-forgot-input">
+        <svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <input type="text" id="forgot-input" placeholder="Nhập email hoặc tên đăng nhập" />
+      </div>
+      <div class="field-error" id="err-forgot-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Vui lòng điền thông tin này</div>
+    </div>
+    <button class="btn-modal-primary" onclick="sendForgotCode()">Gửi mã xác nhận</button>
+    <button class="btn-modal-cancel" onclick="closeForgotModal()">Hủy bỏ</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: XÁC NHẬN OTP
+══════════════════════════════════ -->
+<div class="modal-overlay" id="modal-otp">
+  <div class="modal center">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div class="modal-title" style="margin-bottom:8px" id="otp-title">Xác nhận email</div>
+    <div class="modal-desc">Chúng tôi đã gửi mã xác nhận gồm 6 chữ số đến<br/><strong id="otp-email-display"></strong><br/>Vui lòng kiểm tra hộp thư và nhập mã bên dưới.</div>
+
+    <div class="otp-wrap" id="otpWrap">
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+      <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+    </div>
+    <div class="otp-error" id="otp-error">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Mã xác nhận không đúng. Vui lòng thử lại.
+    </div>
+    <div class="otp-resend">
+      Không nhận được mã? <a id="btn-resend" onclick="resendOTP()">Gửi lại</a>
+      <span id="resend-timer" style="display:none"> (<span id="timer-count">60</span>s)</span>
+    </div>
+    <button class="btn-modal-primary" onclick="verifyOTP()">Xác nhận</button>
+    <button class="btn-modal-cancel" onclick="closeOTPModal()">Quay lại</button>
+  </div>
+</div>
+
+<!-- ── TOAST THÔNG BÁO ── -->
+<div class="toast" id="toast">
+  <div class="toast-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <div>
+    <div class="toast-title" id="toast-title">Đăng ký thành công!</div>
+    <div class="toast-desc"  id="toast-desc">Tài khoản đã được tạo. Vui lòng đăng nhập.</div>
+  </div>
+</div>
+
+<script>
+const EYE_OPEN = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+const EYE_OFF  = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+let otpContext = 'register'; // 'register' hoặc 'forgot'
+let timerInterval = null;
+
+// ── CHUYỂN MÀN ──
+function switchTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen' + screen.charAt(0).toUpperCase() + screen.slice(1)).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── HIỆN/ẨN MẬT KHẨU ──
+function togglePw(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  ico.innerHTML = inp.type === 'text' ? EYE_OFF : EYE_OPEN;
+}
+
+// ── HELPER LỖI ──
+function setWErr(wrapId, errId, show) {
+  document.getElementById(wrapId).classList.toggle('error', show);
+  document.getElementById(errId).classList.toggle('show', show);
+}
+function setPlainErr(inputId, errId, show) {
+  document.getElementById(inputId).classList.toggle('error', show);
+  document.getElementById(errId).classList.toggle('show', show);
+}
+function showAlert(alertId, msgId, msg, type) {
+  const el = document.getElementById(alertId);
+  el.className = 'alert ' + (type === 'success' ? 'alert-success' : 'alert-error');
+  document.getElementById(msgId).textContent = msg;
+  el.classList.add('show');
+}
+function hideAlert(alertId) { document.getElementById(alertId).classList.remove('show'); }
+
+// xóa lỗi khi gõ
+['r-firstName','r-lastName'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => setPlainErr(id, 'err-' + id, false));
+});
+['r-email','r-phone','r-password','r-confirm'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => setWErr('wrap-' + id, 'err-' + id, false));
+});
+['l-username','l-password'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => setWErr('wrap-' + id, 'err-' + id, false));
+});
+document.getElementById('forgot-input').addEventListener('input', () => setWErr('wrap-forgot-input', 'err-forgot-input', false));
+
+// ══════════════════════════════
+// ĐĂNG KÝ
+// ══════════════════════════════
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideAlert('reg-alert');
+
+  const firstName = document.getElementById('r-firstName').value.trim();
+  const lastName  = document.getElementById('r-lastName').value.trim();
+  const email     = document.getElementById('r-email').value.trim();
+  const phone     = document.getElementById('r-phone').value.trim();
+  const password  = document.getElementById('r-password').value;
+  const confirm   = document.getElementById('r-confirm').value;
+  const agreed    = document.getElementById('r-agree').checked;
+  let valid = true;
+
+  if (!firstName) { setPlainErr('r-firstName', 'err-firstName', true); valid = false; }
+  if (!lastName)  { setPlainErr('r-lastName',  'err-lastName',  true); valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setWErr('wrap-r-email', 'err-r-email', true); valid = false; }
+  if (!phone)     { setWErr('wrap-r-phone',    'err-r-phone',    true); valid = false; }
+  if (password.length < 8) { setWErr('wrap-r-password', 'err-r-password', true); valid = false; }
+  if (confirm !== password) { setWErr('wrap-r-confirm', 'err-r-confirm', true); valid = false; }
+  if (!agreed) { document.getElementById('err-r-agree').classList.add('show'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-register');
+  btn.classList.add('loading'); btn.disabled = true;
+  await new Promise(r => setTimeout(r, 1200));
+  btn.classList.remove('loading'); btn.disabled = false;
+
+  showToast('Đăng ký thành công!', 'Tài khoản đã được tạo. Vui lòng đăng nhập.');
+  setTimeout(() => switchTo('login'), 1800);
+});
+
+// ══════════════════════════════
+// ĐĂNG NHẬP
+// ══════════════════════════════
+const savedUser = localStorage.getItem('nex_savedUser');
+if (savedUser) {
+  document.getElementById('l-username').value = savedUser;
+  document.getElementById('l-remember').checked = true;
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideAlert('login-alert');
+  setWErr('wrap-l-username', 'err-l-username', false);
+  setWErr('wrap-l-password',  'err-l-password',  false);
+
+  const username = document.getElementById('l-username').value.trim();
+  const password = document.getElementById('l-password').value;
+  let valid = true;
+
+  if (!username) { setWErr('wrap-l-username', 'err-l-username', true); valid = false; }
+  if (!password) { setWErr('wrap-l-password',  'err-l-password',  true); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-login');
+  btn.classList.add('loading'); btn.disabled = true;
+  await new Promise(r => setTimeout(r, 1400));
+  btn.classList.remove('loading'); btn.disabled = false;
+
+  if (document.getElementById('l-remember').checked) {
+    localStorage.setItem('nex_savedUser', username);
+  } else {
+    localStorage.removeItem('nex_savedUser');
+  }
+
+  if (username === 'admin' && password === '123456') {
+    window.location.href = 'dashboard.html';
+  } else {
+    showAlert('login-alert', 'login-alert-msg', 'Tên đăng nhập hoặc mật khẩu không đúng.', 'error');
+  }
+});
+
+// ══════════════════════════════
+// MODAL QUÊN MẬT KHẨU
+// ══════════════════════════════
+function openForgotModal(type) {
+  document.getElementById('forgot-title').textContent = type === 'reset' ? 'Đặt lại mật khẩu' : 'Quên mật khẩu';
+  document.getElementById('forgot-desc').textContent  = 'Nhập email hoặc tên đăng nhập. Chúng tôi sẽ gửi mã xác nhận về email của bạn.';
+  document.getElementById('forgot-input').value = '';
+  setWErr('wrap-forgot-input', 'err-forgot-input', false);
+  document.getElementById('modal-forgot').classList.add('open');
+  setTimeout(() => document.getElementById('forgot-input').focus(), 100);
+  return false;
+}
+function closeForgotModal() {
+  document.getElementById('modal-forgot').classList.remove('open');
+}
+function sendForgotCode() {
+  const val = document.getElementById('forgot-input').value.trim();
+  if (!val) { setWErr('wrap-forgot-input', 'err-forgot-input', true); return; }
+  closeForgotModal();
+  otpContext = 'forgot';
+  document.getElementById('otp-title').textContent = 'Xác nhận danh tính';
+  document.getElementById('otp-email-display').textContent = val;
+  openOTPModal();
+}
+
+// ══════════════════════════════
+// MODAL OTP
+// ══════════════════════════════
+const otpInputs = document.querySelectorAll('.otp-input');
+
+function openOTPModal() {
+  otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+  document.getElementById('otp-error').classList.remove('show');
+  document.getElementById('modal-otp').classList.add('open');
+  setTimeout(() => otpInputs[0].focus(), 100);
+  startTimer();
+}
+function closeOTPModal() {
+  document.getElementById('modal-otp').classList.remove('open');
+  clearInterval(timerInterval);
+}
+
+otpInputs.forEach((inp, i) => {
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g, '');
+    inp.classList.toggle('filled', inp.value !== '');
+    document.getElementById('otp-error').classList.remove('show');
+    if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+  });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !inp.value && i > 0) otpInputs[i - 1].focus();
+  });
+  inp.addEventListener('paste', (e) => {
+    const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    [...text].forEach((ch, idx) => {
+      if (otpInputs[idx]) { otpInputs[idx].value = ch; otpInputs[idx].classList.add('filled'); }
+    });
+    e.preventDefault();
+    otpInputs[Math.min(text.length, 5)].focus();
+  });
+});
+
+function showToast(title, desc) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-desc').textContent  = desc;
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+function verifyOTP() {
+  const otp = [...otpInputs].map(i => i.value).join('');
+  if (otp.length < 6) { document.getElementById('otp-error').classList.add('show'); return; }
+  if (otp === '123456') {
+    closeOTPModal();
+    if (otpContext === 'register') {
+      showToast('Đăng ký thành công!', 'Tài khoản đã được tạo. Vui lòng đăng nhập.');
+      setTimeout(() => switchTo('login'), 1800);
+    } else {
+      switchTo('login');
+      setTimeout(() => showToast('Xác nhận thành công!', 'Vui lòng đăng nhập lại với mật khẩu mới.'), 300);
+    }
+  } else {
+    document.getElementById('otp-error').classList.add('show');
+    otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+    otpInputs[0].focus();
+  }
+}
+
+function startTimer() {
+  let t = 60;
+  const resendBtn   = document.getElementById('btn-resend');
+  const timerSpan   = document.getElementById('resend-timer');
+  const timerCount  = document.getElementById('timer-count');
+  resendBtn.style.pointerEvents = 'none'; resendBtn.style.opacity = '.4';
+  timerSpan.style.display = 'inline'; timerCount.textContent = t;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    t--; timerCount.textContent = t;
+    if (t <= 0) {
+      clearInterval(timerInterval);
+      resendBtn.style.pointerEvents = ''; resendBtn.style.opacity = '';
+      timerSpan.style.display = 'none';
+    }
+  }, 1000);
+}
+function resendOTP() {
+  otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+  document.getElementById('otp-error').classList.remove('show');
+  startTimer();
+}
+
+// click ngoài modal đóng lại
+document.getElementById('modal-forgot').addEventListener('click', (e) => { if (e.target.id === 'modal-forgot') closeForgotModal(); });
+document.getElementById('modal-otp').addEventListener('click',    (e) => { if (e.target.id === 'modal-otp')    closeOTPModal();    });
+</script>
+</body>
+</html>

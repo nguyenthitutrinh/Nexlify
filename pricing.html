@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Bảng Giá</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px; --topbar-h: 52px;
+  --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
+  --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; overflow-y: auto; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg,#e879f9 0%,#818cf8 50%,#38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover { background: var(--purple-pale); color: var(--purple); }
+.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* ── TOPBAR ── */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; z-index: 90; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
+.notif-btn svg { width: 15px; height: 15px; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#a78bfa,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
+
+/* ── TABS ── */
+.tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); margin-bottom: 20px; }
+.tab-btn { display: flex; align-items: center; gap: 7px; padding: 10px 18px; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all .15s; }
+.tab-btn:hover { color: var(--purple); }
+.tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+.tab-btn svg { width: 15px; height: 15px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.search-wrap { display: flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; min-width: 220px; transition: border-color .15s; }
+.search-wrap:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.search-wrap svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; }
+.search-wrap input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-wrap input::placeholder { color: var(--gray-400); }
+.filter-sel { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; outline: none; }
+.filter-count { margin-left: auto; font-size: 12px; color: var(--gray-500); font-weight: 500; }
+.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--purple); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-primary:hover { background: #6d28d9; }
+.btn-primary svg { width: 14px; height: 14px; }
+
+/* ── PRICE TABLE CARDS ── */
+.pt-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.pt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 0; box-shadow: 0 1px 4px rgba(0,0,0,.04); transition: box-shadow .15s; }
+.pt-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); cursor: pointer; }
+.pt-card.inactive { opacity: .65; }
+
+.pt-card-hdr { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+.pt-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pt-icon svg { width: 18px; height: 18px; }
+.pt-icon-gray { background: #f1f5f9; color: #64748b; }
+.pt-icon-blue { background: #dbeafe; color: #2563eb; }
+.pt-icon-amber { background: #fef3c7; color: #d97706; }
+.pt-icon-pink { background: #fce7f3; color: #be185d; }
+
+.pt-card-meta { flex: 1; min-width: 0; }
+.pt-card-name { font-size: 13px; font-weight: 700; color: var(--gray-900); line-height: 1.35; margin-bottom: 3px; }
+.pt-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; }
+.pt-status::before { content: '●'; font-size: 8px; }
+.pt-status-active { color: #16a34a; }
+.pt-status-inactive { color: var(--gray-400); }
+.pt-card-desc { font-size: 11.5px; color: var(--gray-500); line-height: 1.4; margin-bottom: 12px; }
+.pt-divider { border: none; border-top: 1px solid var(--gray-100); margin: 0 0 10px; }
+.pt-row { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; margin-bottom: 7px; gap: 6px; }
+.pt-row:last-of-type { margin-bottom: 12px; }
+.pt-row-lbl { color: var(--gray-500); font-weight: 500; flex-shrink: 0; }
+.pt-row-val { font-weight: 600; color: var(--gray-700); text-align: right; }
+.pt-row-val.discount { color: #dc2626; font-size: 13px; }
+.pt-row-val.no-discount { color: var(--gray-400); font-weight: 500; }
+.pt-row-val.items { color: var(--purple); }
+.pt-row-val.date { font-size: 11px; color: var(--gray-500); }
+
+.type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.type-retail { background: #f1f5f9; color: #475569; }
+.type-wholesale { background: #dbeafe; color: #1d4ed8; }
+.type-vip { background: #fce7f3; color: #be185d; }
+
+.pt-card-actions { display: flex; gap: 6px; margin-top: auto; }
+.pt-btn-edit, .pt-btn-toggle { flex: 1; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--gray-200); background: white; font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.pt-btn-edit:hover { border-color: var(--purple); color: var(--purple); }
+.pt-btn-toggle:hover { border-color: #d97706; color: #d97706; }
+.pt-btn-view { flex: 1.3; padding: 6px 10px; border-radius: 7px; border: none; background: var(--purple); font-family: inherit; font-size: 11.5px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; white-space: nowrap; }
+.pt-btn-view:hover { background: #6d28d9; }
+
+/* ── DETAIL TABLE ── */
+.detail-table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+.detail-table { width: 100%; border-collapse: collapse; }
+.detail-table th { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-500); letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; }
+.detail-table td { padding: 13px 14px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.detail-table tr:last-child td { border-bottom: none; }
+.detail-table tr:hover td { background: var(--gray-50); }
+.detail-table tr.hidden { display: none; }
+
+.prod-name-cell { font-size: 13px; font-weight: 700; color: var(--gray-900); line-height: 1.3; }
+.prod-code-cell { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.brand-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.brd-dx { background: #dcfce7; color: #15803d; }
+.brd-sm { background: #dbeafe; color: #1d4ed8; }
+.brd-dn { background: #fff7ed; color: #c2410c; }
+.table-badge { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2.5px 9px; border-radius: 99px; background: var(--purple-light); color: var(--purple); }
+.price-orig { font-size: 12.5px; color: var(--gray-700); }
+.price-special { font-size: 13px; font-weight: 700; color: var(--purple); }
+.discount-pill { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #fef3c7; color: #b45309; }
+.date-cell { font-size: 12px; color: var(--gray-500); }
+
+.act-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; color: var(--gray-500); display: inline-flex; align-items: center; justify-content: center; transition: all .15s; }
+.act-btn:hover { border-color: var(--purple); color: var(--purple); }
+.act-btn.del:hover { border-color: #ef4444; color: #ef4444; }
+.act-btn svg { width: 13px; height: 13px; }
+
+.no-rows { text-align: center; padding: 48px 20px; color: var(--gray-400); }
+.no-rows svg { width: 36px; height: 36px; margin-bottom: 10px; }
+.no-rows p { font-size: 13.5px; font-weight: 600; color: var(--gray-500); }
+
+/* ── MODAL ── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--white); border-radius: 14px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(12px); transition: transform .2s; }
+.modal-backdrop.open .modal-box { transform: translateY(0); }
+.modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.modal-hdr h3 { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.modal-x { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.modal-x:hover { background: var(--gray-100); color: var(--gray-700); }
+.modal-bdy { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.form-lbl em { color: #ef4444; font-style: normal; margin-left: 2px; }
+.form-input, .form-sel { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s; width: 100%; }
+.form-input:focus, .form-sel:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.form-input.err { border-color: #ef4444; }
+.form-row-status { display: flex; align-items: center; justify-content: space-between; }
+.toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.toggle-lbl { font-size: 12.5px; font-weight: 600; color: #15803d; }
+.toggle-lbl.off { color: var(--gray-400); }
+.toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; cursor: pointer; transition: .2s; }
+.toggle-slider:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: .2s; }
+.toggle input:checked + .toggle-slider { background: var(--purple); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+.modal-ftr { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--gray-100); flex-shrink: 0; }
+.btn-cancel-m { padding: 8px 18px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; }
+.btn-cancel-m:hover { border-color: var(--gray-400); color: var(--gray-700); }
+.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
+.btn-save-m:hover { background: #6d28d9; }
+
+/* ── TIER INFO BOX ── */
+.tier-info { background: var(--purple-pale); border: 1px solid var(--purple-light); border-radius: 8px; padding: 10px 13px; font-size: 11.5px; color: var(--purple); line-height: 1.6; }
+.tier-info strong { font-weight: 700; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 600; background: #1e293b; color: white; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 28px rgba(0,0,0,.22); transform: translateY(70px); opacity: 0; transition: all .35s cubic-bezier(.34,1.3,.64,1); pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-info">
+      <strong>NexLify</strong>
+      <small>Hệ thống quản lý bán hàng</small>
+    </div>
+  </div>
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Tổng Quan
+  </a>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Báo Giá</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+  </div>
+  <div class="nav-item nav-parent open" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub open">
+    <a class="nav-item" href="products.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản Phẩm
+    </a>
+    <a class="nav-item" href="categories.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Danh Mục Sản Phẩm
+    </a>
+    <a class="nav-item" href="variants.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Biến Thể Sản Phẩm
+    </a>
+    <a class="nav-item active" href="pricing.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Bảng Giá
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      Khuyến Mãi
+    </a>
+  </div>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Hóa Đơn
+  </a>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Báo Cáo
+  </a>
+</aside>
+
+<!-- ── TOPBAR ── -->
+<header class="topbar">
+  <div class="topbar-right">
+    <button class="notif-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tables')" id="tab-btn-tables">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Bảng giá
+    </button>
+    <button class="tab-btn" onclick="switchTab('detail')" id="tab-btn-detail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Chi tiết giá
+    </button>
+  </div>
+
+  <!-- ── TAB: BẢNG GIÁ ── -->
+  <div class="tab-content active" id="tab-tables">
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="cardSearch" placeholder="Tìm bảng giá..." oninput="filterCards()" />
+      </div>
+      <span class="filter-count" id="cardCount"></span>
+      <button class="btn-primary" style="margin-left:auto" onclick="openTableModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm bảng giá
+      </button>
+    </div>
+    <div class="pt-cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <!-- ── TAB: CHI TIẾT GIÁ ── -->
+  <div class="tab-content" id="tab-detail">
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="detailSearch" placeholder="Tìm sản phẩm..." oninput="filterDetail()" />
+      </div>
+      <select class="filter-sel" id="tableFilter" onchange="filterDetail()">
+        <option value="">Tất cả bảng giá</option>
+        <option value="retail">Giá lẻ tiêu chuẩn</option>
+        <option value="wholesale1">Giá sỉ Mức 1</option>
+        <option value="wholesale2">Giá sỉ Mức 2</option>
+        <option value="wholesale3">Giá sỉ Mức 3</option>
+        <option value="vip">Khách hàng thân thiết</option>
+      </select>
+      <select class="filter-sel" id="brandFilter" onchange="filterDetail()">
+        <option value="">Tất cả thương hiệu</option>
+        <option value="datxanh">Đất Xanh</option>
+        <option value="songma">Song Mã</option>
+        <option value="daungu">Đầu Ngựa</option>
+      </select>
+      <span class="filter-count" id="detailCount"></span>
+      <button class="btn-primary" onclick="openItemModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Thêm sản phẩm
+      </button>
+    </div>
+    <div class="detail-table-wrap">
+      <table class="detail-table">
+        <thead>
+          <tr>
+            <th>Sản phẩm</th>
+            <th>Thương hiệu</th>
+            <th>Bảng giá</th>
+            <th>Giá gốc</th>
+            <th>Giá đặc biệt</th>
+            <th>Giảm</th>
+            <th>Áp dụng từ</th>
+            <th>Hết hạn</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="detailTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── MODAL THÊM/SỬA BẢNG GIÁ ── -->
+<div class="modal-backdrop" id="tableModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3 id="tableModalTitle">Thêm bảng giá mới</h3>
+      <button class="modal-x" onclick="closeTableModal()">×</button>
+    </div>
+    <div class="modal-bdy">
+      <div class="form-group">
+        <label class="form-lbl">Tên bảng giá <em>*</em></label>
+        <input class="form-input" id="tm_name" type="text" placeholder="VD: Giá sỉ Mức 1" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-lbl">Loại khách <em>*</em></label>
+          <select class="form-sel" id="tm_type">
+            <option value="retail">Khách lẻ</option>
+            <option value="wholesale">Khách sỉ</option>
+            <option value="vip">Khách VIP</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Giảm giá chung (%)</label>
+          <input class="form-input" id="tm_discount" type="number" min="0" max="100" placeholder="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Điều kiện áp dụng</label>
+        <input class="form-input" id="tm_condition" type="text" placeholder="VD: Mua từ >10 sản phẩm / đơn" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-lbl">Áp dụng từ</label>
+          <input class="form-input" id="tm_from" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Hết hạn</label>
+          <input class="form-input" id="tm_to" type="date" />
+        </div>
+      </div>
+      <div class="form-row-status">
+        <label class="form-lbl">Trạng thái</label>
+        <div class="toggle-wrap">
+          <span class="toggle-lbl" id="tm_statusLbl">Đang áp dụng</span>
+          <label class="toggle">
+            <input type="checkbox" id="tm_status" checked onchange="updateModalStatus()" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel-m" onclick="closeTableModal()">Huỷ</button>
+      <button class="btn-save-m" onclick="saveTable()">Lưu bảng giá</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL THÊM SẢN PHẨM VÀO BẢNG GIÁ ── -->
+<div class="modal-backdrop" id="itemModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3>Thêm sản phẩm vào bảng giá</h3>
+      <button class="modal-x" onclick="closeItemModal()">×</button>
+    </div>
+    <div class="modal-bdy">
+      <div class="form-group">
+        <label class="form-lbl">Bảng giá <em>*</em></label>
+        <select class="form-sel" id="im_table">
+          <option value="">-- Chọn bảng giá --</option>
+          <option value="wholesale1">Giá sỉ Mức 1 (–5%)</option>
+          <option value="wholesale2">Giá sỉ Mức 2 (–10%)</option>
+          <option value="wholesale3">Giá sỉ Mức 3 (–15%)</option>
+          <option value="vip">Khách hàng thân thiết (–8%)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Sản phẩm <em>*</em></label>
+        <select class="form-sel" id="im_product">
+          <option value="">-- Chọn sản phẩm --</option>
+          <option value="npk1|NPK 16-16-16|S0001|datxanh|Đất Xanh|380000">NPK 16-16-16 – Đất Xanh</option>
+          <option value="npk2|NPK 17-16-8|S0002|datxanh|Đất Xanh|420000">NPK 17-16-8 – Đất Xanh</option>
+          <option value="huco1|Hữu cơ Vi sinh cao cấp|S0003|datxanh|Đất Xanh|295000">Hữu cơ Vi sinh cao cấp – Đất Xanh</option>
+          <option value="lua1|Chuyên Lúa 1|S0007|datxanh|Đất Xanh|430000">Chuyên Lúa 1 – Đất Xanh</option>
+          <option value="npk11|NPK 18-8-18+Bo+TE|S0011|songma|Song Mã|410000">NPK 18-8-18+Bo+TE – Song Mã</option>
+          <option value="lan15|Lân Canxi Song Mã|S0015|songma|Song Mã|200000">Lân Canxi Song Mã</option>
+          <option value="cafe17|Chuyên Cà phê – Tiêu|S0017|songma|Song Mã|450000">Chuyên Cà phê – Tiêu – Song Mã</option>
+          <option value="cao18|Chuyên Cao su|S0018|songma|Song Mã|440000">Chuyên Cao su – Song Mã</option>
+          <option value="npk21|Cao cấp NPK 16-16-16+Bo+TE|S0021|daungu|Đầu Ngựa|400000">Cao cấp NPK 16-16-16+Bo+TE – Đầu Ngựa</option>
+          <option value="huco23|Hữu cơ khoáng 20-22-15+Bo+TE|S0023|daungu|Đầu Ngựa|360000">Hữu cơ khoáng 20-22-15+Bo+TE – Đầu Ngựa</option>
+          <option value="huco24|Khoáng hữu cơ 17-7-17+Bo+TE|S0024|daungu|Đầu Ngựa|340000">Khoáng hữu cơ 17-7-17+Bo+TE – Đầu Ngựa</option>
+        </select>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-lbl">Giảm giá riêng (%)</label>
+          <input class="form-input" id="im_discount" type="number" min="0" max="100" placeholder="Để trống = theo bảng giá" />
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Giá đặc biệt (₫)</label>
+          <input class="form-input" id="im_special" type="number" min="0" placeholder="Tự động tính" readonly style="background:#f8fafc" />
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-lbl">Áp dụng từ</label>
+          <input class="form-input" id="im_from" type="date" value="2024-01-01" />
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Hết hạn</label>
+          <input class="form-input" id="im_to" type="date" value="2099-12-31" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel-m" onclick="closeItemModal()">Huỷ</button>
+      <button class="btn-save-m" onclick="saveItem()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA ── */
+const priceTables = [
+  { id:'retail',     name:'Giá lẻ tiêu chuẩn',       desc:'Giá mặc định cho khách lẻ',        type:'retail',    typeLabel:'Khách lẻ',  condition:'Tất cả sản phẩm',    discount:0,  items:30, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'gray'  },
+  { id:'wholesale1', name:'Giá sỉ Mức 1',             desc:'Mua từ 11 – 20 sản phẩm / đơn',   type:'wholesale', typeLabel:'Khách sỉ',  condition:'>10 SP / đơn',       discount:5,  items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
+  { id:'wholesale2', name:'Giá sỉ Mức 2',             desc:'Mua từ 21 – 30 sản phẩm / đơn',   type:'wholesale', typeLabel:'Khách sỉ',  condition:'>20 SP / đơn',       discount:10, items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
+  { id:'wholesale3', name:'Giá sỉ Mức 3',             desc:'Mua từ 31 sản phẩm trở lên / đơn',type:'wholesale', typeLabel:'Khách sỉ',  condition:'>30 SP / đơn',       discount:15, items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
+  { id:'vip',        name:'Khách hàng thân thiết',     desc:'Khách đã tích lũy >15 sản phẩm',  type:'vip',       typeLabel:'Khách VIP', condition:'>15 SP đã mua',      discount:8,  items:6, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'pink'  },
+];
+
+const priceItems = [
+  { tableId:'wholesale1', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale1', name:'NPK 17-16-8',                code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale1', name:'NPK 18-8-18+Bo+TE',          code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale1', name:'Cao cấp NPK 16-16-16+Bo+TE', code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale2', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:10, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale2', name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:10, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale2', name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:10, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale2', name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:10, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale3', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:15, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale3', name:'Chuyên Cà phê – Tiêu',       code:'S0017', brand:'songma',  brandLabel:'Song Mã',  basePrice:450000, discount:15, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale3', name:'Cao cấp NPK 16-16-16+Bo+TE', code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:15, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'wholesale3', name:'Hữu cơ khoáng 20-22-15+Bo+TE',code:'S0023',brand:'daungu', brandLabel:'Đầu Ngựa', basePrice:360000, discount:15, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'Chuyên Cao su',              code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'vip',        name:'Khoáng hữu cơ 17-7-17+Bo+TE',code:'S0024',brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:340000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
+  // Giá lẻ tiêu chuẩn – tất cả sản phẩm
+  { tableId:'retail', name:'NPK 16-16-16',                   code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'NPK 17-16-8',                    code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Hữu cơ Vi sinh cao cấp',         code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Khoáng cao cấp 20-20-15+Bo+TE',  code:'S0004', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:350000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Lân Canxi Đất Xanh',             code:'S0005', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:195000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Vôi Lân Đất Xanh',               code:'S0006', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:210000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Lúa 1',                   code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Lúa 2',                   code:'S0008', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên dùng cho Chuối',          code:'S0009', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:460000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Đất Xanh Trung Vi Lượng',        code:'S0010', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'NPK 18-8-18+Bo+TE',              code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'NPK Mùa Khô 21-5-2',             code:'S0012', brand:'songma',  brandLabel:'Song Mã',  basePrice:390000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Hữu cơ khoáng 16-16-8+Bo+TE',   code:'S0013', brand:'songma',  brandLabel:'Song Mã',  basePrice:320000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Hữu cơ Vi sinh Song Mã',         code:'S0014', brand:'songma',  brandLabel:'Song Mã',  basePrice:280000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Lân Canxi Song Mã',              code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Vôi Lân Song Mã',                code:'S0016', brand:'songma',  brandLabel:'Song Mã',  basePrice:185000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cà phê – Tiêu',           code:'S0017', brand:'songma',  brandLabel:'Song Mã',  basePrice:450000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cao su',                  code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cây ăn trái & Rau màu',  code:'S0019', brand:'songma',  brandLabel:'Song Mã',  basePrice:460000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Trung vi lượng – Humic',         code:'S0020', brand:'songma',  brandLabel:'Song Mã',  basePrice:310000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Cao cấp NPK 16-16-16+Bo+TE',    code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'NPK 18-8-18',                    code:'S0022', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:415000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Hữu cơ khoáng 20-22-15+Bo+TE',  code:'S0023', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:360000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Khoáng hữu cơ 17-7-17+Bo+TE',   code:'S0024', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:340000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Lân Canxi Đầu Ngựa',             code:'S0025', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:205000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Vôi Lân Đầu Ngựa',               code:'S0026', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:190000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cà phê & Hồ tiêu',        code:'S0027', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:455000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cao su Đầu Ngựa',         code:'S0028', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:445000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Chuyên Cây ăn trái Lớn trái',   code:'S0029', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:465000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  { tableId:'retail', name:'Khoáng hữu cơ 20-10-20+Bo+TE',  code:'S0030', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:330000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+];
+
+/* ── HELPERS ── */
+function norm(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().trim(); }
+function fmt(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+function toggleNav(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
+
+const iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+const starSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+const editSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+const trashSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+const pauseSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`;
+const playSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+/* ── RENDER CARDS ── */
+function renderCards(filter) {
+  const q = norm(filter || '');
+  const grid = document.getElementById('cardsGrid');
+  let count = 0;
+  grid.innerHTML = priceTables.map(t => {
+    const match = !q || norm(t.name).includes(q) || norm(t.desc).includes(q) || norm(t.typeLabel).includes(q);
+    if (!match) return '';
+    count++;
+    const iconClass = { gray:'pt-icon-gray', blue:'pt-icon-blue', amber:'pt-icon-amber', pink:'pt-icon-pink' }[t.iconColor] || 'pt-icon-gray';
+    const icon = t.iconColor === 'pink' ? starSvg : iconSvg;
+    const typeBadgeClass = { retail:'type-retail', wholesale:'type-wholesale', vip:'type-vip' }[t.type] || 'type-retail';
+    const discountHtml = t.discount === 0
+      ? `<span class="pt-row-val no-discount">Không giảm</span>`
+      : `<span class="pt-row-val discount">${t.discount}%</span>`;
+    const itemsHtml = t.items === 0
+      ? `<span class="pt-row-val no-discount">0 sản phẩm</span>`
+      : `<span class="pt-row-val items">${t.items} sản phẩm</span>`;
+    const isActive = t.status === 'active';
+    const toggleLabel = isActive ? 'Tạm dừng' : 'Kích hoạt';
+    const toggleIcon = isActive ? pauseSvg : playSvg;
+    return `
+    <div class="pt-card${isActive ? '' : ' inactive'}" id="card-${t.id}" onclick="viewDetail('${t.id}')" title="Xem chi tiết giá">
+      <div class="pt-card-hdr">
+        <div class="pt-icon ${iconClass}">${icon}</div>
+        <div class="pt-card-meta">
+          <div class="pt-card-name">${t.name}</div>
+          <span class="pt-status ${isActive ? 'pt-status-active' : 'pt-status-inactive'}">${isActive ? 'Đang áp dụng' : 'Ngưng'}</span>
+        </div>
+      </div>
+      <div class="pt-card-desc">${t.desc}</div>
+      <hr class="pt-divider">
+      <div class="pt-row"><span class="pt-row-lbl">Loại khách</span><span class="type-badge ${typeBadgeClass}">${t.typeLabel}</span></div>
+      <div class="pt-row"><span class="pt-row-lbl">Điều kiện</span><span class="pt-row-val">${t.condition}</span></div>
+      <div class="pt-row"><span class="pt-row-lbl">Giảm giá chung</span>${discountHtml}</div>
+      <div class="pt-row"><span class="pt-row-lbl">Số mục giá riêng</span>${itemsHtml}</div>
+      <div class="pt-row"><span class="pt-row-lbl">Hiệu lực</span><span class="pt-row-val date">${t.from} → ${t.to}</span></div>
+      <div class="pt-card-actions">
+        <button class="pt-btn-edit" onclick="event.stopPropagation(); openTableModal('${t.id}')">${editSvg} Sửa</button>
+        <button class="pt-btn-toggle" onclick="event.stopPropagation(); toggleTableStatus('${t.id}')">${toggleIcon} ${toggleLabel}</button>
+        <button class="pt-btn-view" onclick="viewDetail('${t.id}')">Xem giá →</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('cardCount').textContent = count + ' bảng giá';
+  if (count === 0) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:#94a3b8"><p style="font-size:14px;font-weight:600">Không tìm thấy bảng giá</p></div>`;
+}
+
+/* ── RENDER DETAIL TABLE ── */
+function renderDetail() {
+  const tbody = document.getElementById('detailTbody');
+  const search = norm(document.getElementById('detailSearch').value);
+  const tableF = document.getElementById('tableFilter').value;
+  const brandF = document.getElementById('brandFilter').value;
+
+  let count = 0;
+  tbody.innerHTML = priceItems.map((item, idx) => {
+    const matchTable = !tableF || item.tableId === tableF;
+    const matchBrand = !brandF || item.brand === brandF;
+    const matchSearch = !search || norm(item.name).includes(search) || norm(item.code).includes(search);
+    if (!matchTable || !matchBrand || !matchSearch) return '';
+    count++;
+    const special = Math.round(item.basePrice * (1 - item.discount / 100));
+    const table = priceTables.find(t => t.id === item.tableId);
+    const tableLabel = table ? table.name : item.tableId;
+    const brandClass = { datxanh:'brd-dx', songma:'brd-sm', daungu:'brd-dn' }[item.brand] || '';
+    return `
+    <tr data-idx="${idx}">
+      <td><div class="prod-name-cell">${item.name}</div><div class="prod-code-cell">${item.code}</div></td>
+      <td><span class="brand-badge ${brandClass}">${item.brandLabel}</span></td>
+      <td><span class="table-badge">${tableLabel}</span></td>
+      <td><span class="price-orig">${fmt(item.basePrice)}</span></td>
+      <td><span class="${item.discount === 0 ? 'price-orig' : 'price-special'}">${fmt(special)}</span></td>
+      <td>${item.discount === 0 ? '<span style="font-size:11px;color:#94a3b8;font-weight:500">Giá gốc</span>' : `<span class="discount-pill">–${item.discount}%</span>`}</td>
+      <td><span class="date-cell">${item.from}</span></td>
+      <td><span class="date-cell">${item.to}</span></td>
+      <td style="white-space:nowrap">
+        <button class="act-btn" title="Sửa" onclick="editItem(${idx})">${editSvg}</button>
+        <button class="act-btn del" title="Xoá" onclick="deleteItem(${idx})" style="margin-left:4px">${trashSvg}</button>
+      </td>
+    </tr>`;
+  }).join('');
+  if (count === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="no-rows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>Không tìm thấy mục nào</p></td></tr>`;
+  }
+  document.getElementById('detailCount').textContent = count + ' mục';
+}
+
+/* ── TAB SWITCHING ── */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tab-btn-' + tab).classList.add('active');
+  if (tab === 'detail') renderDetail();
+}
+
+function viewDetail(tableId) {
+  document.getElementById('tableFilter').value = tableId;
+  switchTab('detail');
+}
+
+function filterCards() { renderCards(document.getElementById('cardSearch').value); }
+function filterDetail() { renderDetail(); }
+
+/* ── TOGGLE TABLE STATUS ── */
+function toggleTableStatus(id) {
+  const t = priceTables.find(p => p.id === id);
+  if (!t) return;
+  t.status = t.status === 'active' ? 'inactive' : 'active';
+  renderCards(document.getElementById('cardSearch').value);
+  showToast(t.status === 'active' ? `Đã kích hoạt "${t.name}"` : `Đã tạm dừng "${t.name}"`);
+}
+
+/* ── MODAL TABLE ── */
+let editTableId = null;
+function openTableModal(id) {
+  editTableId = id || null;
+  const t = id ? priceTables.find(p => p.id === id) : null;
+  document.getElementById('tableModalTitle').textContent = t ? 'Chỉnh sửa bảng giá' : 'Thêm bảng giá mới';
+  document.getElementById('tm_name').value      = t ? t.name : '';
+  document.getElementById('tm_type').value      = t ? t.type : 'retail';
+  document.getElementById('tm_discount').value  = t ? t.discount : '';
+  document.getElementById('tm_condition').value = t ? t.condition : '';
+  document.getElementById('tm_from').value      = t ? t.from.split('/').reverse().join('-') : '2024-01-01';
+  document.getElementById('tm_to').value        = t ? t.to.split('/').reverse().join('-') : '2099-12-31';
+  document.getElementById('tm_status').checked  = t ? t.status === 'active' : true;
+  updateModalStatus();
+  document.getElementById('tm_name').classList.remove('err');
+  document.getElementById('tableModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeTableModal() { document.getElementById('tableModal').classList.remove('open'); document.body.style.overflow = ''; }
+function updateModalStatus() {
+  const on = document.getElementById('tm_status').checked;
+  const lbl = document.getElementById('tm_statusLbl');
+  lbl.textContent = on ? 'Đang áp dụng' : 'Ngưng';
+  lbl.className = 'toggle-lbl' + (on ? '' : ' off');
+}
+function saveTable() {
+  const nm = document.getElementById('tm_name').value.trim();
+  if (!nm) { document.getElementById('tm_name').classList.add('err'); document.getElementById('tm_name').focus(); return; }
+  document.getElementById('tm_name').classList.remove('err');
+
+  const fromVal = document.getElementById('tm_from').value;
+  const toVal   = document.getElementById('tm_to').value;
+  const fromFmt = fromVal ? fromVal.split('-').reverse().join('/') : '01/01/2024';
+  const toFmt   = toVal   ? toVal.split('-').reverse().join('/')   : '31/12/2099';
+  const typeVal = document.getElementById('tm_type').value;
+  const typeLabelMap = { retail:'Khách lẻ', wholesale:'Khách sỉ', vip:'Khách VIP' };
+  const iconMap = { retail:'gray', wholesale:'blue', vip:'pink' };
+
+  if (editTableId) {
+    const t = priceTables.find(p => p.id === editTableId);
+    if (t) {
+      t.name      = nm;
+      t.type      = typeVal;
+      t.typeLabel = typeLabelMap[typeVal] || nm;
+      t.discount  = parseInt(document.getElementById('tm_discount').value) || 0;
+      t.condition = document.getElementById('tm_condition').value.trim();
+      t.from      = fromFmt;
+      t.to        = toFmt;
+      t.status    = document.getElementById('tm_status').checked ? 'active' : 'inactive';
+      t.iconColor = iconMap[typeVal] || 'gray';
+    }
+    showToast(`Đã cập nhật "${nm}"`);
+  } else {
+    priceTables.push({
+      id: 'table_' + Date.now(),
+      name: nm,
+      desc: document.getElementById('tm_condition').value.trim() || nm,
+      type: typeVal,
+      typeLabel: typeLabelMap[typeVal] || nm,
+      condition: document.getElementById('tm_condition').value.trim(),
+      discount: parseInt(document.getElementById('tm_discount').value) || 0,
+      items: 0,
+      status: document.getElementById('tm_status').checked ? 'active' : 'inactive',
+      from: fromFmt,
+      to: toFmt,
+      iconColor: iconMap[typeVal] || 'gray'
+    });
+    showToast(`Đã thêm bảng giá "${nm}"`);
+  }
+  closeTableModal();
+  renderCards(document.getElementById('cardSearch').value);
+}
+
+/* ── MODAL ITEM ── */
+function openItemModal() {
+  document.getElementById('im_table').value = document.getElementById('tableFilter').value || '';
+  document.getElementById('im_product').value = '';
+  document.getElementById('im_discount').value = '';
+  document.getElementById('im_special').value = '';
+  document.getElementById('itemModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeItemModal() { document.getElementById('itemModal').classList.remove('open'); document.body.style.overflow = ''; }
+
+document.getElementById('im_product').addEventListener('change', calcSpecial);
+document.getElementById('im_discount').addEventListener('input', calcSpecial);
+document.getElementById('im_table').addEventListener('change', function() {
+  const tbl = priceTables.find(p => p.id === this.value);
+  if (tbl && tbl.discount) document.getElementById('im_discount').value = tbl.discount;
+  calcSpecial();
+});
+
+function calcSpecial() {
+  const prodVal = document.getElementById('im_product').value;
+  if (!prodVal) return;
+  const parts = prodVal.split('|');
+  const base = parseInt(parts[5]) || 0;
+  const disc = parseFloat(document.getElementById('im_discount').value) || 0;
+  document.getElementById('im_special').value = disc > 0 ? Math.round(base * (1 - disc/100)) : base;
+}
+
+function saveItem() {
+  const tableId = document.getElementById('im_table').value;
+  const prodVal = document.getElementById('im_product').value;
+  if (!tableId || !prodVal) { showToast('Vui lòng chọn đủ bảng giá và sản phẩm'); return; }
+  const parts = prodVal.split('|');
+  const fromVal = document.getElementById('im_from').value;
+  const toVal   = document.getElementById('im_to').value;
+
+  const newItem = {
+    tableId,
+    name: parts[1], code: parts[2], brand: parts[3], brandLabel: parts[4],
+    basePrice: parseInt(parts[5]) || 0,
+    discount: parseFloat(document.getElementById('im_discount').value) || 0,
+    from: fromVal ? fromVal.split('-').reverse().join('/') : '01/01/2024',
+    to:   toVal   ? toVal.split('-').reverse().join('/')   : '31/12/2099',
+  };
+  priceItems.push(newItem);
+
+  const t = priceTables.find(p => p.id === tableId);
+  if (t) t.items++;
+
+  closeItemModal();
+  renderDetail();
+  renderCards(document.getElementById('cardSearch').value);
+  showToast(`Đã thêm "${newItem.name}" vào bảng giá`);
+}
+
+function editItem(idx) {
+  const item = priceItems.filter((_, i) => {
+    const s = norm(document.getElementById('detailSearch').value);
+    const tf = document.getElementById('tableFilter').value;
+    const bf = document.getElementById('brandFilter').value;
+    return (!tf || priceItems[i].tableId === tf) && (!bf || priceItems[i].brand === bf) && (!s || norm(priceItems[i].name).includes(s));
+  })[idx];
+  showToast(`Chỉnh sửa "${item ? item.name : ''}" (demo)`);
+}
+
+function deleteItem(idx) {
+  const visibleItems = priceItems.reduce((acc, item, i) => {
+    const s = norm(document.getElementById('detailSearch').value);
+    const tf = document.getElementById('tableFilter').value;
+    const bf = document.getElementById('brandFilter').value;
+    const ok = (!tf || item.tableId === tf) && (!bf || item.brand === bf) && (!s || norm(item.name).includes(s) || norm(item.code).includes(s));
+    if (ok) acc.push(i);
+    return acc;
+  }, []);
+  const realIdx = visibleItems[idx];
+  if (realIdx === undefined) return;
+  const item = priceItems[realIdx];
+  const t = priceTables.find(p => p.id === item.tableId);
+  if (t && t.items > 0) t.items--;
+  priceItems.splice(realIdx, 1);
+  renderDetail();
+  renderCards(document.getElementById('cardSearch').value);
+  showToast(`Đã xoá "${item.name}" khỏi bảng giá`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// close modals on backdrop click
+document.getElementById('tableModal').addEventListener('click', function(e) { if (e.target === this) closeTableModal(); });
+document.getElementById('itemModal').addEventListener('click', function(e) { if (e.target === this) closeItemModal(); });
+
+/* ── INIT ── */
+renderCards();
+renderDetail();
+</script>
+</body>
+</html>

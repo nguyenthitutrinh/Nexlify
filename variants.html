@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Biến Thể Sản Phẩm</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px;
+  --topbar-h: 52px;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --purple-pale: #f5f3ff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #0f172a;
+  --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; overflow-y: auto; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg, #e879f9 0%, #818cf8 50%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover  { background: var(--purple-pale); color: var(--purple); }
+.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* ── TOPBAR ── */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; z-index: 90; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; transition: background .15s; }
+.notif-btn:hover { background: var(--gray-100); }
+.notif-btn svg { width: 15px; height: 15px; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; transition: background .15s; }
+.profile-btn:hover { background: var(--gray-200); }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #a78bfa, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
+
+/* ── PAGE HEADER ── */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--purple); color: white; border: none; border-radius: 8px; padding: 8px 16px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-primary:hover { background: #6d28d9; }
+.btn-primary svg { width: 15px; height: 15px; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-field { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; color: var(--gray-400); min-width: 260px; transition: border-color .15s, box-shadow .15s; }
+.search-field:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.search-field input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-field input::placeholder { color: var(--gray-400); }
+.search-field svg { width: 13px; height: 13px; flex-shrink: 0; }
+.filter-select { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; outline: none; }
+.filter-count { margin-left: auto; font-size: 12px; color: var(--gray-400); font-weight: 500; }
+.filter-count span { font-weight: 700; color: var(--gray-700); }
+
+/* ── TABLE ── */
+.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+.vt-table { width: 100%; border-collapse: collapse; }
+.vt-table thead tr { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+.vt-table th { padding: 11px 14px; font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; text-align: left; white-space: nowrap; }
+.vt-table tbody tr { border-bottom: 1px solid var(--gray-100); transition: background .12s; }
+.vt-table tbody tr:last-child { border-bottom: none; }
+.vt-table tbody tr:hover { background: var(--purple-pale); }
+.vt-table tbody tr.inactive { opacity: .6; }
+.vt-table td { padding: 12px 14px; vertical-align: middle; }
+
+/* ── PRODUCT CELL ── */
+.prod-cell { display: flex; align-items: center; gap: 10px; }
+.prod-avatar { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+.av-nk { background: #7c3aed; }
+.av-hc { background: #16a34a; }
+.av-lk { background: #2563eb; }
+.av-cd { background: #ea580c; }
+.av-tv { background: #db2777; }
+.prod-name { font-size: 13px; font-weight: 600; color: var(--gray-900); line-height: 1.3; }
+.prod-code { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+
+/* ── BRAND BADGES ── */
+.badge-brand { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+.brd-dx { background: #dcfce7; color: #15803d; }
+.brd-sm { background: #dbeafe; color: #1d4ed8; }
+.brd-dn { background: #fff7ed; color: #c2410c; }
+
+/* ── CATEGORY CELL ── */
+.cat-label { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+
+/* ── VARIANT CHIPS ── */
+.vt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.vt-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 7px; padding: 5px 10px; font-size: 11.5px; white-space: nowrap; }
+.vt-size { font-weight: 600; color: var(--gray-700); }
+.vt-price { color: var(--purple); font-weight: 700; }
+.vt-sep { color: var(--gray-400); }
+.vt-qty { color: #16a34a; font-weight: 700; }
+.vt-qty.zero { color: #dc2626; }
+
+/* ── STATUS ── */
+.status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.status-active   .status-dot { background: #22c55e; }
+.status-active   { color: #15803d; }
+.status-inactive .status-dot { background: #94a3b8; }
+.status-inactive { color: var(--gray-500); }
+
+/* ── ACTIONS ── */
+.action-cell { display: flex; align-items: center; gap: 6px; }
+.act-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-400); transition: all .15s; }
+.act-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-pale); }
+.act-btn svg { width: 13px; height: 13px; }
+
+/* ── NO RESULT ── */
+.no-result-row td { text-align: center; padding: 48px 20px; color: var(--gray-400); }
+.no-result-row p { font-size: 14px; font-weight: 600; color: var(--gray-500); margin-bottom: 4px; }
+
+/* ── MODAL ── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--white); border-radius: 14px; width: 100%; max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(12px); transition: transform .2s; }
+.modal-backdrop.open .modal-box { transform: translateY(0); }
+.modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.modal-hdr h3 { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.modal-x { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all .15s; }
+.modal-x:hover { background: var(--gray-100); color: var(--gray-700); }
+.modal-bdy { padding: 18px 20px; overflow-y: auto; flex: 1; }
+.modal-top-row { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
+.modal-top-row .fg-prod { flex: 1; }
+.form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 5px; display: block; }
+.form-lbl em { color: #ef4444; font-style: normal; margin-left: 2px; }
+.form-sel, .vt-input { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 10px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; background: white; width: 100%; transition: border-color .15s; }
+.form-sel:focus, .vt-input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.form-sel.err { border-color: #ef4444; }
+/* toggle */
+.toggle-group { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+.toggle-wrap { display: flex; align-items: center; gap: 8px; padding: 7px 0; }
+.toggle-lbl { font-size: 12.5px; font-weight: 600; color: #15803d; min-width: 100px; }
+.toggle-lbl.off { color: var(--gray-400); }
+.toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; cursor: pointer; transition: .2s; }
+.toggle-slider:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: .2s; }
+.toggle input:checked + .toggle-slider { background: var(--purple); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+/* variant rows */
+.vt-section-title { font-size: 11px; font-weight: 700; color: var(--gray-500); letter-spacing: .6px; text-transform: uppercase; margin-bottom: 8px; }
+.vt-rows-hdr { display: grid; grid-template-columns: 1.6fr 1.2fr .8fr .9fr 28px; gap: 6px; padding: 0 0 4px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; }
+.vt-rows-hdr span { font-size: 10.5px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .4px; }
+.vt-row-item { display: grid; grid-template-columns: 1.6fr 1.2fr .8fr .9fr 28px; gap: 6px; margin-bottom: 6px; align-items: center; }
+.vt-unit-sel { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 6px; font-family: inherit; font-size: 12px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s; width: 100%; }
+.vt-unit-sel:focus { border-color: var(--purple); }
+.btn-del-row { width: 26px; height: 26px; border: 1.5px solid #fca5a5; background: #fff1f2; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 15px; font-weight: 700; flex-shrink: 0; transition: all .15s; line-height: 1; }
+.btn-del-row:hover { background: #fee2e2; border-color: #ef4444; }
+.btn-add-row { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; background: transparent; border: 1.5px dashed #a78bfa; border-radius: 8px; padding: 7px 14px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--purple); cursor: pointer; transition: all .15s; }
+.btn-add-row:hover { background: var(--purple-pale); border-style: solid; }
+.modal-ftr { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 20px 16px; border-top: 1px solid var(--gray-100); flex-shrink: 0; }
+.btn-cancel-m { padding: 8px 18px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all .15s; }
+.btn-cancel-m:hover { border-color: var(--gray-400); color: var(--gray-700); }
+.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; }
+.btn-save-m:hover { background: #6d28d9; }
+/* confirm dialog */
+.confirm-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.5); z-index: 400; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.confirm-backdrop.open { opacity: 1; pointer-events: all; }
+.confirm-box { background: white; border-radius: 12px; padding: 24px; max-width: 340px; width: 100%; box-shadow: 0 12px 40px rgba(0,0,0,.2); }
+.confirm-box p { font-size: 14px; font-weight: 600; color: var(--gray-900); margin-bottom: 6px; }
+.confirm-box small { font-size: 12.5px; color: var(--gray-500); }
+.confirm-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.btn-confirm-cancel { padding: 7px 16px; border: 1.5px solid var(--gray-200); border-radius: 7px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; }
+.btn-confirm-del { padding: 7px 16px; border: none; border-radius: 7px; background: #ef4444; font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; }
+.btn-confirm-del:hover { background: #dc2626; }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-info">
+      <strong>NexLify</strong>
+      <small>Hệ thống quản lý bán hàng</small>
+    </div>
+  </div>
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Tổng Quan
+  </a>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Báo Giá
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </a>
+    <a class="nav-item" href="customers.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Khách Hàng
+    </a>
+  </div>
+  <div class="nav-item nav-parent open" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub open">
+    <a class="nav-item" href="products.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản Phẩm
+    </a>
+    <a class="nav-item" href="categories.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Danh Mục Sản Phẩm
+    </a>
+    <a class="nav-item active" href="variants.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Biến Thể Sản Phẩm
+    </a>
+    <a class="nav-item" href="pricing.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Bảng Giá
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      Khuyến Mãi
+    </a>
+  </div>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Hóa Đơn
+  </a>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Báo Cáo
+  </a>
+</aside>
+
+<!-- ── TOPBAR ── -->
+<header class="topbar">
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">Biến Thể Sản Phẩm</div>
+    <button class="btn-primary" onclick="openAddModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Thêm Biến Thể
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Tìm tên sản phẩm, mã SP..." oninput="filterTable()" />
+    </div>
+    <select class="filter-select" id="brandFilter" onchange="filterTable()">
+      <option value="">Thương hiệu: Tất cả</option>
+      <option value="datxanh">Đất Xanh</option>
+      <option value="songma">Song Mã</option>
+      <option value="daungu">Đầu Ngựa</option>
+    </select>
+    <select class="filter-select" id="unitFilter" onchange="filterTable()">
+      <option value="">Đơn vị: Tất cả</option>
+      <option value="bao">Bao</option>
+      <option value="tấn">Tấn</option>
+    </select>
+    <div class="filter-count">Hiển thị <span id="countShow">30</span> / <span id="countTotal">30</span> sản phẩm</div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="vt-table">
+      <thead>
+        <tr>
+          <th>Sản Phẩm</th>
+          <th>Thương Hiệu</th>
+          <th>Danh Mục</th>
+          <th>Các Biến Thể (Quy Cách)</th>
+          <th>Trạng Thái</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+      <tbody id="vtBody">
+
+        <!-- ĐẤT XANH -->
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">NPK 16-16-16</div><div class="prod-code">S0001</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">380.000đ</span><span class="vt-sep">·</span><span class="vt-qty">150 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">195.000đ</span><span class="vt-sep">·</span><span class="vt-qty">80 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">8.000đ</span><span class="vt-sep">·</span><span class="vt-qty">60 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">NPK 17-16-8</div><div class="prod-code">S0002</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">420.000đ</span><span class="vt-sep">·</span><span class="vt-qty">80 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">210.000đ</span><span class="vt-sep">·</span><span class="vt-qty">40 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Hữu cơ Vi sinh cao cấp</div><div class="prod-code">S0003</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">295.000đ</span><span class="vt-sep">·</span><span class="vt-qty">45 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Thùng 5kg</span><span class="vt-price">62.000đ</span><span class="vt-sep">·</span><span class="vt-qty">30 Thùng</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="datxanh" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Khoáng cao cấp 20-20-15+Bo+TE</div><div class="prod-code">S0004</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">350.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">14.000.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Lân Canxi Đất Xanh</div><div class="prod-code">S0005</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">195.000đ</span><span class="vt-sep">·</span><span class="vt-qty">200 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">98.000đ</span><span class="vt-sep">·</span><span class="vt-qty">90 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Vôi Lân Đất Xanh</div><div class="prod-code">S0006</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">210.000đ</span><span class="vt-sep">·</span><span class="vt-qty">30 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">106.000đ</span><span class="vt-sep">·</span><span class="vt-qty">15 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Lúa 1</div><div class="prod-code">S0007</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">430.000đ</span><span class="vt-sep">·</span><span class="vt-qty">120 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">216.000đ</span><span class="vt-sep">·</span><span class="vt-qty">60 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Lúa 2</div><div class="prod-code">S0008</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">430.000đ</span><span class="vt-sep">·</span><span class="vt-qty">25 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">216.000đ</span><span class="vt-sep">·</span><span class="vt-qty">12 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="datxanh" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên dùng cho Chuối</div><div class="prod-code">S0009</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">460.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">18.400.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="datxanh" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Đất Xanh Trung Vi Lượng</div><div class="prod-code">S0010</div></div></div></td>
+          <td><span class="badge-brand brd-dx">Đất Xanh</span></td>
+          <td><span class="cat-label">Trung Vi Lượng</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">380.000đ</span><span class="vt-sep">·</span><span class="vt-qty">60 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">16.000đ</span><span class="vt-sep">·</span><span class="vt-qty">40 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <!-- SONG MÃ -->
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">NPK 18-8-18+Bo+TE</div><div class="prod-code">S0011</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">410.000đ</span><span class="vt-sep">·</span><span class="vt-qty">90 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">206.000đ</span><span class="vt-sep">·</span><span class="vt-qty">50 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">8.500đ</span><span class="vt-sep">·</span><span class="vt-qty">60 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">NPK Mùa Khô 21-5-2</div><div class="prod-code">S0012</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">390.000đ</span><span class="vt-sep">·</span><span class="vt-qty">40 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">196.000đ</span><span class="vt-sep">·</span><span class="vt-qty">20 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Hữu cơ khoáng 16-16-8+Bo+TE</div><div class="prod-code">S0013</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">320.000đ</span><span class="vt-sep">·</span><span class="vt-qty">75 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">12.800.000đ</span><span class="vt-sep">·</span><span class="vt-qty">2 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Hữu cơ Vi sinh Song Mã</div><div class="prod-code">S0014</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">280.000đ</span><span class="vt-sep">·</span><span class="vt-qty">15 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Thùng 5kg</span><span class="vt-price">58.000đ</span><span class="vt-sep">·</span><span class="vt-qty">8 Thùng</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Lân Canxi Song Mã</div><div class="prod-code">S0015</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">200.000đ</span><span class="vt-sep">·</span><span class="vt-qty">180 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">100.000đ</span><span class="vt-sep">·</span><span class="vt-qty">90 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Vôi Lân Song Mã</div><div class="prod-code">S0016</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">185.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">93.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cà phê – Tiêu</div><div class="prod-code">S0017</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">450.000đ</span><span class="vt-sep">·</span><span class="vt-qty">55 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">18.000.000đ</span><span class="vt-sep">·</span><span class="vt-qty">1 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cao su</div><div class="prod-code">S0018</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">440.000đ</span><span class="vt-sep">·</span><span class="vt-qty">35 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">221.000đ</span><span class="vt-sep">·</span><span class="vt-qty">18 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cây ăn trái &amp; Rau màu</div><div class="prod-code">S0019</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">460.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">231.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="songma" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Trung vi lượng – Humic</div><div class="prod-code">S0020</div></div></div></td>
+          <td><span class="badge-brand brd-sm">Song Mã</span></td>
+          <td><span class="cat-label">Trung Vi Lượng</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">310.000đ</span><span class="vt-sep">·</span><span class="vt-qty">10 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">13.000đ</span><span class="vt-sep">·</span><span class="vt-qty">5 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <!-- ĐẦU NGỰA -->
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Cao cấp NPK 16-16-16+Bo+TE</div><div class="prod-code">S0021</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">400.000đ</span><span class="vt-sep">·</span><span class="vt-qty">100 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">200.000đ</span><span class="vt-sep">·</span><span class="vt-qty">50 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">NPK 18-8-18</div><div class="prod-code">S0022</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Phân NPK</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">415.000đ</span><span class="vt-sep">·</span><span class="vt-qty">48 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">208.000đ</span><span class="vt-sep">·</span><span class="vt-qty">25 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="daungu" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Hữu cơ khoáng 20-22-15+Bo+TE</div><div class="prod-code">S0023</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">360.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">14.400.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Khoáng hữu cơ 17-7-17+Bo+TE</div><div class="prod-code">S0024</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Phân Hữu Cơ</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">340.000đ</span><span class="vt-sep">·</span><span class="vt-qty">70 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Thùng 5kg</span><span class="vt-price">70.000đ</span><span class="vt-sep">·</span><span class="vt-qty">35 Thùng</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Lân Canxi Đầu Ngựa</div><div class="prod-code">S0025</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">205.000đ</span><span class="vt-sep">·</span><span class="vt-qty">22 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">103.000đ</span><span class="vt-sep">·</span><span class="vt-qty">10 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Vôi Lân Đầu Ngựa</div><div class="prod-code">S0026</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Lân – Kali</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">190.000đ</span><span class="vt-sep">·</span><span class="vt-qty">160 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">96.000đ</span><span class="vt-sep">·</span><span class="vt-qty">75 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao tấn">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cà phê &amp; Hồ tiêu</div><div class="prod-code">S0027</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">455.000đ</span><span class="vt-sep">·</span><span class="vt-qty">5 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Tấn</span><span class="vt-price">18.200.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Tấn</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr class="inactive" data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cao su Đầu Ngựa</div><div class="prod-code">S0028</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">445.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">223.000đ</span><span class="vt-sep">·</span><span class="vt-qty zero">0 Bao</span></span>
+          </div></td>
+          <td><span class="status-badge status-inactive"><span class="status-dot"></span>Ngưng sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Chuyên Cây ăn trái Lớn trái</div><div class="prod-code">S0029</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Chuyên Dùng Theo Cây</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 50kg</span><span class="vt-price">465.000đ</span><span class="vt-sep">·</span><span class="vt-qty">85 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">233.000đ</span><span class="vt-sep">·</span><span class="vt-qty">40 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">9.700đ</span><span class="vt-sep">·</span><span class="vt-qty">60 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+        <tr data-brand="daungu" data-units="bao">
+          <td><div class="prod-cell"><div><div class="prod-name">Khoáng hữu cơ 20-10-20+Bo+TE</div><div class="prod-code">S0030</div></div></div></td>
+          <td><span class="badge-brand brd-dn">Đầu Ngựa</span></td>
+          <td><span class="cat-label">Trung Vi Lượng</span></td>
+          <td><div class="vt-chips">
+            <span class="vt-chip"><span class="vt-size">Bao 25kg</span><span class="vt-price">330.000đ</span><span class="vt-sep">·</span><span class="vt-qty">33 Bao</span></span>
+            <span class="vt-chip"><span class="vt-size">Túi 1kg</span><span class="vt-price">14.000đ</span><span class="vt-sep">·</span><span class="vt-qty">20 Túi</span></span>
+          </div></td>
+          <td><span class="status-badge status-active"><span class="status-dot"></span>Đang sử dụng</span></td>
+          <td><div class="action-cell"><button class="act-btn" onclick="openEditModal(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+function toggleNav(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+function norm(str) {
+  return str.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().trim();
+}
+
+function filterTable() {
+  const search = norm(document.getElementById('searchInput').value);
+  const brand  = document.getElementById('brandFilter').value;
+  const unit   = document.getElementById('unitFilter').value.toLowerCase();
+  const rows   = document.querySelectorAll('#vtBody tr');
+  let visible  = 0;
+
+  rows.forEach(row => {
+    const name      = norm(row.querySelector('.prod-name')?.textContent || '');
+    const code      = norm(row.querySelector('.prod-code')?.textContent || '');
+    const variants  = [...row.querySelectorAll('.vt-size')].map(el => norm(el.textContent)).join(' ');
+    const rowBrand  = row.dataset.brand || '';
+    const rowUnits  = (row.dataset.units || '').toLowerCase();
+
+    const matchSearch = !search || name.includes(search) || code.includes(search) || variants.includes(search);
+    const matchBrand  = !brand  || rowBrand === brand;
+    const matchUnit   = !unit   || rowUnits.includes(unit);
+
+    if (matchSearch && matchBrand && matchUnit) {
+      row.style.display = ''; visible++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  document.getElementById('countShow').textContent  = visible;
+  document.getElementById('countTotal').textContent = rows.length;
+}
+
+filterTable();
+
+/* ── MODAL LOGIC ── */
+const PRODUCTS = [
+  {code:'S0001',name:'NPK 16-16-16'},{code:'S0002',name:'NPK 17-16-8'},
+  {code:'S0003',name:'Hữu cơ Vi sinh cao cấp'},{code:'S0004',name:'Khoáng cao cấp 20-20-15+Bo+TE'},
+  {code:'S0005',name:'Lân Canxi Đất Xanh'},{code:'S0006',name:'Vôi Lân Đất Xanh'},
+  {code:'S0007',name:'Chuyên Lúa 1'},{code:'S0008',name:'Chuyên Lúa 2'},
+  {code:'S0009',name:'Chuyên dùng cho Chuối'},{code:'S0010',name:'Đất Xanh Trung Vi Lượng'},
+  {code:'S0011',name:'NPK 18-8-18+Bo+TE'},{code:'S0012',name:'NPK Mùa Khô 21-5-2'},
+  {code:'S0013',name:'Hữu cơ khoáng 16-16-8+Bo+TE'},{code:'S0014',name:'Hữu cơ Vi sinh Song Mã'},
+  {code:'S0015',name:'Lân Canxi Song Mã'},{code:'S0016',name:'Vôi Lân Song Mã'},
+  {code:'S0017',name:'Chuyên Cà phê – Tiêu'},{code:'S0018',name:'Chuyên Cao su'},
+  {code:'S0019',name:'Chuyên Cây ăn trái & Rau màu'},{code:'S0020',name:'Trung vi lượng – Humic'},
+  {code:'S0021',name:'Cao cấp NPK 16-16-16+Bo+TE'},{code:'S0022',name:'NPK 18-8-18'},
+  {code:'S0023',name:'Hữu cơ khoáng 20-22-15+Bo+TE'},{code:'S0024',name:'Khoáng hữu cơ 17-7-17+Bo+TE'},
+  {code:'S0025',name:'Lân Canxi Đầu Ngựa'},{code:'S0026',name:'Vôi Lân Đầu Ngựa'},
+  {code:'S0027',name:'Chuyên Cà phê & Hồ tiêu'},{code:'S0028',name:'Chuyên Cao su Đầu Ngựa'},
+  {code:'S0029',name:'Chuyên Cây ăn trái Lớn trái'},{code:'S0030',name:'Khoáng hữu cơ 20-10-20+Bo+TE'}
+];
+
+let pendingDeleteBtn = null;
+let isEditMode = false;
+
+function buildProductOptions(selected) {
+  const opts = PRODUCTS.map(p =>
+    `<option value="${p.code}" ${selected === p.code ? 'selected' : ''}>${p.code} – ${p.name}</option>`
+  ).join('');
+  return `<option value="">– Chọn sản phẩm –</option>${opts}`;
+}
+
+function makeVtRow(name='', price='', qty=0, unit='Bao') {
+  const units = ['Bao','Kg','Tấn','Thùng','Túi'].map(u => `<option ${u===unit?'selected':''}>${u}</option>`).join('');
+  return `<div class="vt-row-item">
+    <input type="text" class="vt-input" placeholder="VD: Bao 50kg" value="${name}" />
+    <input type="number" class="vt-input" placeholder="VD: 625000" value="${price}" min="0" />
+    <input type="number" class="vt-input" value="${qty}" min="0" />
+    <select class="vt-unit-sel">${units}</select>
+    <button class="btn-del-row" onclick="confirmDelRow(this)" title="Xoá biến thể">×</button>
+  </div>`;
+}
+
+function openAddModal() {
+  isEditMode = false;
+  document.getElementById('modalTitle').textContent = 'Thêm biến thể sản phẩm';
+  document.getElementById('vtProduct').innerHTML = buildProductOptions('');
+  document.getElementById('vtProduct').classList.remove('err');
+  document.getElementById('vtStatus').checked = true;
+  updateStatusLabel();
+  document.getElementById('vtRowsList').innerHTML = makeVtRow() + makeVtRow();
+  document.getElementById('vtModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openEditModal(btn) {
+  isEditMode = true;
+  const row = btn.closest('tr');
+  const code = row.querySelector('.prod-code')?.textContent || '';
+  const isActive = row.querySelector('.status-active') !== null;
+
+  document.getElementById('modalTitle').textContent = 'Chỉnh sửa biến thể sản phẩm';
+  document.getElementById('vtProduct').innerHTML = buildProductOptions(code);
+  document.getElementById('vtProduct').classList.remove('err');
+  document.getElementById('vtStatus').checked = isActive;
+  updateStatusLabel();
+
+  const chips = row.querySelectorAll('.vt-chip');
+  let html = '';
+  chips.forEach(chip => {
+    const name  = chip.querySelector('.vt-size')?.textContent || '';
+    const price = (chip.querySelector('.vt-price')?.textContent || '').replace(/[^\d]/g,'');
+    const qtyTxt= chip.querySelector('.vt-qty')?.textContent || '0';
+    const qty   = parseInt(qtyTxt) || 0;
+    const unitMatch = qtyTxt.match(/(Bao|Kg|Tấn|Thùng|Túi)/i);
+    const unit  = unitMatch ? unitMatch[1] : 'Bao';
+    html += makeVtRow(name, price, qty, unit);
+  });
+  document.getElementById('vtRowsList').innerHTML = html || makeVtRow();
+  document.getElementById('vtModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVtModal() {
+  document.getElementById('vtModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateStatusLabel() {
+  const on = document.getElementById('vtStatus').checked;
+  const lbl = document.getElementById('statusLabel');
+  lbl.textContent = on ? 'Đang sử dụng' : 'Ngưng sử dụng';
+  lbl.className = 'toggle-lbl' + (on ? '' : ' off');
+}
+
+function addVtRow() {
+  document.getElementById('vtRowsList').insertAdjacentHTML('beforeend', makeVtRow());
+}
+
+function confirmDelRow(btn) {
+  const rows = document.querySelectorAll('#vtRowsList .vt-row-item');
+  if (rows.length <= 1) return;
+  pendingDeleteBtn = btn;
+  document.getElementById('confirmDlg').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmDlg').classList.remove('open');
+  pendingDeleteBtn = null;
+}
+
+function doDeleteRow() {
+  if (pendingDeleteBtn) {
+    pendingDeleteBtn.closest('.vt-row-item').remove();
+    pendingDeleteBtn = null;
+  }
+  closeConfirm();
+}
+
+function saveVtModal() {
+  const sel = document.getElementById('vtProduct');
+  if (!sel.value) { sel.classList.add('err'); sel.focus(); return; }
+  sel.classList.remove('err');
+  const prodName = sel.options[sel.selectedIndex].text;
+  closeVtModal();
+  showToast(isEditMode
+    ? `Đã cập nhật biến thể "${prodName}" thành công`
+    : `Đã thêm biến thể "${prodName}" thành công`);
+}
+
+function showToast(msg) {
+  let t = document.getElementById('vtToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'vtToast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:600;background:#1e293b;color:white;border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.22);transition:all .3s;opacity:0;transform:translateY(60px)';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  requestAnimationFrame(() => { t.style.opacity='1'; t.style.transform='translateY(0)'; });
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(60px)'; }, 3000);
+}
+</script>
+
+<!-- ── MODAL BIẾN THỂ ── -->
+<div class="modal-backdrop" id="vtModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3 id="modalTitle">Thêm biến thể sản phẩm</h3>
+      <button class="modal-x" onclick="closeVtModal()">×</button>
+    </div>
+    <div class="modal-bdy">
+      <div class="modal-top-row">
+        <div class="fg-prod">
+          <label class="form-lbl">Sản phẩm <em>*</em></label>
+          <select class="form-sel" id="vtProduct"></select>
+        </div>
+        <div class="toggle-group">
+          <label class="form-lbl">Trạng thái</label>
+          <div class="toggle-wrap">
+            <span class="toggle-lbl" id="statusLabel">Đang sử dụng</span>
+            <label class="toggle">
+              <input type="checkbox" id="vtStatus" checked onchange="updateStatusLabel()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="vt-section-title">Danh sách biến thể (Quy cách đóng gói)</div>
+      <div class="vt-rows-hdr">
+        <span>Tên biến thể</span><span>Giá bán (₫)</span><span>Tồn kho</span><span>Đơn vị</span><span></span>
+      </div>
+      <div id="vtRowsList"></div>
+      <button class="btn-add-row" onclick="addVtRow()">+ Thêm quy cách</button>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel-m" onclick="closeVtModal()">Huỷ</button>
+      <button class="btn-save-m" onclick="saveVtModal()">Lưu biến thể</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIRM XOÁ ── -->
+<div class="confirm-backdrop" id="confirmDlg">
+  <div class="confirm-box">
+    <p>Xoá biến thể này?</p>
+    <small>Hành động này không thể hoàn tác.</small>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" onclick="closeConfirm()">Huỷ</button>
+      <button class="btn-confirm-del" onclick="doDeleteRow()">Xoá</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

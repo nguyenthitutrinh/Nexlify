@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Đăng ký</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #3b82f6;
+  --blue-dark: #2563eb;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #0f172a;
+  --white: #ffffff;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+}
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: #f0f4f8;
+  color: var(--gray-900);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  padding: 24px 16px;
+}
+
+/* ── CARD ── */
+.register-card {
+  background: var(--white);
+  border: 1px solid #e8edf2;
+  border-radius: 20px;
+  padding: 40px 44px 36px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
+}
+
+/* ── LOGO ── */
+.logo-wrap { text-align: center; margin-bottom: 24px; }
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px; font-weight: 700;
+  letter-spacing: 1px; line-height: 1.2;
+  background: linear-gradient(135deg, #e879f9 0%, #818cf8 50%, #38bdf8 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.logo-sub {
+  font-size: 12px; color: var(--gray-400);
+  font-weight: 400; margin-top: 6px; letter-spacing: .3px;
+}
+
+/* divider */
+.logo-divider {
+  height: 1px; background: var(--gray-200); margin: 20px 0;
+}
+
+/* tiêu đề */
+.card-title {
+  font-size: 18px; font-weight: 700;
+  color: var(--gray-900); text-align: center; margin-bottom: 4px;
+}
+.card-subtitle {
+  font-size: 12.5px; color: var(--gray-400);
+  text-align: center; margin-bottom: 22px;
+}
+
+/* ── FORM ── */
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block; font-size: 12.5px; font-weight: 600;
+  color: var(--gray-700); margin-bottom: 6px;
+}
+.form-label span { color: var(--danger); margin-left: 2px; }
+.form-hint {
+  font-size: 11px; color: var(--gray-400); margin-top: 4px;
+}
+
+.input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  padding: 0 14px; background: var(--white);
+  transition: border-color .15s, box-shadow .15s;
+}
+.input-wrap:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+}
+.input-wrap.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239,68,68,.10);
+}
+.input-wrap.success {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.10);
+}
+.input-wrap svg.field-icon {
+  width: 15px; height: 15px; color: var(--gray-300); flex-shrink: 0;
+}
+.input-wrap input {
+  border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 13px; color: var(--gray-900);
+  width: 100%; padding: 11px 0;
+}
+.input-wrap input::placeholder { color: var(--gray-300); }
+
+/* input không có icon (họ, tên) */
+.input-plain {
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  padding: 11px 14px; background: var(--white); width: 100%;
+  font-family: inherit; font-size: 13px; color: var(--gray-900);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.input-plain::placeholder { color: var(--gray-300); }
+.input-plain:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+}
+.input-plain.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239,68,68,.10);
+}
+
+.toggle-pw {
+  background: none; border: none; cursor: pointer;
+  color: var(--gray-300); padding: 0; display: flex; align-items: center;
+  transition: color .15s; flex-shrink: 0;
+}
+.toggle-pw:hover { color: var(--blue); }
+.toggle-pw svg { width: 15px; height: 15px; }
+
+.field-error {
+  font-size: 11.5px; color: var(--danger); margin-top: 5px;
+  display: none; align-items: center; gap: 4px;
+}
+.field-error.show { display: flex; }
+.field-error svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* checkbox đồng ý */
+.agree-wrap {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 16px 0 20px;
+}
+.agree-wrap input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--blue);
+  cursor: pointer; flex-shrink: 0; margin-top: 1px;
+}
+.agree-wrap label {
+  font-size: 12.5px; color: var(--gray-500); cursor: pointer; line-height: 1.5;
+}
+.agree-wrap label a {
+  color: var(--blue); font-weight: 600; text-decoration: none;
+}
+.agree-wrap label a:hover { text-decoration: underline; }
+.agree-error {
+  font-size: 11.5px; color: var(--danger); margin-top: -12px;
+  margin-bottom: 12px; display: none; align-items: center; gap: 4px;
+}
+.agree-error.show { display: flex; }
+.agree-error svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* alert */
+.alert {
+  display: none; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 9px;
+  font-size: 12.5px; font-weight: 500; margin-bottom: 16px;
+}
+.alert.show { display: flex; }
+.alert svg { width: 14px; height: 14px; flex-shrink: 0; }
+.alert-error  { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
+.alert-success { background: var(--success-light); color: var(--success); border: 1px solid #bbf7d0; }
+
+/* nút */
+.btn-register {
+  width: 100%; padding: 13px;
+  background: var(--blue); color: white; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: background .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-register:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-register:active { transform: translateY(0); }
+.btn-register:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+.btn-register .spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white; border-radius: 50%;
+  animation: spin .7s linear infinite; display: none;
+}
+.btn-register.loading .spinner { display: block; }
+.btn-register.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* login row */
+.login-row {
+  text-align: center; font-size: 12.5px;
+  color: var(--gray-400); margin-top: 18px;
+}
+.login-row a {
+  color: var(--blue); font-weight: 700;
+  text-decoration: none; transition: opacity .15s;
+}
+.login-row a:hover { opacity: .75; }
+
+/* success screen */
+.success-screen { display: none; text-align: center; padding: 8px 0; }
+.success-screen.show { display: block; }
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #dcfce7; display: flex; align-items: center; justify-content: center;
+  margin: 8px auto 20px;
+}
+.success-icon svg { width: 30px; height: 30px; color: #16a34a; }
+.success-title { font-size: 18px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.success-desc { font-size: 12.5px; color: var(--gray-500); line-height: 1.6; margin-bottom: 28px; }
+.btn-to-login {
+  width: 100%; padding: 13px;
+  background: var(--blue); color: white; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.btn-to-login:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-to-login:active { transform: translateY(0); }
+
+</style>
+</head>
+<body>
+
+<div class="register-card">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-text">NexLify</div>
+    <div class="logo-sub">Hệ thống quản lý bán hàng</div>
+  </div>
+
+  <div class="logo-divider"></div>
+
+  <!-- Alert -->
+  <div class="alert alert-error" id="alertBox">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span id="alertMsg"></span>
+  </div>
+
+  <form id="registerForm" novalidate>
+
+    <!-- Họ + Tên -->
+    <div class="row-2">
+      <div class="form-group">
+        <label class="form-label" for="firstName">Họ <span>*</span></label>
+        <input type="text" class="input-plain" id="firstName" placeholder="Nhập họ" />
+        <div class="field-error" id="errFirstName">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Vui lòng nhập họ
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="lastName">Tên <span>*</span></label>
+        <input type="text" class="input-plain" id="lastName" placeholder="Nhập tên" />
+        <div class="field-error" id="errLastName">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Vui lòng nhập tên
+        </div>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label" for="email">Email <span>*</span></label>
+      <div class="input-wrap" id="wrapEmail">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <input type="email" id="email" placeholder="Nhập email của bạn" autocomplete="email" />
+      </div>
+      <div class="field-error" id="errEmail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Vui lòng nhập email hợp lệ
+      </div>
+    </div>
+
+    <!-- Số điện thoại -->
+    <div class="form-group">
+      <label class="form-label" for="phone">Số điện thoại <span>*</span></label>
+      <div class="input-wrap" id="wrapPhone">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.64 3.4 2 2 0 0 1 3.62 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.27 6.27l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <input type="tel" id="phone" placeholder="Nhập số điện thoại" />
+      </div>
+      <div class="field-error" id="errPhone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Vui lòng nhập số điện thoại
+      </div>
+    </div>
+
+    <!-- Mật khẩu -->
+    <div class="form-group">
+      <label class="form-label" for="password">Mật khẩu <span>*</span></label>
+      <div class="input-wrap" id="wrapPassword">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input type="password" id="password" placeholder="Tạo mật khẩu" />
+        <button type="button" class="toggle-pw" onclick="togglePass('password','eye1')">
+          <svg id="eye1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <div class="form-hint">Tối thiểu 8 ký tự</div>
+      <div class="field-error" id="errPassword">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Mật khẩu phải có ít nhất 8 ký tự
+      </div>
+    </div>
+
+    <!-- Xác nhận mật khẩu -->
+    <div class="form-group">
+      <label class="form-label" for="confirmPassword">Xác nhận mật khẩu <span>*</span></label>
+      <div class="input-wrap" id="wrapConfirm">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" />
+        <button type="button" class="toggle-pw" onclick="togglePass('confirmPassword','eye2')">
+          <svg id="eye2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <div class="field-error" id="errConfirm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Mật khẩu xác nhận không khớp
+      </div>
+    </div>
+
+    <!-- Đồng ý điều khoản -->
+    <div class="agree-wrap">
+      <input type="checkbox" id="agreeTerms" />
+      <label for="agreeTerms">
+        Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>
+      </label>
+    </div>
+    <div class="agree-error" id="errAgree">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Vui lòng đồng ý với điều khoản để tiếp tục
+    </div>
+
+    <!-- Nút đăng ký -->
+    <button type="submit" class="btn-register" id="btnRegister">
+      <div class="spinner"></div>
+      <span class="btn-text">Đăng ký</span>
+    </button>
+
+  </form>
+
+  <div class="login-row" id="loginRow">
+    Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+  </div>
+
+  <!-- Màn đăng ký thành công -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="success-title">Đăng ký thành công!</div>
+    <div class="success-desc">Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập ngay bây giờ.</div>
+    <button class="btn-to-login" onclick="window.location.href='login.html'">Đăng nhập ngay</button>
+  </div>
+
+</div>
+
+
+<script>
+const eyeOpen = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+const eyeOff  = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+function togglePass(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  ico.innerHTML = isHidden ? eyeOff : eyeOpen;
+}
+
+// ── HELPER ──
+function setError(id, errId, show, isPlain) {
+  const el = document.getElementById(id);
+  el.classList.toggle('error', show);
+  document.getElementById(errId).classList.toggle('show', show);
+}
+function setWrapError(wrapId, errId, show) {
+  document.getElementById(wrapId).classList.toggle('error', show);
+  document.getElementById(errId).classList.toggle('show', show);
+}
+function clearAll() {
+  ['firstName','lastName'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+  ['errFirstName','errLastName','errEmail','errPhone','errPassword','errConfirm','errAgree'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+  });
+  ['wrapEmail','wrapPhone','wrapPassword','wrapConfirm'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+  const alertBox = document.getElementById('alertBox');
+  alertBox.className = 'alert alert-error';
+}
+
+// xóa lỗi khi gõ
+document.getElementById('firstName').addEventListener('input', () => { document.getElementById('firstName').classList.remove('error'); document.getElementById('errFirstName').classList.remove('show'); });
+document.getElementById('lastName').addEventListener('input',  () => { document.getElementById('lastName').classList.remove('error');  document.getElementById('errLastName').classList.remove('show'); });
+document.getElementById('email').addEventListener('input',     () => setWrapError('wrapEmail',    'errEmail',    false));
+document.getElementById('phone').addEventListener('input',     () => setWrapError('wrapPhone',    'errPhone',    false));
+document.getElementById('password').addEventListener('input',  () => setWrapError('wrapPassword', 'errPassword', false));
+document.getElementById('confirmPassword').addEventListener('input', () => setWrapError('wrapConfirm', 'errConfirm', false));
+
+// ── SUBMIT ──
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearAll();
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName  = document.getElementById('lastName').value.trim();
+  const email     = document.getElementById('email').value.trim();
+  const phone     = document.getElementById('phone').value.trim();
+  const password  = document.getElementById('password').value;
+  const confirm   = document.getElementById('confirmPassword').value;
+  const agreed    = document.getElementById('agreeTerms').checked;
+  let valid = true;
+
+  if (!firstName) { document.getElementById('firstName').classList.add('error'); document.getElementById('errFirstName').classList.add('show'); valid = false; }
+  if (!lastName)  { document.getElementById('lastName').classList.add('error');  document.getElementById('errLastName').classList.add('show');  valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setWrapError('wrapEmail', 'errEmail', true); valid = false; }
+  if (!phone)     { setWrapError('wrapPhone', 'errPhone', true); valid = false; }
+  if (password.length < 8) { setWrapError('wrapPassword', 'errPassword', true); valid = false; }
+  if (confirm !== password) { setWrapError('wrapConfirm', 'errConfirm', true); valid = false; }
+  if (!agreed) { document.getElementById('errAgree').classList.add('show'); valid = false; }
+  if (!valid) return;
+
+  // Loading
+  const btn = document.getElementById('btnRegister');
+  btn.classList.add('loading'); btn.disabled = true;
+  await new Promise(r => setTimeout(r, 1200));
+  btn.classList.remove('loading'); btn.disabled = false;
+
+  // Hiện màn thành công
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('loginRow').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+});
+</script>
+</body>
+</html>
