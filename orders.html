@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Đơn Hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px; --topbar-h: 52px;
+  --blue: #3b82f6; --blue-light: #dbeafe; --blue-pale: #eff6ff;
+  --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155;
+  --gray-900: #0f172a; --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; overflow: hidden; }
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg, #e879f9 0%, #818cf8 50%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover { background: var(--blue-pale); color: var(--blue); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 90; }
+.search-wrap { flex: 1; max-width: 320px; margin: 0 auto; display: flex; align-items: center; gap: 8px; background: var(--gray-100); border-radius: 8px; padding: 6px 12px; color: var(--gray-400); }
+.search-wrap input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-wrap svg { width: 13px; height: 13px; flex-shrink: 0; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; transition: background .15s; position: relative; }
+.notif-btn:hover { background: var(--gray-100); }
+.notif-btn svg { width: 15px; height: 15px; }
+.notif-dot { position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; border: 1.5px solid white; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; transition: background .15s; }
+.profile-btn:hover { background: var(--gray-200); }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 18px 20px; flex: 1; height: calc(100vh - var(--topbar-h)); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+.btn-primary { display: flex; align-items: center; gap: 7px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 9px; padding: 9px 16px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+.btn-primary:hover { opacity: .88; }
+.btn-primary svg { width: 14px; height: 14px; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stat-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.04); display: flex; align-items: center; gap: 12px; }
+.stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-value { font-size: 22px; font-weight: 700; color: var(--gray-900); line-height: 1.1; }
+.stat-label { font-size: 11.5px; color: var(--gray-400); font-weight: 500; margin-top: 2px; }
+.toolbar { display: flex; align-items: center; gap: 10px; }
+.search-bar { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; flex: 1; max-width: 340px; }
+.search-bar input { border: none; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; background: transparent; }
+.search-bar svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; }
+.filter-select { display: flex; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; }
+.filter-select select { border: none; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); background: transparent; cursor: pointer; }
+.toolbar-right { margin-left: auto; font-size: 12px; color: var(--gray-400); }
+.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+table { width: 100%; border-collapse: collapse; }
+thead th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--gray-100); transition: background .12s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--gray-50); }
+tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertical-align: middle; }
+.cb { width: 15px; height: 15px; accent-color: var(--blue); cursor: pointer; }
+.order-id { color: var(--blue); font-weight: 700; text-decoration: none; font-size: 12.5px; }
+.order-id:hover { text-decoration: underline; }
+.customer-name { font-weight: 600; color: var(--gray-900); font-size: 12.5px; }
+.customer-phone { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.amount { font-weight: 700; color: var(--gray-900); white-space: nowrap; }
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+.badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.badge-new      { background: #ede9fe; color: #7c3aed; } .badge-new::before      { background: #7c3aed; }
+.badge-confirm  { background: #dbeafe; color: #1d4ed8; } .badge-confirm::before  { background: #1d4ed8; }
+.badge-shipping { background: #fff7ed; color: #ea580c; } .badge-shipping::before { background: #ea580c; }
+.badge-done     { background: #dcfce7; color: #16a34a; } .badge-done::before     { background: #16a34a; }
+.badge-cancel   { background: #fee2e2; color: #dc2626; } .badge-cancel::before   { background: #dc2626; }
+.pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid var(--gray-100); }
+.page-info { font-size: 12px; color: var(--gray-400); }
+.page-btns { display: flex; gap: 4px; }
+.page-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); font-family: inherit; font-size: 12px; color: var(--gray-500); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .12s; }
+.page-btn:hover { background: var(--gray-100); }
+.page-btn.active { background: var(--blue); color: white; border-color: var(--blue); font-weight: 700; }
+.page-btn svg { width: 12px; height: 12px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-info"><strong>NexLify</strong><small>Hệ thống quản lý bán hàng</small></div></div>
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Tổng Quan
+  </a>
+  <div class="nav-item nav-parent open" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub open">
+    <a class="nav-item" href="quotes.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Báo Giá
+    </a>
+    <a class="nav-item active" href="orders.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng
+    </a>
+    <a class="nav-item" href="customers.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Khách Hàng
+    </a>
+  </div>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub"></div>
+  <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Hóa Đơn</a>
+  <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Báo Cáo</a>
+</aside>
+
+<header class="topbar">
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="Tìm kiếm..." />
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div class="page-title">Đơn Hàng</div>
+    <button class="btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tạo đơn hàng
+    </button>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#eff6ff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      </div>
+      <div><div class="stat-value">30</div><div class="stat-label">Tổng đơn hàng</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#f0fdf4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div><div class="stat-value">18</div><div class="stat-label">Hoàn thành</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fff7ed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div><div class="stat-value">8</div><div class="stat-label">Đang giao</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fefce8">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div><div class="stat-value" style="font-size:17px">2.040.000.000 đ</div><div class="stat-label">Tổng doanh thu</div></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Tìm số ĐH, khách hàng..." />
+    </div>
+    <div class="filter-select">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;color:var(--gray-400)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      <span style="font-size:12.5px;color:var(--gray-500)">Trạng thái:</span>
+      <select id="filterStatus" onchange="filterTable()">
+        <option value="">Tất cả</option>
+        <option value="new">Mới</option>
+        <option value="confirm">Đã xác nhận</option>
+        <option value="shipping">Đang giao</option>
+        <option value="done">Hoàn thành</option>
+        <option value="cancel">Đã hủy</option>
+      </select>
+    </div>
+    <div class="toolbar-right" id="countLabel">Hiển thị 10 / 30 đơn hàng</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" class="cb" id="cbAll" onchange="toggleAll(this)" /></th>
+          <th>Số ĐH</th>
+          <th>Khách Hàng</th>
+          <th>Ngày Tạo</th>
+          <th>Ngày Giao</th>
+          <th>Tổng Tiền</th>
+          <th>Trạng Thái</th>
+          <th>Báo Giá</th>
+        </tr>
+      </thead>
+      <tbody id="orderBody"></tbody>
+    </table>
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">Trang 1 / 3</div>
+      <div class="page-btns">
+        <button class="page-btn" onclick="changePage(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="page-btn active" id="pg1" onclick="goPage(1)">1</button>
+        <button class="page-btn" id="pg2" onclick="goPage(2)">2</button>
+        <button class="page-btn" id="pg3" onclick="goPage(3)">3</button>
+        <button class="page-btn" onclick="changePage(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const orders = [
+  { id:'ĐH-0001', customer:'Cty TNHH VTNN Minh Đức',     phone:'0272 391 456', created:'03/01/2026', delivery:'15/01/2026', amount:'12.500.000 đ', status:'done',     quote:'BG-0001' },
+  { id:'ĐH-0002', customer:'CH VTNN Thành Phát',          phone:'0273 512 890', created:'03/01/2026', delivery:'15/01/2026', amount:'8.750.000 đ',  status:'done',     quote:'BG-0002' },
+  { id:'ĐH-0003', customer:'Nguyễn Văn Hải',              phone:'0909 112 233', created:'04/01/2026', delivery:'16/01/2026', amount:'3.200.000 đ',  status:'done',     quote:'BG-0003' },
+  { id:'ĐH-0004', customer:'ĐL Phân Bón Phúc Nguyên',     phone:'0277 638 124', created:'04/01/2026', delivery:'18/01/2026', amount:'25.600.000 đ', status:'done',     quote:'BG-0004' },
+  { id:'ĐH-0005', customer:'Cty CP VTNN Đồng Bằng',       phone:'0292 741 308', created:'05/01/2026', delivery:'20/01/2026', amount:'6.980.000 đ',  status:'shipping', quote:'BG-0005' },
+  { id:'ĐH-0006', customer:'ĐL Hoàng Gia Nông Sản',       phone:'0270 884 217', created:'05/01/2026', delivery:'20/01/2026', amount:'18.200.000 đ', status:'shipping', quote:'BG-0007' },
+  { id:'ĐH-0007', customer:'Cty TNHH Nông Nghiệp Xanh',  phone:'0283 445 667', created:'06/01/2026', delivery:'22/01/2026', amount:'31.500.000 đ', status:'confirm',  quote:'BG-0009' },
+  { id:'ĐH-0008', customer:'Cty CP Nông Sản Việt',        phone:'0281 667 889', created:'06/01/2026', delivery:'22/01/2026', amount:'22.400.000 đ', status:'confirm',  quote:'BG-0013' },
+  { id:'ĐH-0009', customer:'Trần Minh Tuấn',              phone:'0901 556 778', created:'07/01/2026', delivery:'25/01/2026', amount:'9.100.000 đ',  status:'new',      quote:'' },
+  { id:'ĐH-0010', customer:'ĐL Phân Bón Miền Tây',        phone:'0276 990 112', created:'07/01/2026', delivery:'25/01/2026', amount:'14.750.000 đ', status:'new',      quote:'' },
+  { id:'ĐH-0011', customer:'Nguyễn Thị Lan',              phone:'0912 334 556', created:'08/01/2026', delivery:'26/01/2026', amount:'5.600.000 đ',  status:'done',     quote:'' },
+  { id:'ĐH-0012', customer:'Phạm Văn Bình',               phone:'0908 221 443', created:'08/01/2026', delivery:'26/01/2026', amount:'7.300.000 đ',  status:'cancel',   quote:'' },
+];
+
+const badgeMap = {
+  new:      { cls:'badge-new',      label:'Mới' },
+  confirm:  { cls:'badge-confirm',  label:'Đã xác nhận' },
+  shipping: { cls:'badge-shipping', label:'Đang giao' },
+  done:     { cls:'badge-done',     label:'Hoàn thành' },
+  cancel:   { cls:'badge-cancel',   label:'Đã hủy' },
+};
+
+const PAGE_SIZE = 10;
+let currentPage = 1;
+let filtered = [...orders];
+
+function renderTable() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const rows = filtered.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('orderBody');
+  tbody.innerHTML = rows.map(o => {
+    const b = badgeMap[o.status];
+    const quoteLink = o.quote ? '<a href="quote-detail.html" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:12px">' + o.quote + '</a>' : '<span style="color:var(--gray-400)">—</span>';
+    return '<tr>' +
+      '<td><input type="checkbox" class="cb row-cb" /></td>' +
+      '<td><a class="order-id" href="order-detail.html">' + o.id + '</a></td>' +
+      '<td><div class="customer-name">' + o.customer + '</div><div class="customer-phone">' + o.phone + '</div></td>' +
+      '<td>' + o.created + '</td>' +
+      '<td>' + o.delivery + '</td>' +
+      '<td class="amount">' + o.amount + '</td>' +
+      '<td><span class="badge ' + b.cls + '">' + b.label + '</span></td>' +
+      '<td>' + quoteLink + '</td>' +
+      '</tr>';
+  }).join('');
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  document.getElementById('countLabel').textContent = 'Hiển thị ' + Math.min(PAGE_SIZE, rows.length) + ' / ' + total + ' đơn hàng';
+  document.getElementById('pageInfo').textContent = 'Trang ' + currentPage + ' / ' + totalPages;
+  for (let i = 1; i <= 3; i++) {
+    const btn = document.getElementById('pg' + i);
+    if (btn) { btn.classList.toggle('active', i === currentPage); btn.style.display = i <= totalPages ? '' : 'none'; }
+  }
+}
+
+function filterTable() {
+  const status = document.getElementById('filterStatus').value;
+  filtered = status ? orders.filter(o => o.status === status) : [...orders];
+  currentPage = 1;
+  renderTable();
+}
+
+function changePage(dir) {
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(totalPages, currentPage + dir));
+  renderTable();
+}
+
+function goPage(p) { currentPage = p; renderTable(); }
+
+function toggleAll(cb) { document.querySelectorAll('.row-cb').forEach(c => c.checked = cb.checked); }
+
+function toggleNav(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+renderTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Khuyến Mãi</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px; --topbar-h: 52px;
+  --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
+  --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; overflow-y: auto; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg,#e879f9 0%,#818cf8 50%,#38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover { background: var(--purple-pale); color: var(--purple); }
+.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* TOPBAR */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; z-index: 90; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
+.notif-btn svg { width: 15px; height: 15px; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#a78bfa,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
+.page-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-hdr h1 { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+.page-hdr p { font-size: 12.5px; color: var(--gray-500); margin-top: 2px; }
+
+/* STATS */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; }
+.stat-label { font-size: 11.5px; color: var(--gray-500); font-weight: 500; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 700; color: var(--gray-900); line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+.stat-card.running .stat-value { color: #16a34a; }
+.stat-card.expired .stat-value { color: #d97706; }
+.stat-card.paused .stat-value { color: var(--gray-400); }
+
+/* FILTER */
+.filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-wrap { display: flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; min-width: 240px; }
+.search-wrap:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.search-wrap svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; }
+.search-wrap input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
+.search-wrap input::placeholder { color: var(--gray-400); }
+.filter-sel { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; outline: none; }
+.filter-count { font-size: 12px; color: var(--gray-500); font-weight: 500; margin-left: auto; }
+.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--purple); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.btn-primary:hover { background: #6d28d9; }
+.btn-primary svg { width: 14px; height: 14px; }
+
+/* TABLE */
+.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+.promo-table { width: 100%; border-collapse: collapse; }
+.promo-table th { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-500); letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; }
+.promo-table td { padding: 13px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.promo-table tr:last-child td { border-bottom: none; }
+.promo-table tr:hover td { background: var(--gray-50); }
+.promo-name { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+.promo-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.items-count { font-size: 12.5px; font-weight: 700; color: var(--purple); }
+.date-range { font-size: 12px; color: var(--gray-500); line-height: 1.6; }
+.no-rows { text-align: center; padding: 48px 20px; }
+.no-rows svg { width: 36px; height: 36px; display: block; margin: 0 auto 10px; color: var(--gray-400); }
+.no-rows p { font-size: 13.5px; font-weight: 600; color: var(--gray-500); }
+
+/* TYPE BADGES */
+.type-badge { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.type-coupon  { background: #fce7f3; color: #be185d; }
+.type-bogo    { background: #d1fae5; color: #059669; }
+.type-pct     { background: #dbeafe; color: #1d4ed8; }
+.type-gift    { background: #fef3c7; color: #d97706; }
+.type-direct  { background: #dcfce7; color: #15803d; }
+.type-combo   { background: #ede9fe; color: #7c3aed; }
+
+/* STATUS */
+.status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.status-badge::before { content: '●'; font-size: 8px; }
+.status-running { color: #16a34a; }
+.status-expired { color: #d97706; }
+.status-paused  { color: var(--gray-400); }
+
+/* ACTION BUTTONS */
+.act-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; color: var(--gray-500); display: inline-flex; align-items: center; justify-content: center; transition: all .15s; }
+.act-btn:hover { border-color: var(--purple); color: var(--purple); }
+.act-btn.del:hover { border-color: #ef4444; color: #ef4444; }
+.act-btn.view:hover { border-color: #0ea5e9; color: #0ea5e9; }
+.act-btn svg { width: 13px; height: 13px; }
+
+/* ── MODAL ── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--white); border-radius: 14px; width: 100%; max-width: 560px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(12px); transition: transform .2s; overflow: hidden; }
+.modal-backdrop.open .modal-box { transform: translateY(0); }
+.modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.modal-hdr h3 { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.modal-x { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.modal-x:hover { background: var(--gray-100); }
+.modal-bdy { padding: 18px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+.modal-ftr { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--gray-100); flex-shrink: 0; }
+.btn-cancel-m { padding: 8px 18px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; }
+.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
+.btn-save-m:hover { background: #6d28d9; }
+
+/* FORM */
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.form-lbl em { color: #ef4444; font-style: normal; margin-left: 2px; }
+.form-input, .form-sel { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s; width: 100%; }
+.form-input:focus, .form-sel:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.form-input.err { border-color: #ef4444; }
+.form-textarea { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; background: white; width: 100%; resize: vertical; min-height: 64px; }
+.form-textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.form-hint { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
+
+/* TYPE SELECTOR */
+.section-title { font-size: 10.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 8px; }
+.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.type-card { border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all .15s; background: white; }
+.type-card:hover { border-color: var(--purple); background: var(--purple-pale); }
+.type-card.selected { border-color: var(--purple); background: var(--purple-pale); }
+.type-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.type-card-icon svg { width: 16px; height: 16px; }
+.type-card-info { flex: 1; min-width: 0; }
+.type-card-name { font-size: 12px; font-weight: 700; color: var(--gray-900); }
+.type-card-desc { font-size: 10.5px; color: var(--gray-400); margin-top: 1px; }
+.type-card.selected .type-card-name { color: var(--purple); }
+
+/* CONFIG BOX */
+.config-box { border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px; background: var(--gray-50); }
+.config-box-title { font-size: 11px; font-weight: 700; color: var(--gray-500); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 12px; }
+
+/* TOGGLE */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; }
+.toggle-lbl-wrap { display: flex; flex-direction: column; gap: 2px; }
+.toggle-lbl { font-size: 12.5px; font-weight: 600; color: #16a34a; }
+.toggle-lbl.off { color: var(--gray-400); }
+.toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; cursor: pointer; transition: .2s; }
+.toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: .2s; }
+.toggle input:checked + .toggle-slider { background: var(--purple); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+/* ── DETAIL DRAWER ── */
+.drawer-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.3); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.drawer-backdrop.open { opacity: 1; pointer-events: all; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 380px; background: var(--white); box-shadow: -8px 0 32px rgba(0,0,0,.12); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
+.drawer-backdrop.open .drawer { transform: translateX(0); }
+.drawer-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.drawer-hdr h3 { font-size: 14px; font-weight: 700; color: var(--gray-900); }
+.drawer-hdr-actions { display: flex; align-items: center; gap: 8px; }
+.btn-edit-drawer { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1.5px solid var(--purple); border-radius: 7px; background: white; font-family: inherit; font-size: 12px; font-weight: 600; color: var(--purple); cursor: pointer; }
+.btn-edit-drawer:hover { background: var(--purple-pale); }
+.drawer-x { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.drawer-x:hover { background: var(--gray-100); }
+.drawer-bdy { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+.detail-promo-hdr { display: flex; align-items: center; gap: 12px; }
+.detail-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.detail-icon svg { width: 22px; height: 22px; }
+.detail-name { font-size: 15px; font-weight: 700; color: var(--gray-900); line-height: 1.3; }
+.detail-badges { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+
+.detail-section { display: flex; flex-direction: column; gap: 4px; }
+.detail-section-title { font-size: 10.5px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; margin-bottom: 6px; }
+.detail-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 12.5px; }
+.detail-row:last-child { border-bottom: none; }
+.detail-row-lbl { color: var(--gray-500); font-weight: 500; }
+.detail-row-val { font-weight: 600; color: var(--gray-700); text-align: right; }
+.detail-row-val.purple { color: var(--purple); }
+
+.condition-card { border: 1.5px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+.condition-card-hdr { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+.condition-card-hdr svg { width: 14px; height: 14px; }
+.condition-card-hdr span { font-size: 12.5px; font-weight: 700; }
+.condition-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-bottom: 1px solid var(--gray-100); font-size: 12.5px; }
+.condition-row:last-child { border-bottom: none; }
+.condition-row-lbl { color: var(--gray-500); }
+.condition-row-val { font-weight: 700; color: var(--gray-900); }
+.condition-row-val.red { color: #dc2626; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 600; background: #1e293b; color: white; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 28px rgba(0,0,0,.22); transform: translateY(70px); opacity: 0; transition: all .35s cubic-bezier(.34,1.3,.64,1); pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-info"><strong>NexLify</strong><small>Hệ thống quản lý bán hàng</small></div></div>
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Tổng Quan
+  </a>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="quotes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Báo Giá</a>
+    <a class="nav-item" href="orders.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+  </div>
+  <div class="nav-item nav-parent open" onclick="toggleNav(this)">
+    <span class="nav-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Sản Phẩm</span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub open">
+    <a class="nav-item" href="products.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Sản Phẩm</a>
+    <a class="nav-item" href="categories.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Danh Mục Sản Phẩm</a>
+    <a class="nav-item" href="variants.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Biến Thể Sản Phẩm</a>
+    <a class="nav-item" href="pricing.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Bảng Giá</a>
+    <a class="nav-item active" href="promotions.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Khuyến Mãi</a>
+  </div>
+  <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Hóa Đơn</a>
+  <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Báo Cáo</a>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-right">
+    <button class="notif-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+    <button class="profile-btn"><div class="profile-avatar">A</div><span class="p-name">Admin</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="page-hdr">
+    <div><h1>Khuyến Mãi</h1><p>Quản lý các chương trình khuyến mãi và ưu đãi</p></div>
+    <button class="btn-primary" onclick="openModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Thêm khuyến mãi
+    </button>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Tìm chương trình khuyến mãi..." oninput="renderTable()" />
+    </div>
+    <select class="filter-sel" id="typeFilter" onchange="renderTable()">
+      <option value="">Tất cả loại</option>
+      <option value="coupon">Mã giảm giá</option>
+      <option value="bogo">Mua X Tặng Y</option>
+      <option value="pct">Giảm % theo SL</option>
+      <option value="gift">Tặng quà kèm</option>
+      <option value="direct">Giảm tiền trực tiếp</option>
+      <option value="combo">Mua combo</option>
+    </select>
+    <select class="filter-sel" id="statusFilter" onchange="renderTable()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="running">Đang chạy</option>
+      <option value="expired">Hết hạn</option>
+      <option value="paused">Tạm dừng</option>
+    </select>
+    <span class="filter-count" id="filterCount"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table class="promo-table">
+      <thead><tr>
+        <th>Tên chương trình</th>
+        <th>Loại chương trình</th>
+        <th>Mặt hàng</th>
+        <th>Hiệu lực</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr></thead>
+      <tbody id="promoTbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- ── EDIT MODAL ── -->
+<div class="modal-backdrop" id="promoModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3 id="modalTitle">Thêm chương trình khuyến mãi</h3>
+      <button class="modal-x" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-bdy">
+      <!-- Tên -->
+      <div class="form-group">
+        <label class="form-lbl">Tên chương trình <em>*</em></label>
+        <input class="form-input" id="f_name" type="text" placeholder="VD: Mua 20 bao NPK tặng 3 bao" />
+      </div>
+
+      <!-- Loại -->
+      <div>
+        <div class="section-title">Loại khuyến mãi</div>
+        <div class="type-grid" id="typeGrid"></div>
+      </div>
+
+      <!-- Điều kiện / cấu hình -->
+      <div>
+        <div class="section-title">Điều kiện áp dụng</div>
+        <div class="config-box">
+          <div class="config-box-title">Cấu hình chương trình</div>
+          <div id="configFields"></div>
+        </div>
+      </div>
+
+      <!-- Ngày -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-lbl">Áp dụng từ <em>*</em></label>
+          <input class="form-input" id="f_from" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Hết hạn <em>*</em></label>
+          <input class="form-input" id="f_to" type="date" />
+        </div>
+      </div>
+
+      <!-- Sản phẩm -->
+      <div class="form-group">
+        <label class="form-lbl">Sản phẩm áp dụng</label>
+        <select class="form-sel" id="f_products" multiple size="5" style="height:auto">
+          <option value="all">Tất cả sản phẩm</option>
+          <option value="npk">Nhóm Phân NPK</option>
+          <option value="huco">Nhóm Phân Hữu cơ</option>
+          <option value="lan">Nhóm Lân – Kali</option>
+          <option value="chuyen">Nhóm Chuyên dùng</option>
+        </select>
+        <span class="form-hint">Giữ Ctrl để chọn nhiều</span>
+      </div>
+
+      <!-- Ghi chú -->
+      <div class="form-group">
+        <label class="form-lbl">Ghi chú</label>
+        <textarea class="form-textarea" id="f_note" placeholder="Ghi chú thêm..."></textarea>
+      </div>
+
+      <!-- Trạng thái -->
+      <div class="toggle-row">
+        <div class="toggle-lbl-wrap">
+          <label class="form-lbl">Trạng thái</label>
+          <span class="toggle-lbl" id="toggleLbl">Đang chạy</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="f_status" checked onchange="updateToggleLbl()" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn-cancel-m" onclick="closeModal()">Huỷ</button>
+      <button class="btn-save-m" onclick="savePromo()">Lưu khuyến mãi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL DRAWER ── -->
+<div class="drawer-backdrop" id="drawerBackdrop">
+  <div class="drawer" id="drawer">
+    <div class="drawer-hdr">
+      <h3>Chi tiết khuyến mãi</h3>
+      <div class="drawer-hdr-actions">
+        <button class="btn-edit-drawer" id="drawerEditBtn" onclick="editFromDrawer()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Chỉnh sửa
+        </button>
+        <button class="drawer-x" onclick="closeDrawer()">×</button>
+      </div>
+    </div>
+    <div class="drawer-bdy" id="drawerBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA ── */
+const PRODUCT_LABELS = { all:'Tất cả sản phẩm', npk:'Phân NPK', huco:'Phân Hữu cơ', lan:'Lân – Kali', chuyen:'Nhóm Chuyên dùng' };
+
+let promos = [
+  { id:1, name:'Mã giảm giá', type:'coupon',
+    config:{ code:'NEXLIFY5', discount:5 },
+    products:['npk','huco'], items:2, from:'01/01/2024', to:'31/12/2099', status:'running', note:'' },
+  { id:2, name:'Mua 20 bao NPK tặng 3 bao', type:'bogo',
+    config:{ buyX:20, getY:3 },
+    products:['npk'], items:8, from:'01/03/2024', to:'31/12/2024', status:'expired', note:'' },
+  { id:3, name:'Mua 50 bao Hữu cơ tặng 5 bao', type:'bogo',
+    config:{ buyX:50, getY:5 },
+    products:['huco'], items:1, from:'01/06/2024', to:'30/09/2024', status:'expired', note:'' },
+  { id:4, name:'Mua 10 bao Lân tặng 1 bao', type:'bogo',
+    config:{ buyX:10, getY:1 },
+    products:['lan'], items:3, from:'01/01/2024', to:'31/12/2099', status:'running', note:'' },
+  { id:5, name:'Mua 20 bao Lân tặng 3 bao', type:'bogo',
+    config:{ buyX:20, getY:3 },
+    products:['lan'], items:1, from:'01/01/2024', to:'31/12/2099', status:'running', note:'' },
+  { id:6, name:'Giảm 5% mua từ 50 bao trở lên', type:'pct',
+    config:{ minQty:50, pct:5 },
+    products:['all'], items:30, from:'01/01/2024', to:'31/12/2099', status:'running', note:'' },
+  { id:7, name:'Tặng quà dịp lễ', type:'gift',
+    config:{ minQty:30, giftName:'Bình xịt tay' },
+    products:['npk','huco'], items:5, from:'01/04/2026', to:'30/04/2026', status:'running', note:'Áp dụng dịp 30/4' },
+];
+let nextId = 8;
+let editId = null;
+let viewId = null;
+let selectedType = 'bogo';
+
+/* ── TYPE META ── */
+const typeMeta = {
+  bogo:   { label:'Mua X Tặng Y',       cls:'type-bogo',   iconBg:'#d1fae5', iconColor:'#059669',
+            desc:'Mua đủ số lượng X được tặng Y',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>` },
+  pct:    { label:'Giảm % theo SL',     cls:'type-pct',    iconBg:'#dbeafe', iconColor:'#1d4ed8',
+            desc:'Giảm % khi mua số lượng lớn',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>` },
+  coupon: { label:'Mã giảm giá',        cls:'type-coupon', iconBg:'#fce7f3', iconColor:'#be185d',
+            desc:'Nhập mã để được giảm giá',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>` },
+  gift:   { label:'Tặng quà kèm',       cls:'type-gift',   iconBg:'#fef3c7', iconColor:'#d97706',
+            desc:'Tặng sản phẩm khi mua hàng',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>` },
+  direct: { label:'Giảm tiền trực tiếp',cls:'type-direct',  iconBg:'#dcfce7', iconColor:'#15803d',
+            desc:'Trừ thẳng số tiền vào hóa đơn',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>` },
+  combo:  { label:'Mua combo',           cls:'type-combo',   iconBg:'#ede9fe', iconColor:'#7c3aed',
+            desc:'Mua nhiều sản phẩm kết hợp',
+            svg:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>` },
+};
+
+const statusMeta = {
+  running: { label:'Đang chạy', cls:'status-running' },
+  expired: { label:'Hết hạn',   cls:'status-expired' },
+  paused:  { label:'Tạm dừng',  cls:'status-paused'  },
+};
+
+/* ── HELPERS ── */
+function norm(s){ return s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().trim(); }
+function fmt(n){ return Number(n).toLocaleString('vi-VN')+'₫'; }
+function toggleNav(el){ el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
+function productsLabel(arr){
+  if(!arr||arr.length===0) return 'Tất cả sản phẩm';
+  if(arr.includes('all')) return 'Tất cả sản phẩm';
+  return arr.map(k=>PRODUCT_LABELS[k]||k).join(', ');
+}
+
+/* ── CONFIG FIELDS ── */
+function configFieldsHtml(type, cfg){
+  cfg = cfg || {};
+  if(type==='bogo') return `
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-lbl">Mua X (số lượng)</label><input class="form-input" id="cfg_buyX" type="number" min="1" value="${cfg.buyX||''}" placeholder="VD: 20"/></div>
+      <div class="form-group"><label class="form-lbl">Tặng Y (số lượng)</label><input class="form-input" id="cfg_getY" type="number" min="1" value="${cfg.getY||''}" placeholder="VD: 3"/></div>
+    </div>`;
+  if(type==='pct') return `
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-lbl">Từ số lượng (bao)</label><input class="form-input" id="cfg_minQty" type="number" min="1" value="${cfg.minQty||''}" placeholder="VD: 50"/></div>
+      <div class="form-group"><label class="form-lbl">Giảm (%)</label><input class="form-input" id="cfg_pct" type="number" min="1" max="100" value="${cfg.pct||''}" placeholder="VD: 5"/></div>
+    </div>`;
+  if(type==='coupon') return `
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-lbl">Mã giảm giá</label><input class="form-input" id="cfg_code" type="text" value="${cfg.code||''}" placeholder="VD: NEXLIFY5"/></div>
+      <div class="form-group"><label class="form-lbl">Giảm (%)</label><input class="form-input" id="cfg_discount" type="number" min="1" max="100" value="${cfg.discount||''}" placeholder="VD: 5"/></div>
+    </div>`;
+  if(type==='gift') return `
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-lbl">Mua từ (số bao)</label><input class="form-input" id="cfg_minQty" type="number" min="1" value="${cfg.minQty||''}" placeholder="VD: 30"/></div>
+      <div class="form-group"><label class="form-lbl">Quà tặng</label><input class="form-input" id="cfg_giftName" type="text" value="${cfg.giftName||''}" placeholder="VD: Bình xịt tay"/></div>
+    </div>`;
+  if(type==='direct') return `
+    <div class="form-row-2">
+      <div class="form-group"><label class="form-lbl">Mua từ (₫)</label><input class="form-input" id="cfg_minAmount" type="number" min="0" value="${cfg.minAmount||''}" placeholder="VD: 5000000"/></div>
+      <div class="form-group"><label class="form-lbl">Giảm (₫)</label><input class="form-input" id="cfg_discountAmt" type="number" min="0" value="${cfg.discountAmt||''}" placeholder="VD: 200000"/></div>
+    </div>`;
+  if(type==='combo') return `
+    <div class="form-group"><label class="form-lbl">Điều kiện combo</label><input class="form-input" id="cfg_comboNote" type="text" value="${cfg.comboNote||''}" placeholder="VD: Mua 2 loại trở lên, giảm 8%"/></div>`;
+  return '';
+}
+
+function readConfig(type){
+  const g = id => { const el=document.getElementById(id); return el?el.value.trim():''; };
+  const n = id => { const el=document.getElementById(id); return el?parseFloat(el.value)||0:0; };
+  if(type==='bogo')   return { buyX:n('cfg_buyX'), getY:n('cfg_getY') };
+  if(type==='pct')    return { minQty:n('cfg_minQty'), pct:n('cfg_pct') };
+  if(type==='coupon') return { code:g('cfg_code'), discount:n('cfg_discount') };
+  if(type==='gift')   return { minQty:n('cfg_minQty'), giftName:g('cfg_giftName') };
+  if(type==='direct') return { minAmount:n('cfg_minAmount'), discountAmt:n('cfg_discountAmt') };
+  if(type==='combo')  return { comboNote:g('cfg_comboNote') };
+  return {};
+}
+
+function conditionRowsHtml(type, cfg){
+  if(!cfg) return '';
+  if(type==='bogo')   return `<div class="condition-row"><span class="condition-row-lbl">Mua X</span><span class="condition-row-val">${cfg.buyX} bao</span></div><div class="condition-row"><span class="condition-row-lbl">Tặng Y</span><span class="condition-row-val">${cfg.getY} bao</span></div>`;
+  if(type==='pct')    return `<div class="condition-row"><span class="condition-row-lbl">Từ số lượng</span><span class="condition-row-val">${cfg.minQty} bao</span></div><div class="condition-row"><span class="condition-row-lbl">Giảm</span><span class="condition-row-val red">–${cfg.pct}%</span></div>`;
+  if(type==='coupon') return `<div class="condition-row"><span class="condition-row-lbl">Mã giảm giá</span><span class="condition-row-val">${cfg.code}</span></div><div class="condition-row"><span class="condition-row-lbl">Giảm</span><span class="condition-row-val red">–${cfg.discount}%</span></div>`;
+  if(type==='gift')   return `<div class="condition-row"><span class="condition-row-lbl">Mua từ</span><span class="condition-row-val">${cfg.minQty} bao</span></div><div class="condition-row"><span class="condition-row-lbl">Quà tặng</span><span class="condition-row-val">${cfg.giftName}</span></div>`;
+  if(type==='direct') return `<div class="condition-row"><span class="condition-row-lbl">Mua từ</span><span class="condition-row-val">${fmt(cfg.minAmount)}</span></div><div class="condition-row"><span class="condition-row-lbl">Giảm</span><span class="condition-row-val red">–${fmt(cfg.discountAmt)}</span></div>`;
+  if(type==='combo')  return `<div class="condition-row"><span class="condition-row-lbl">Điều kiện</span><span class="condition-row-val">${cfg.comboNote}</span></div>`;
+  return '';
+}
+
+/* ── STATS ── */
+function renderStats(){
+  const total=promos.length, running=promos.filter(p=>p.status==='running').length,
+        expired=promos.filter(p=>p.status==='expired').length, paused=promos.filter(p=>p.status==='paused').length;
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Tổng chương trình</div><div class="stat-value">${total}</div><div class="stat-sub">Tất cả loại</div></div>
+    <div class="stat-card running"><div class="stat-label">Đang chạy</div><div class="stat-value">${running}</div><div class="stat-sub">Đang áp dụng</div></div>
+    <div class="stat-card expired"><div class="stat-label">Hết hạn</div><div class="stat-value">${expired}</div><div class="stat-sub">Đã kết thúc</div></div>
+    <div class="stat-card paused"><div class="stat-label">Tạm dừng</div><div class="stat-value">${paused}</div><div class="stat-sub">Chờ kích hoạt</div></div>`;
+}
+
+/* ── TABLE ── */
+const editSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+const trashSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`;
+const eyeSvg   = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+function renderTable(){
+  const q=norm(document.getElementById('searchInput').value);
+  const typeF=document.getElementById('typeFilter').value;
+  const statusF=document.getElementById('statusFilter').value;
+  const tbody=document.getElementById('promoTbody');
+  const filtered=promos.filter(p=>{
+    return (!q||norm(p.name).includes(q)||norm(productsLabel(p.products)).includes(q))
+        && (!typeF||p.type===typeF) && (!statusF||p.status===statusF);
+  });
+  document.getElementById('filterCount').textContent=filtered.length+' chương trình';
+  if(!filtered.length){
+    tbody.innerHTML=`<tr><td colspan="6" class="no-rows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>Không tìm thấy chương trình nào</p></td></tr>`;
+    return;
+  }
+  tbody.innerHTML=filtered.map(p=>{
+    const tm=typeMeta[p.type]||typeMeta.bogo;
+    const sm=statusMeta[p.status]||statusMeta.paused;
+    return `<tr>
+      <td><div class="promo-name">${p.name}</div><div class="promo-sub">${productsLabel(p.products)}</div></td>
+      <td><span class="type-badge ${tm.cls}">${tm.label}</span></td>
+      <td><span class="items-count">${p.items} Khuyến mãi</span></td>
+      <td><div class="date-range">${p.from}</div><div class="date-range">${p.to}</div></td>
+      <td><span class="status-badge ${sm.cls}">${sm.label}</span></td>
+      <td style="white-space:nowrap">
+        <button class="act-btn view" title="Xem chi tiết" onclick="openDrawer(${p.id})">${eyeSvg}</button>
+        <button class="act-btn" title="Sửa" onclick="openModal(${p.id})" style="margin-left:4px">${editSvg}</button>
+        <button class="act-btn del" title="Xoá" onclick="deletePromo(${p.id})" style="margin-left:4px">${trashSvg}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── MODAL ── */
+function buildTypeGrid(current){
+  return Object.entries(typeMeta).map(([k,v])=>`
+    <div class="type-card${k===current?' selected':''}" onclick="selectType('${k}')">
+      <div class="type-card-icon" style="background:${v.iconBg};color:${v.iconColor}">${v.svg}</div>
+      <div class="type-card-info">
+        <div class="type-card-name">${v.label}</div>
+        <div class="type-card-desc">${v.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+function selectType(type){
+  selectedType=type;
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.type-card').forEach(c=>{ if(c.querySelector('.type-card-name').textContent===typeMeta[type].label) c.classList.add('selected'); });
+  document.getElementById('configFields').innerHTML=configFieldsHtml(type,{});
+}
+
+function openModal(id){
+  editId=id||null;
+  const p=id?promos.find(x=>x.id===id):null;
+  document.getElementById('modalTitle').textContent=p?'Chỉnh sửa khuyến mãi':'Thêm chương trình khuyến mãi';
+  document.getElementById('f_name').value=p?p.name:'';
+  document.getElementById('f_name').classList.remove('err');
+  selectedType=p?p.type:'bogo';
+  document.getElementById('typeGrid').innerHTML=buildTypeGrid(selectedType);
+  document.getElementById('configFields').innerHTML=configFieldsHtml(selectedType, p?p.config:{});
+  document.getElementById('f_from').value=p?p.from.split('/').reverse().join('-'):'2026-01-01';
+  document.getElementById('f_to').value=p?p.to.split('/').reverse().join('-'):'2026-12-31';
+  document.getElementById('f_note').value=p?p.note:'';
+  // products multi-select
+  const sel=document.getElementById('f_products');
+  const vals=p?p.products:['all'];
+  Array.from(sel.options).forEach(o=>{ o.selected=vals.includes(o.value); });
+  document.getElementById('f_status').checked=p?p.status!=='paused':true;
+  updateToggleLbl();
+  document.getElementById('promoModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){ document.getElementById('promoModal').classList.remove('open'); document.body.style.overflow=''; }
+
+function updateToggleLbl(){
+  const on=document.getElementById('f_status').checked;
+  const lbl=document.getElementById('toggleLbl');
+  lbl.textContent=on?'Đang chạy':'Tạm dừng';
+  lbl.className='toggle-lbl'+(on?'':' off');
+}
+
+function savePromo(){
+  const name=document.getElementById('f_name').value.trim();
+  if(!name){ document.getElementById('f_name').classList.add('err'); document.getElementById('f_name').focus(); return; }
+  const fromVal=document.getElementById('f_from').value;
+  const toVal=document.getElementById('f_to').value;
+  const sel=document.getElementById('f_products');
+  const products=Array.from(sel.selectedOptions).map(o=>o.value);
+  const data={
+    name, type:selectedType,
+    config:readConfig(selectedType),
+    products:products.length?products:['all'],
+    items: editId?(promos.find(p=>p.id===editId)||{}).items||0:0,
+    from:fromVal?fromVal.split('-').reverse().join('/'):'01/01/2026',
+    to:toVal?toVal.split('-').reverse().join('/'):'31/12/2026',
+    status:document.getElementById('f_status').checked?'running':'paused',
+    note:document.getElementById('f_note').value.trim(),
+  };
+  if(editId){
+    const idx=promos.findIndex(p=>p.id===editId);
+    if(idx!==-1) promos[idx]={...promos[idx],...data};
+    showToast(`Đã cập nhật "${name}"`);
+    if(viewId===editId) renderDrawerContent(editId);
+  } else {
+    promos.push({id:nextId++,...data});
+    showToast(`Đã thêm "${name}"`);
+  }
+  closeModal(); renderStats(); renderTable();
+}
+
+function deletePromo(id){
+  const p=promos.find(x=>x.id===id);
+  if(!p||!confirm(`Xoá chương trình "${p.name}"?`)) return;
+  promos=promos.filter(x=>x.id!==id);
+  if(viewId===id) closeDrawer();
+  renderStats(); renderTable();
+  showToast(`Đã xoá "${p.name}"`);
+}
+
+/* ── DRAWER ── */
+function openDrawer(id){
+  viewId=id;
+  renderDrawerContent(id);
+  document.getElementById('drawerBackdrop').classList.add('open');
+}
+
+function closeDrawer(){
+  viewId=null;
+  document.getElementById('drawerBackdrop').classList.remove('open');
+}
+
+function editFromDrawer(){
+  if(viewId){ closeDrawer(); setTimeout(()=>openModal(viewId),180); }
+}
+
+function renderDrawerContent(id){
+  const p=promos.find(x=>x.id===id);
+  if(!p) return;
+  const tm=typeMeta[p.type]||typeMeta.bogo;
+  const sm=statusMeta[p.status]||statusMeta.paused;
+  document.getElementById('drawerBody').innerHTML=`
+    <div class="detail-promo-hdr">
+      <div class="detail-icon" style="background:${tm.iconBg};color:${tm.iconColor}">${tm.svg}</div>
+      <div>
+        <div class="detail-name">${p.name}</div>
+        <div class="detail-badges">
+          <span class="type-badge ${tm.cls}">${tm.label}</span>
+          <span class="status-badge ${sm.cls}">${sm.label}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Thông tin chung</div>
+      <div class="detail-row"><span class="detail-row-lbl">Sản phẩm áp dụng</span><span class="detail-row-val">${productsLabel(p.products)}</span></div>
+      <div class="detail-row"><span class="detail-row-lbl">Số mục KM</span><span class="detail-row-val purple">${p.items} khuyến mãi</span></div>
+      <div class="detail-row"><span class="detail-row-lbl">Hiệu lực</span><span class="detail-row-val">${p.from} – ${p.to}</span></div>
+      ${p.note?`<div class="detail-row"><span class="detail-row-lbl">Ghi chú</span><span class="detail-row-val" style="font-weight:400;color:var(--gray-500)">${p.note}</span></div>`:''}
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Chi tiết điều kiện</div>
+      <div class="condition-card">
+        <div class="condition-card-hdr" style="color:${tm.iconColor}">${tm.svg}<span>${tm.label}</span></div>
+        ${conditionRowsHtml(p.type, p.config)}
+      </div>
+    </div>`;
+}
+
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+document.getElementById('promoModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('drawerBackdrop').addEventListener('click',function(e){if(e.target===this)closeDrawer();});
+
+renderStats(); renderTable();
+</script>
+</body>
+</html>
