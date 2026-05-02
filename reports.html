@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Báo Cáo</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px; --topbar-h: 52px;
+  --blue: #3b82f6; --blue-light: #dbeafe; --blue-pale: #eff6ff;
+  --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
+  --white: #ffffff;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; overflow-y: auto; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg, #e879f9 0%, #818cf8 50%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover { background: var(--blue-pale); color: var(--blue); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* TOPBAR */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; z-index: 90; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; position: relative; }
+.notif-btn svg { width: 15px; height: 15px; }
+.notif-dot { position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; border: 1.5px solid white; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* MAIN */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; height: calc(100vh - var(--topbar-h)); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+/* PAGE HEADER */
+.page-hdr { display: flex; align-items: center; justify-content: space-between; }
+.page-hdr h1 { font-size: 20px; font-weight: 700; color: var(--gray-900); }
+.period-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: 8px; padding: 3px; }
+.period-tab { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--gray-500); cursor: pointer; border: none; background: transparent; font-family: inherit; transition: all .15s; }
+.period-tab.active { background: var(--white); color: var(--gray-900); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+/* REPORT TABS */
+.report-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); }
+.report-tab { display: flex; align-items: center; gap: 7px; padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+.report-tab:hover { color: var(--blue); }
+.report-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.report-tab svg { width: 15px; height: 15px; }
+
+/* TAB PANELS */
+.tab-panel { display: none; flex-direction: column; gap: 16px; }
+.tab-panel.active { display: flex; }
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.kpi-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.kpi-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.kpi-icon svg { width: 17px; height: 17px; }
+.kpi-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+.kpi-badge.up { background: #dcfce7; color: #16a34a; }
+.kpi-badge.down { background: #fee2e2; color: #dc2626; }
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--gray-900); line-height: 1; }
+.kpi-lbl { font-size: 11.5px; color: var(--gray-400); margin-top: 4px; }
+
+/* CHART CARD */
+.chart-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.chart-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.chart-title { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+.chart-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.chart-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.canvas-wrap { position: relative; height: 220px; }
+
+/* TABLE CARD */
+.table-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.table-card-hdr { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--gray-100); }
+.table-card-title { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+.table-card table { width: 100%; border-collapse: collapse; }
+.table-card th { padding: 9px 18px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .4px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); }
+.table-card td { padding: 11px 18px; font-size: 12.5px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
+.table-card tr:last-child td { border-bottom: none; }
+.table-card tr:hover td { background: var(--gray-50); }
+.rank { font-weight: 700; color: var(--gray-400); }
+.rank.top { color: var(--blue); }
+.bar-cell { display: flex; align-items: center; gap: 8px; }
+.bar-track { flex: 1; height: 6px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; background: var(--blue); }
+.text-right { text-align: right; }
+.text-bold { font-weight: 700; color: var(--gray-900); }
+.badge-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+.badge-status::before { content:''; width:6px; height:6px; border-radius:50%; }
+.bs-done   { background:#dcfce7; color:#16a34a; } .bs-done::before   { background:#16a34a; }
+.bs-proc   { background:#dbeafe; color:#1d4ed8; } .bs-proc::before   { background:#3b82f6; }
+.bs-cancel { background:#fee2e2; color:#dc2626; } .bs-cancel::before { background:#dc2626; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-info">
+      <strong>NexLify</strong>
+      <small>Hệ thống quản lý bán hàng</small>
+    </div>
+  </div>
+
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html" data-page="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Tổng Quan
+  </a>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="customers.html" data-page="customers">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Khách Hàng
+    </a>
+    <a class="nav-item" href="quotes.html" data-page="quotes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Báo Giá
+    </a>
+    <a class="nav-item" href="orders.html" data-page="orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </a>
+    <a class="nav-item" href="invoices.html" data-page="invoices">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Hóa Đơn
+    </a>
+  </div>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="products.html" data-page="products">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản Phẩm
+    </a>
+    <a class="nav-item" href="categories.html" data-page="categories">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Danh Mục Sản Phẩm
+    </a>
+    <a class="nav-item" href="variants.html" data-page="variants">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Biến Thể Sản Phẩm
+    </a>
+    <a class="nav-item" href="pricing.html" data-page="pricing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Bảng Giá
+    </a>
+    <a class="nav-item" href="promotions.html" data-page="promotions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      Khuyến Mãi
+    </a>
+  </div>
+  <a class="nav-item active" (href="reports.html" data-page="reports")>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Báo Cáo
+  </a>
+
+  <div class="section-label">Khác</div>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Setting
+  </a>
+</aside>
+
+
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="page-hdr">
+    <h1>Báo Cáo</h1>
+    <div class="period-tabs">
+      <button class="period-tab" onclick="setPeriod('week')">Tuần</button>
+      <button class="period-tab" onclick="setPeriod('month')">Tháng</button>
+      <button class="period-tab active" onclick="setPeriod('year')">Năm</button>
+    </div>
+  </div>
+
+  <div class="report-tabs">
+    <div class="report-tab active" onclick="switchTab('revenue')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Doanh thu
+    </div>
+    <div class="report-tab" onclick="switchTab('staff')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Nhân viên
+    </div>
+    <div class="report-tab" onclick="switchTab('products')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản phẩm
+    </div>
+    <div class="report-tab" onclick="switchTab('orders')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn hàng
+    </div>
+  </div>
+
+  <!-- TAB: DOANH THU -->
+  <div class="tab-panel active" id="tab-revenue">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#eff6ff">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="kpi-badge up">+12%</span>
+        </div>
+        <div class="kpi-val">2,04 tỷ</div>
+        <div class="kpi-lbl">Tổng doanh thu 2026</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#f0fdf4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <span class="kpi-badge up">+8%</span>
+        </div>
+        <div class="kpi-val">510M</div>
+        <div class="kpi-lbl">Trung bình/tháng</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fefce8">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="kpi-badge up">+15%</span>
+        </div>
+        <div class="kpi-val">68M</div>
+        <div class="kpi-lbl">Doanh thu/đơn hàng</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fff7ed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="kpi-badge down">-3%</span>
+        </div>
+        <div class="kpi-val">102M</div>
+        <div class="kpi-lbl">Doanh thu/khách hàng</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Doanh thu theo tháng</div>
+          <div class="chart-sub">Năm 2026 · Đơn vị: triệu đồng</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="chartRevMonth"></canvas></div>
+    </div>
+
+    <div class="chart-2col">
+      <div class="chart-card">
+        <div class="chart-hdr">
+          <div>
+            <div class="chart-title">Doanh thu theo khu vực</div>
+            <div class="chart-sub">Năm 2026</div>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartRevRegion"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-hdr">
+          <div>
+            <div class="chart-title">Doanh thu theo nhóm sản phẩm</div>
+            <div class="chart-sub">Năm 2026</div>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartRevCategory"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-hdr">
+        <div class="table-card-title">Top 10 khách hàng theo doanh thu</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Khách hàng</th>
+            <th>Khu vực</th>
+            <th class="text-right">Doanh thu</th>
+            <th class="text-right">Đơn hàng</th>
+            <th>Tỷ lệ</th>
+          </tr>
+        </thead>
+        <tbody id="topCustomersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: NHÂN VIÊN -->
+  <div class="tab-panel" id="tab-staff">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#eff6ff">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span class="kpi-badge up">+2</span>
+        </div>
+        <div class="kpi-val">12</div>
+        <div class="kpi-lbl">Tổng nhân viên</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#f0fdf4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="kpi-badge up">+18%</span>
+        </div>
+        <div class="kpi-val">170M</div>
+        <div class="kpi-lbl">Doanh thu/nhân viên</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fefce8">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          </div>
+          <span class="kpi-badge up">+5%</span>
+        </div>
+        <div class="kpi-val">2.5</div>
+        <div class="kpi-lbl">Đơn hàng/nhân viên</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fff7ed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <span class="kpi-badge up">+12%</span>
+        </div>
+        <div class="kpi-val">95%</div>
+        <div class="kpi-lbl">Tỷ lệ hoàn thành</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Hiệu suất nhân viên theo tháng</div>
+          <div class="chart-sub">Năm 2026 · Đơn vị: triệu đồng</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="chartStaffPerf"></canvas></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-hdr">
+        <div class="table-card-title">Bảng xếp hạng nhân viên</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nhân viên</th>
+            <th>Phòng ban</th>
+            <th class="text-right">Doanh thu</th>
+            <th class="text-right">Đơn hàng</th>
+            <th class="text-right">Tỷ lệ hoàn thành</th>
+          </tr>
+        </thead>
+        <tbody id="staffRankTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: SẢN PHẨM -->
+  <div class="tab-panel" id="tab-products">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#eff6ff">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <span class="kpi-badge up">+5</span>
+        </div>
+        <div class="kpi-val">30</div>
+        <div class="kpi-lbl">Tổng sản phẩm</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#f0fdf4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="kpi-badge up">+22%</span>
+        </div>
+        <div class="kpi-val">68M</div>
+        <div class="kpi-lbl">Doanh thu/sản phẩm</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fefce8">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span class="kpi-badge down">-8%</span>
+        </div>
+        <div class="kpi-val">2.450</div>
+        <div class="kpi-lbl">Tồn kho (bao)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fff7ed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <span class="kpi-badge up">+15%</span>
+        </div>
+        <div class="kpi-val">85%</div>
+        <div class="kpi-lbl">Tỷ lệ bán chạy</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Doanh thu theo nhóm sản phẩm</div>
+          <div class="chart-sub">Năm 2026 · Đơn vị: triệu đồng</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="chartProdCategory"></canvas></div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-hdr">
+        <div class="table-card-title">Top 10 sản phẩm bán chạy</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sản phẩm</th>
+            <th>Nhóm</th>
+            <th class="text-right">Số lượng</th>
+            <th class="text-right">Doanh thu</th>
+            <th>Tỷ lệ</th>
+          </tr>
+        </thead>
+        <tbody id="topProductsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: ĐƠN HÀNG -->
+  <div class="tab-panel" id="tab-orders">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#eff6ff">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          </div>
+          <span class="kpi-badge up">+18%</span>
+        </div>
+        <div class="kpi-val">30</div>
+        <div class="kpi-lbl">Tổng đơn hàng</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#f0fdf4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <span class="kpi-badge up">+5%</span>
+        </div>
+        <div class="kpi-val">18</div>
+        <div class="kpi-lbl">Hoàn thành</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fefce8">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <span class="kpi-badge up">+2</span>
+        </div>
+        <div class="kpi-val">11</div>
+        <div class="kpi-lbl">Đang xử lý</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-icon" style="background:#fff7ed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <span class="kpi-badge down">-1</span>
+        </div>
+        <div class="kpi-val">1</div>
+        <div class="kpi-lbl">Đã hủy</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Đơn hàng theo tháng</div>
+          <div class="chart-sub">Năm 2026 · Phân loại theo trạng thái</div>
+        </div>
+      </div>
+      <div class="canvas-wrap"><canvas id="chartOrderMonth"></canvas></div>
+    </div>
+
+    <div class="chart-2col">
+      <div class="chart-card">
+        <div class="chart-hdr">
+          <div>
+            <div class="chart-title">Trạng thái đơn hàng</div>
+            <div class="chart-sub">Năm 2026</div>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartOrderStatus"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-hdr">
+          <div>
+            <div class="chart-title">Đơn hàng theo khu vực</div>
+            <div class="chart-sub">Năm 2026</div>
+          </div>
+        </div>
+        <div class="canvas-wrap"><canvas id="chartOrderRegion"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-hdr">
+        <div class="table-card-title">Danh sách đơn hàng gần đây</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Ngày tạo</th>
+            <th class="text-right">Giá trị</th>
+            <th>Trạng thái</th>
+            <th>Nhân viên</th>
+          </tr>
+        </thead>
+        <tbody id="recentOrdersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+Chart.defaults.font.family = 'Be Vietnam Pro';
+Chart.defaults.font.size = 11;
+
+const months = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+
+// TAB SWITCHING
+function switchTab(tab) {
+  document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.closest('.report-tab').classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// PERIOD SWITCHING
+function setPeriod(period) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// SIDEBAR TOGGLE
+function toggleNav(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ========== DOANH THU TAB ==========
+// Chart: Doanh thu theo tháng
+new Chart(document.getElementById('chartRevMonth'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'Doanh thu',
+      data: [620, 580, 460, 380, 0, 0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: '#3b82f6',
+      borderRadius: 5,
+      barPercentage: 0.6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ' ' + c.parsed.y + 'M' }}
+    },
+    scales: {
+      x: { grid: { display: false }},
+      y: { grid: { color: '#f1f5f9' }, ticks: { callback: v => v + 'M' }}
+    }
+  }
+});
+
+// Chart: Doanh thu theo khu vực
+new Chart(document.getElementById('chartRevRegion'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Miền Nam', 'Miền Bắc', 'Miền Trung'],
+    datasets: [{
+      data: [1200, 580, 260],
+      backgroundColor: ['#3b82f6', '#60a5fa', '#93c5fd'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + 'M' }}
+    }
+  }
+});
+
+// Chart: Doanh thu theo nhóm sản phẩm
+new Chart(document.getElementById('chartRevCategory'), {
+  type: 'pie',
+  data: {
+    labels: ['Đất Xanh', 'Song Mã', 'Đầu Ngựa'],
+    datasets: [{
+      data: [980, 720, 340],
+      backgroundColor: ['#16a34a', '#ca8a04', '#f97316'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + 'M' }}
+    }
+  }
+});
+
+// Table: Top khách hàng
+const topCustomers = [
+  { name: 'Công ty TNHH Nông Sản Xanh', region: 'Miền Nam', revenue: 280, orders: 8 },
+  { name: 'HTX Nông Nghiệp Phát Đạt', region: 'Miền Nam', revenue: 245, orders: 7 },
+  { name: 'Công ty CP Phân Bón Việt', region: 'Miền Bắc', revenue: 220, orders: 6 },
+  { name: 'HTX Lúa Gạo Đồng Tháp', region: 'Miền Nam', revenue: 195, orders: 5 },
+  { name: 'Công ty TNHH Cà Phê Tây Nguyên', region: 'Miền Trung', revenue: 180, orders: 5 },
+  { name: 'HTX Cao Su Bình Phước', region: 'Miền Nam', revenue: 165, orders: 4 },
+  { name: 'Công ty CP Nông Sản Sạch', region: 'Miền Bắc', revenue: 150, orders: 4 },
+  { name: 'HTX Rau Củ An Giang', region: 'Miền Nam', revenue: 135, orders: 4 },
+  { name: 'Công ty TNHH Cây Ăn Trái', region: 'Miền Nam', revenue: 120, orders: 3 },
+  { name: 'HTX Hồ Tiêu Gia Lai', region: 'Miền Trung', revenue: 110, orders: 3 }
+];
+const totalRev = topCustomers.reduce((s, c) => s + c.revenue, 0);
+document.getElementById('topCustomersTable').innerHTML = topCustomers.map((c, i) => {
+  const pct = Math.round((c.revenue / totalRev) * 100);
+  return `<tr>
+    <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+    <td class="text-bold">${c.name}</td>
+    <td>${c.region}</td>
+    <td class="text-right text-bold">${c.revenue}M</td>
+    <td class="text-right">${c.orders}</td>
+    <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div></td>
+  </tr>`;
+}).join('');
+
+// ========== NHÂN VIÊN TAB ==========
+// Chart: Hiệu suất nhân viên
+new Chart(document.getElementById('chartStaffPerf'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'Doanh thu/nhân viên',
+      data: [52, 48, 38, 32, 0, 0, 0, 0, 0, 0, 0, 0],
+      borderColor: '#3b82f6',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ' ' + c.parsed.y + 'M' }}
+    },
+    scales: {
+      x: { grid: { display: false }},
+      y: { grid: { color: '#f1f5f9' }, ticks: { callback: v => v + 'M' }}
+    }
+  }
+});
+
+// Table: Bảng xếp hạng nhân viên
+const staffRank = [
+  { name: 'Nguyễn Văn A', dept: 'Kinh doanh', revenue: 320, orders: 9, rate: 98 },
+  { name: 'Trần Thị B', dept: 'Kinh doanh', revenue: 285, orders: 8, rate: 96 },
+  { name: 'Lê Văn C', dept: 'Kinh doanh', revenue: 260, orders: 7, rate: 95 },
+  { name: 'Phạm Thị D', dept: 'Kinh doanh', revenue: 240, orders: 7, rate: 94 },
+  { name: 'Hoàng Văn E', dept: 'Kinh doanh', revenue: 220, orders: 6, rate: 92 },
+  { name: 'Võ Thị F', dept: 'Kinh doanh', revenue: 195, orders: 5, rate: 90 },
+  { name: 'Đặng Văn G', dept: 'Kinh doanh', revenue: 180, orders: 5, rate: 88 },
+  { name: 'Bùi Thị H', dept: 'Kinh doanh', revenue: 165, orders: 4, rate: 87 },
+  { name: 'Dương Văn I', dept: 'Kinh doanh', revenue: 150, orders: 4, rate: 85 },
+  { name: 'Mai Thị K', dept: 'Kinh doanh', revenue: 135, orders: 3, rate: 83 }
+];
+document.getElementById('staffRankTable').innerHTML = staffRank.map((s, i) => `<tr>
+  <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+  <td class="text-bold">${s.name}</td>
+  <td>${s.dept}</td>
+  <td class="text-right text-bold">${s.revenue}M</td>
+  <td class="text-right">${s.orders}</td>
+  <td class="text-right">${s.rate}%</td>
+</tr>`).join('');
+
+// ========== SẢN PHẨM TAB ==========
+// Chart: Doanh thu theo nhóm sản phẩm
+new Chart(document.getElementById('chartProdCategory'), {
+  type: 'bar',
+  data: {
+    labels: ['Đất Xanh', 'Song Mã', 'Đầu Ngựa'],
+    datasets: [{
+      label: 'Doanh thu',
+      data: [980, 720, 340],
+      backgroundColor: ['#16a34a', '#ca8a04', '#f97316'],
+      borderRadius: 5,
+      barPercentage: 0.5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ' ' + c.parsed.y + 'M' }}
+    },
+    scales: {
+      x: { grid: { display: false }},
+      y: { grid: { color: '#f1f5f9' }, ticks: { callback: v => v + 'M' }}
+    }
+  }
+});
+
+// Table: Top sản phẩm
+const topProducts = [
+  { name: 'NPK 16-16-16 Đất Xanh', group: 'Đất Xanh', qty: 1200, revenue: 180 },
+  { name: 'NPK 17-16-8 Đất Xanh', group: 'Đất Xanh', qty: 980, revenue: 147 },
+  { name: 'Hữu cơ Vi sinh cao cấp Đất Xanh', group: 'Đất Xanh', qty: 850, revenue: 128 },
+  { name: 'NPK 18-8-18+Bo+TE Song Mã', group: 'Song Mã', qty: 780, revenue: 117 },
+  { name: 'Hữu cơ khoáng 16-16-8 Song Mã', group: 'Song Mã', qty: 720, revenue: 108 },
+  { name: 'Cao cấp NPK 16-16-16+Bo+TE Đầu Ngựa', group: 'Đầu Ngựa', qty: 650, revenue: 98 },
+  { name: 'Chuyên Lúa 1 Đất Xanh', group: 'Đất Xanh', qty: 580, revenue: 87 },
+  { name: 'Lân Canxi Đất Xanh', group: 'Đất Xanh', qty: 520, revenue: 78 },
+  { name: 'Chuyên Cà phê – Tiêu Song Mã', group: 'Song Mã', qty: 480, revenue: 72 },
+  { name: 'Khoáng hữu cơ 17-7-17+Bo+TE Đầu Ngựa', group: 'Đầu Ngựa', qty: 420, revenue: 63 }
+];
+const totalProdRev = topProducts.reduce((s, p) => s + p.revenue, 0);
+document.getElementById('topProductsTable').innerHTML = topProducts.map((p, i) => {
+  const pct = Math.round((p.revenue / totalProdRev) * 100);
+  return `<tr>
+    <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+    <td class="text-bold">${p.name}</td>
+    <td>${p.group}</td>
+    <td class="text-right">${p.qty} bao</td>
+    <td class="text-right text-bold">${p.revenue}M</td>
+    <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div></td>
+  </tr>`;
+}).join('');
+
+// ========== ĐƠN HÀNG TAB ==========
+// Chart: Đơn hàng theo tháng
+new Chart(document.getElementById('chartOrderMonth'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Hoàn thành',
+        data: [7, 6, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: '#16a34a',
+        borderRadius: 5,
+        stack: 'stack1'
+      },
+      {
+        label: 'Đang xử lý',
+        data: [3, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: '#3b82f6',
+        borderRadius: 5,
+        stack: 'stack1'
+      },
+      {
+        label: 'Đã hủy',
+        data: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: '#ef4444',
+        borderRadius: 5,
+        stack: 'stack1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { mode: 'index' }
+    },
+    scales: {
+      x: { grid: { display: false }, stacked: true },
+      y: { grid: { color: '#f1f5f9' }, stacked: true }
+    }
+  }
+});
+
+// Chart: Trạng thái đơn hàng
+new Chart(document.getElementById('chartOrderStatus'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Hoàn thành', 'Đang xử lý', 'Đã xác nhận', 'Đã hủy'],
+    datasets: [{
+      data: [18, 8, 3, 1],
+      backgroundColor: ['#16a34a', '#3b82f6', '#60a5fa', '#fbbf24'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + ' đơn' }}
+    }
+  }
+});
+
+// Chart: Đơn hàng theo khu vực
+new Chart(document.getElementById('chartOrderRegion'), {
+  type: 'bar',
+  data: {
+    labels: ['Miền Nam', 'Miền Bắc', 'Miền Trung'],
+    datasets: [{
+      label: 'Đơn hàng',
+      data: [18, 8, 4],
+      backgroundColor: '#3b82f6',
+      borderRadius: 5,
+      barPercentage: 0.5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => ' ' + c.parsed.y + ' đơn' }}
+    },
+    scales: {
+      x: { grid: { display: false }},
+      y: { grid: { color: '#f1f5f9' }}
+    }
+  }
+});
+
+// Table: Đơn hàng gần đây
+const recentOrders = [
+  { id: 'DH-2026-030', customer: 'Công ty TNHH Nông Sản Xanh', date: '15/04/2026', value: 85, status: 'done', staff: 'Nguyễn Văn A' },
+  { id: 'DH-2026-029', customer: 'HTX Nông Nghiệp Phát Đạt', date: '12/04/2026', value: 72, status: 'proc', staff: 'Trần Thị B' },
+  { id: 'DH-2026-028', customer: 'Công ty CP Phân Bón Việt', date: '10/04/2026', value: 68, status: 'done', staff: 'Lê Văn C' },
+  { id: 'DH-2026-027', customer: 'HTX Lúa Gạo Đồng Tháp', date: '08/04/2026', value: 55, status: 'proc', staff: 'Phạm Thị D' },
+  { id: 'DH-2026-026', customer: 'Công ty TNHH Cà Phê Tây Nguyên', date: '05/04/2026', value: 48, status: 'done', staff: 'Hoàng Văn E' },
+  { id: 'DH-2026-025', customer: 'HTX Cao Su Bình Phước', date: '03/04/2026', value: 42, status: 'proc', staff: 'Võ Thị F' },
+  { id: 'DH-2026-024', customer: 'Công ty CP Nông Sản Sạch', date: '01/04/2026', value: 38, status: 'done', staff: 'Đặng Văn G' },
+  { id: 'DH-2026-023', customer: 'HTX Rau Củ An Giang', date: '28/03/2026', value: 35, status: 'cancel', staff: 'Bùi Thị H' },
+  { id: 'DH-2026-022', customer: 'Công ty TNHH Cây Ăn Trái', date: '25/03/2026', value: 32, status: 'done', staff: 'Dương Văn I' },
+  { id: 'DH-2026-021', customer: 'HTX Hồ Tiêu Gia Lai', date: '22/03/2026', value: 28, status: 'proc', staff: 'Mai Thị K' }
+];
+const statusMap = {
+  done: { cls: 'bs-done', label: 'Hoàn thành' },
+  proc: { cls: 'bs-proc', label: 'Đang xử lý' },
+  cancel: { cls: 'bs-cancel', label: 'Đã hủy' }
+};
+document.getElementById('recentOrdersTable').innerHTML = recentOrders.map(o => {
+  const st = statusMap[o.status];
+  return `<tr>
+    <td class="text-bold">${o.id}</td>
+    <td>${o.customer}</td>
+    <td>${o.date}</td>
+    <td class="text-right text-bold">${o.value}M</td>
+    <td><span class="badge-status ${st.cls}">${st.label}</span></td>
+    <td>${o.staff}</td>
+  </tr>`;
+}).join('');
+</script>
+
+</body>
+</html>
