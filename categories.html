@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
@@ -184,7 +184,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   </div>
   <div class="nav-sub">
     <a class="nav-item" href="quotes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Báo Giá</a>
+<<<<<<< Updated upstream
     <a class="nav-item" href="orders.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+=======
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+>>>>>>> Stashed changes
     <a class="nav-item" href="customers.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Khách Hàng</a>
   </div>
   <div class="nav-item nav-parent open" onclick="toggleNav(this)">
@@ -216,7 +220,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       Khuyến Mãi
     </a>
   </div>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="invoices.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Hóa Đơn
   </a>
@@ -765,6 +769,29 @@ function showToast(msg) {
 
 initCards();
 applyFilters();
+
+
+</script>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+(function(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity .2s ease';
+  window.addEventListener('load',function(){
+    document.body.offsetHeight;
+    document.body.style.opacity='1';
+  });
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a.nav-item');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    document.body.style.opacity='0';
+    setTimeout(function(){ window.location.href=href; },200);
+  });
+})();
 </script>
 </body>
 </html>

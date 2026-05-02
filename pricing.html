@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
@@ -103,6 +103,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
 .type-retail { background: #f1f5f9; color: #475569; }
 .type-wholesale { background: #dbeafe; color: #1d4ed8; }
+.type-amber { background: #fef3c7; color: #d97706; }
 .type-vip { background: #fce7f3; color: #be185d; }
 
 .pt-card-actions { display: flex; gap: 6px; margin-top: auto; }
@@ -208,7 +209,12 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   </div>
   <div class="nav-sub">
     <a class="nav-item" href="quotes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Báo Giá</a>
+<<<<<<< Updated upstream
     <a class="nav-item" href="orders.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+=======
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+    <a class="nav-item" href="customers.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Khách Hàng</a>
+>>>>>>> Stashed changes
   </div>
   <div class="nav-item nav-parent open" onclick="toggleNav(this)">
     <span class="nav-left">
@@ -239,7 +245,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       Khuyến Mãi
     </a>
   </div>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="invoices.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Hóa Đơn
   </a>
@@ -301,10 +307,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       </div>
       <select class="filter-sel" id="tableFilter" onchange="filterDetail()">
         <option value="">Tất cả bảng giá</option>
-        <option value="retail">Giá lẻ tiêu chuẩn</option>
-        <option value="wholesale1">Giá sỉ Mức 1</option>
-        <option value="wholesale2">Giá sỉ Mức 2</option>
-        <option value="wholesale3">Giá sỉ Mức 3</option>
+        <option value="retail">Giá tiêu chuẩn</option>
+        <option value="agency1">Đại lý cấp 1</option>
+        <option value="agency2">Đại lý cấp 2</option>
         <option value="vip">Khách hàng thân thiết</option>
       </select>
       <select class="filter-sel" id="brandFilter" onchange="filterDetail()">
@@ -403,7 +408,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 <div class="modal-backdrop" id="itemModal">
   <div class="modal-box">
     <div class="modal-hdr">
-      <h3>Thêm sản phẩm vào bảng giá</h3>
+      <h3 id="itemModalTitle">Thêm sản phẩm vào bảng giá</h3>
       <button class="modal-x" onclick="closeItemModal()">×</button>
     </div>
     <div class="modal-bdy">
@@ -411,9 +416,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         <label class="form-lbl">Bảng giá <em>*</em></label>
         <select class="form-sel" id="im_table">
           <option value="">-- Chọn bảng giá --</option>
-          <option value="wholesale1">Giá sỉ Mức 1 (–5%)</option>
-          <option value="wholesale2">Giá sỉ Mức 2 (–10%)</option>
-          <option value="wholesale3">Giá sỉ Mức 3 (–15%)</option>
+          <option value="agency1">Đại lý cấp 1 (–10%)</option>
+          <option value="agency2">Đại lý cấp 2 (–5%)</option>
           <option value="vip">Khách hàng thân thiết (–8%)</option>
         </select>
       </div>
@@ -467,63 +471,61 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 <script>
 /* ── DATA ── */
 const priceTables = [
-  { id:'retail',     name:'Giá lẻ tiêu chuẩn',       desc:'Giá mặc định cho khách lẻ',        type:'retail',    typeLabel:'Khách lẻ',  condition:'Tất cả sản phẩm',    discount:0,  items:30, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'gray'  },
-  { id:'wholesale1', name:'Giá sỉ Mức 1',             desc:'Mua từ 11 – 20 sản phẩm / đơn',   type:'wholesale', typeLabel:'Khách sỉ',  condition:'>10 SP / đơn',       discount:5,  items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
-  { id:'wholesale2', name:'Giá sỉ Mức 2',             desc:'Mua từ 21 – 30 sản phẩm / đơn',   type:'wholesale', typeLabel:'Khách sỉ',  condition:'>20 SP / đơn',       discount:10, items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
-  { id:'wholesale3', name:'Giá sỉ Mức 3',             desc:'Mua từ 31 sản phẩm trở lên / đơn',type:'wholesale', typeLabel:'Khách sỉ',  condition:'>30 SP / đơn',       discount:15, items:4, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'blue'  },
-  { id:'vip',        name:'Khách hàng thân thiết',     desc:'Khách đã tích lũy >15 sản phẩm',  type:'vip',       typeLabel:'Khách VIP', condition:'>15 SP đã mua',      discount:8,  items:6, status:'active', from:'01/01/2024', to:'31/12/2099', iconColor:'pink'  },
+  { id:'retail',  name:'Giá tiêu chuẩn',          desc:'Giá mặc định áp dụng cho tất cả khách hàng', type:'retail',    typeLabel:'Tất cả khách hàng', condition:'Tất cả sản phẩm', discount:0,  items:30, status:'active', from:'01/01/2026', to:'31/12/2026', iconColor:'gray'  },
+  { id:'agency1', name:'Đại lý cấp 1',           desc:'Giảm 10% dành cho đại lý cấp 1',             type:'wholesale', typeLabel:'Đại lý cấp 1',      condition:'Đại lý cấp 1',    discount:10, items:4,  status:'active', from:'01/01/2026', to:'31/12/2026', iconColor:'blue'  },
+  { id:'agency2', name:'Đại lý cấp 2',           desc:'Giảm 5% dành cho đại lý cấp 2',              type:'agency2',   typeLabel:'Đại lý cấp 2',      condition:'Đại lý cấp 2',    discount:5,  items:4,  status:'active', from:'01/01/2026', to:'31/12/2026', iconColor:'amber' },
+  { id:'vip',     name:'Khách hàng thân thiết',  desc:'Giảm 8% cho khách đã tích lũy >15 sản phẩm', type:'vip',       typeLabel:'Khách thân thiết',  condition:'Mua hàng thường xuyên',   discount:8,  items:6,  status:'active', from:'01/01/2026', to:'31/12/2026', iconColor:'pink'  },
 ];
 
 const priceItems = [
-  { tableId:'wholesale1', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale1', name:'NPK 17-16-8',                code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale1', name:'NPK 18-8-18+Bo+TE',          code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale1', name:'Cao cấp NPK 16-16-16+Bo+TE', code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:5,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale2', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:10, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale2', name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:10, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale2', name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:10, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale2', name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:10, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale3', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:15, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale3', name:'Chuyên Cà phê – Tiêu',       code:'S0017', brand:'songma',  brandLabel:'Song Mã',  basePrice:450000, discount:15, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale3', name:'Cao cấp NPK 16-16-16+Bo+TE', code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:15, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'wholesale3', name:'Hữu cơ khoáng 20-22-15+Bo+TE',code:'S0023',brand:'daungu', brandLabel:'Đầu Ngựa', basePrice:360000, discount:15, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'Chuyên Cao su',              code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'vip',        name:'Khoáng hữu cơ 17-7-17+Bo+TE',code:'S0024',brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:340000, discount:8,  from:'01/01/2024', to:'31/12/2099' },
-  // Giá lẻ tiêu chuẩn – tất cả sản phẩm
-  { tableId:'retail', name:'NPK 16-16-16',                   code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'NPK 17-16-8',                    code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Hữu cơ Vi sinh cao cấp',         code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Khoáng cao cấp 20-20-15+Bo+TE',  code:'S0004', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:350000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Lân Canxi Đất Xanh',             code:'S0005', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:195000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Vôi Lân Đất Xanh',               code:'S0006', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:210000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Lúa 1',                   code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Lúa 2',                   code:'S0008', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên dùng cho Chuối',          code:'S0009', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:460000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Đất Xanh Trung Vi Lượng',        code:'S0010', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'NPK 18-8-18+Bo+TE',              code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'NPK Mùa Khô 21-5-2',             code:'S0012', brand:'songma',  brandLabel:'Song Mã',  basePrice:390000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Hữu cơ khoáng 16-16-8+Bo+TE',   code:'S0013', brand:'songma',  brandLabel:'Song Mã',  basePrice:320000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Hữu cơ Vi sinh Song Mã',         code:'S0014', brand:'songma',  brandLabel:'Song Mã',  basePrice:280000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Lân Canxi Song Mã',              code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Vôi Lân Song Mã',                code:'S0016', brand:'songma',  brandLabel:'Song Mã',  basePrice:185000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cà phê – Tiêu',           code:'S0017', brand:'songma',  brandLabel:'Song Mã',  basePrice:450000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cao su',                  code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cây ăn trái & Rau màu',  code:'S0019', brand:'songma',  brandLabel:'Song Mã',  basePrice:460000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Trung vi lượng – Humic',         code:'S0020', brand:'songma',  brandLabel:'Song Mã',  basePrice:310000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Cao cấp NPK 16-16-16+Bo+TE',    code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'NPK 18-8-18',                    code:'S0022', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:415000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Hữu cơ khoáng 20-22-15+Bo+TE',  code:'S0023', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:360000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Khoáng hữu cơ 17-7-17+Bo+TE',   code:'S0024', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:340000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Lân Canxi Đầu Ngựa',             code:'S0025', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:205000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Vôi Lân Đầu Ngựa',               code:'S0026', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:190000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cà phê & Hồ tiêu',        code:'S0027', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:455000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cao su Đầu Ngựa',         code:'S0028', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:445000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Chuyên Cây ăn trái Lớn trái',   code:'S0029', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:465000, discount:0, from:'01/01/2024', to:'31/12/2099' },
-  { tableId:'retail', name:'Khoáng hữu cơ 20-10-20+Bo+TE',  code:'S0030', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:330000, discount:0, from:'01/01/2024', to:'31/12/2099' },
+  // Đại lý cấp 1 – giảm 10%
+  { tableId:'agency1', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:10, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency1', name:'NPK 17-16-8',                code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:10, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency1', name:'NPK 18-8-18+Bo+TE',          code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:10, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency1', name:'Cao cấp NPK 16-16-16+Bo+TE', code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:10, from:'01/01/2026', to:'31/12/2026' },
+  // Đại lý cấp 2 – giảm 5%
+  { tableId:'agency2', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:5, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency2', name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:5, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency2', name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:5, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'agency2', name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:5, from:'01/01/2026', to:'31/12/2026' },
+  // Khách hàng thân thiết – giảm 8%
+  { tableId:'vip', name:'NPK 16-16-16',               code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'vip', name:'Hữu cơ Vi sinh cao cấp',     code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'vip', name:'Chuyên Lúa 1',               code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'vip', name:'Lân Canxi Song Mã',          code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'vip', name:'Chuyên Cao su',              code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'vip', name:'Khoáng hữu cơ 17-7-17+Bo+TE',code:'S0024',brand:'daungu', brandLabel:'Đầu Ngựa', basePrice:340000, discount:8, from:'01/01/2026', to:'31/12/2026' },
+  // Giá tiêu chuẩn – tất cả khách hàng
+  { tableId:'retail', name:'NPK 16-16-16',                   code:'S0001', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'NPK 17-16-8',                    code:'S0002', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:420000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Hữu cơ Vi sinh cao cấp',         code:'S0003', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:295000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Khoáng cao cấp 20-20-15+Bo+TE',  code:'S0004', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:350000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Lân Canxi Đất Xanh',             code:'S0005', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:195000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Vôi Lân Đất Xanh',               code:'S0006', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:210000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Lúa 1',                   code:'S0007', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Lúa 2',                   code:'S0008', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:430000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên dùng cho Chuối',          code:'S0009', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:460000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Đất Xanh Trung Vi Lượng',        code:'S0010', brand:'datxanh', brandLabel:'Đất Xanh', basePrice:380000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'NPK 18-8-18+Bo+TE',              code:'S0011', brand:'songma',  brandLabel:'Song Mã',  basePrice:410000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'NPK Mùa Khô 21-5-2',             code:'S0012', brand:'songma',  brandLabel:'Song Mã',  basePrice:390000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Hữu cơ khoáng 16-16-8+Bo+TE',   code:'S0013', brand:'songma',  brandLabel:'Song Mã',  basePrice:320000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Hữu cơ Vi sinh Song Mã',         code:'S0014', brand:'songma',  brandLabel:'Song Mã',  basePrice:280000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Lân Canxi Song Mã',              code:'S0015', brand:'songma',  brandLabel:'Song Mã',  basePrice:200000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Vôi Lân Song Mã',                code:'S0016', brand:'songma',  brandLabel:'Song Mã',  basePrice:185000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cà phê – Tiêu',           code:'S0017', brand:'songma',  brandLabel:'Song Mã',  basePrice:450000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cao su',                  code:'S0018', brand:'songma',  brandLabel:'Song Mã',  basePrice:440000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cây ăn trái & Rau màu',  code:'S0019', brand:'songma',  brandLabel:'Song Mã',  basePrice:460000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Trung vi lượng – Humic',         code:'S0020', brand:'songma',  brandLabel:'Song Mã',  basePrice:310000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Cao cấp NPK 16-16-16+Bo+TE',    code:'S0021', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:400000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'NPK 18-8-18',                    code:'S0022', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:415000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Hữu cơ khoáng 20-22-15+Bo+TE',  code:'S0023', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:360000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Khoáng hữu cơ 17-7-17+Bo+TE',   code:'S0024', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:340000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Lân Canxi Đầu Ngựa',             code:'S0025', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:205000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Vôi Lân Đầu Ngựa',               code:'S0026', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:190000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cà phê & Hồ tiêu',        code:'S0027', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:455000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cao su Đầu Ngựa',         code:'S0028', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:445000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Chuyên Cây ăn trái Lớn trái',   code:'S0029', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:465000, discount:0, from:'01/01/2026', to:'31/12/2026' },
+  { tableId:'retail', name:'Khoáng hữu cơ 20-10-20+Bo+TE',  code:'S0030', brand:'daungu',  brandLabel:'Đầu Ngựa', basePrice:330000, discount:0, from:'01/01/2026', to:'31/12/2026' },
 ];
 
 /* ── HELPERS ── */
@@ -549,7 +551,7 @@ function renderCards(filter) {
     count++;
     const iconClass = { gray:'pt-icon-gray', blue:'pt-icon-blue', amber:'pt-icon-amber', pink:'pt-icon-pink' }[t.iconColor] || 'pt-icon-gray';
     const icon = t.iconColor === 'pink' ? starSvg : iconSvg;
-    const typeBadgeClass = { retail:'type-retail', wholesale:'type-wholesale', vip:'type-vip' }[t.type] || 'type-retail';
+    const typeBadgeClass = { retail:'type-retail', wholesale:'type-wholesale', agency2:'type-amber', vip:'type-vip' }[t.type] || 'type-retail';
     const discountHtml = t.discount === 0
       ? `<span class="pt-row-val no-discount">Không giảm</span>`
       : `<span class="pt-row-val discount">${t.discount}%</span>`;
@@ -575,11 +577,6 @@ function renderCards(filter) {
       <div class="pt-row"><span class="pt-row-lbl">Giảm giá chung</span>${discountHtml}</div>
       <div class="pt-row"><span class="pt-row-lbl">Số mục giá riêng</span>${itemsHtml}</div>
       <div class="pt-row"><span class="pt-row-lbl">Hiệu lực</span><span class="pt-row-val date">${t.from} → ${t.to}</span></div>
-      <div class="pt-card-actions">
-        <button class="pt-btn-edit" onclick="event.stopPropagation(); openTableModal('${t.id}')">${editSvg} Sửa</button>
-        <button class="pt-btn-toggle" onclick="event.stopPropagation(); toggleTableStatus('${t.id}')">${toggleIcon} ${toggleLabel}</button>
-        <button class="pt-btn-view" onclick="viewDetail('${t.id}')">Xem giá →</button>
-      </div>
     </div>`;
   }).join('');
   document.getElementById('cardCount').textContent = count + ' bảng giá';
@@ -642,6 +639,17 @@ function viewDetail(tableId) {
 
 function filterCards() { renderCards(document.getElementById('cardSearch').value); }
 function filterDetail() { renderDetail(); }
+
+/* ── DELETE TABLE ── */
+function deleteTable(id) {
+  const idx = priceTables.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const name = priceTables[idx].name;
+  if (!confirm(`Xoá bảng giá "${name}"?`)) return;
+  priceTables.splice(idx, 1);
+  renderCards(document.getElementById('cardSearch').value);
+  showToast(`Đã xoá bảng giá "${name}"`);
+}
 
 /* ── TOGGLE TABLE STATUS ── */
 function toggleTableStatus(id) {
@@ -726,15 +734,26 @@ function saveTable() {
 }
 
 /* ── MODAL ITEM ── */
+let editItemRealIdx = null;
+
 function openItemModal() {
+  editItemRealIdx = null;
+  document.getElementById('itemModalTitle').textContent = 'Thêm sản phẩm vào bảng giá';
   document.getElementById('im_table').value = document.getElementById('tableFilter').value || '';
   document.getElementById('im_product').value = '';
   document.getElementById('im_discount').value = '';
   document.getElementById('im_special').value = '';
+  document.getElementById('im_from').value = '2026-01-01';
+  document.getElementById('im_to').value = '2026-12-31';
+  document.getElementById('im_product').disabled = false;
   document.getElementById('itemModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeItemModal() { document.getElementById('itemModal').classList.remove('open'); document.body.style.overflow = ''; }
+function closeItemModal() {
+  document.getElementById('itemModal').classList.remove('open');
+  document.getElementById('im_product').disabled = false;
+  document.body.style.overflow = '';
+}
 
 document.getElementById('im_product').addEventListener('change', calcSpecial);
 document.getElementById('im_discount').addEventListener('input', calcSpecial);
@@ -760,51 +779,71 @@ function saveItem() {
   const parts = prodVal.split('|');
   const fromVal = document.getElementById('im_from').value;
   const toVal   = document.getElementById('im_to').value;
+  const fromFmt = fromVal ? fromVal.split('-').reverse().join('/') : '01/01/2026';
+  const toFmt   = toVal   ? toVal.split('-').reverse().join('/')   : '31/12/2026';
 
-  const newItem = {
-    tableId,
-    name: parts[1], code: parts[2], brand: parts[3], brandLabel: parts[4],
-    basePrice: parseInt(parts[5]) || 0,
-    discount: parseFloat(document.getElementById('im_discount').value) || 0,
-    from: fromVal ? fromVal.split('-').reverse().join('/') : '01/01/2024',
-    to:   toVal   ? toVal.split('-').reverse().join('/')   : '31/12/2099',
-  };
-  priceItems.push(newItem);
-
-  const t = priceTables.find(p => p.id === tableId);
-  if (t) t.items++;
-
-  closeItemModal();
-  renderDetail();
-  renderCards(document.getElementById('cardSearch').value);
-  showToast(`Đã thêm "${newItem.name}" vào bảng giá`);
+  if (editItemRealIdx !== null) {
+    const item = priceItems[editItemRealIdx];
+    item.tableId  = tableId;
+    item.discount = parseFloat(document.getElementById('im_discount').value) || 0;
+    item.from     = fromFmt;
+    item.to       = toFmt;
+    closeItemModal();
+    renderDetail();
+    renderCards(document.getElementById('cardSearch').value);
+    showToast(`Đã cập nhật "${item.name}"`);
+  } else {
+    const newItem = {
+      tableId,
+      name: parts[1], code: parts[2], brand: parts[3], brandLabel: parts[4],
+      basePrice: parseInt(parts[5]) || 0,
+      discount: parseFloat(document.getElementById('im_discount').value) || 0,
+      from: fromFmt, to: toFmt,
+    };
+    priceItems.push(newItem);
+    const t = priceTables.find(p => p.id === tableId);
+    if (t) t.items++;
+    closeItemModal();
+    renderDetail();
+    renderCards(document.getElementById('cardSearch').value);
+    showToast(`Đã thêm "${newItem.name}" vào bảng giá`);
+  }
 }
 
 function editItem(idx) {
-  const item = priceItems.filter((_, i) => {
-    const s = norm(document.getElementById('detailSearch').value);
-    const tf = document.getElementById('tableFilter').value;
-    const bf = document.getElementById('brandFilter').value;
-    return (!tf || priceItems[i].tableId === tf) && (!bf || priceItems[i].brand === bf) && (!s || norm(priceItems[i].name).includes(s));
-  })[idx];
-  showToast(`Chỉnh sửa "${item ? item.name : ''}" (demo)`);
+  const item = priceItems[idx];
+  if (!item) return;
+  editItemRealIdx = idx;
+  document.getElementById('itemModalTitle').textContent = 'Chỉnh sửa mục giá';
+  document.getElementById('im_table').value = item.tableId;
+  // Hiển thị tên sản phẩm dưới dạng readonly
+  const prodSel = document.getElementById('im_product');
+  prodSel.disabled = true;
+  // Thêm option tạm nếu chưa có
+  let opt = prodSel.querySelector(`option[data-edit="${item.code}"]`);
+  if (!opt) {
+    opt = document.createElement('option');
+    opt.value = `_edit|${item.name}|${item.code}|${item.brand}|${item.brandLabel}|${item.basePrice}`;
+    opt.setAttribute('data-edit', item.code);
+    opt.textContent = `${item.name} – ${item.brandLabel}`;
+    prodSel.appendChild(opt);
+  }
+  prodSel.value = opt.value;
+  document.getElementById('im_discount').value = item.discount;
+  document.getElementById('im_special').value = Math.round(item.basePrice * (1 - item.discount / 100));
+  document.getElementById('im_from').value = item.from.split('/').reverse().join('-');
+  document.getElementById('im_to').value = item.to.split('/').reverse().join('-');
+  document.getElementById('itemModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function deleteItem(idx) {
-  const visibleItems = priceItems.reduce((acc, item, i) => {
-    const s = norm(document.getElementById('detailSearch').value);
-    const tf = document.getElementById('tableFilter').value;
-    const bf = document.getElementById('brandFilter').value;
-    const ok = (!tf || item.tableId === tf) && (!bf || item.brand === bf) && (!s || norm(item.name).includes(s) || norm(item.code).includes(s));
-    if (ok) acc.push(i);
-    return acc;
-  }, []);
-  const realIdx = visibleItems[idx];
-  if (realIdx === undefined) return;
-  const item = priceItems[realIdx];
+  const item = priceItems[idx];
+  if (!item) return;
+  if (!confirm(`Xoá "${item.name}" khỏi bảng giá?`)) return;
   const t = priceTables.find(p => p.id === item.tableId);
   if (t && t.items > 0) t.items--;
-  priceItems.splice(realIdx, 1);
+  priceItems.splice(idx, 1);
   renderDetail();
   renderCards(document.getElementById('cardSearch').value);
   showToast(`Đã xoá "${item.name}" khỏi bảng giá`);
@@ -824,6 +863,29 @@ document.getElementById('itemModal').addEventListener('click', function(e) { if 
 /* ── INIT ── */
 renderCards();
 renderDetail();
+
+
+</script>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+(function(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity .2s ease';
+  window.addEventListener('load',function(){
+    document.body.offsetHeight;
+    document.body.style.opacity='1';
+  });
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a.nav-item');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    document.body.style.opacity='0';
+    setTimeout(function(){ window.location.href=href; },200);
+  });
+})();
 </script>
 </body>
 </html>

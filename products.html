@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
@@ -151,6 +151,87 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--blue); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; }
 .btn-save-m:hover { background: #2563eb; }
 
+/* ── PRODUCT DRAWER ── */
+.drw-overlay { position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s; }
+.drw-overlay.open { opacity:1;pointer-events:all; }
+.drw { position:fixed;top:0;right:0;bottom:0;width:440px;background:#fff;z-index:401;display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.14);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1); }
+.drw.open { transform:translateX(0); }
+.drw-hd { padding:16px 20px 0;flex-shrink:0;border-bottom:1px solid var(--gray-100);padding-bottom:14px; }
+.drw-hd-top { display:flex;align-items:center;justify-content:space-between;margin-bottom:12px; }
+.drw-close { width:30px;height:30px;border:none;background:var(--gray-100);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-500);transition:all .15s; }
+.drw-close:hover { background:var(--gray-200); }
+.drw-close svg { width:14px;height:14px; }
+.drw-hd-title { font-size:15px;font-weight:800;color:var(--gray-900);line-height:1.3; }
+.drw-hd-code { font-size:11px;color:var(--gray-400);margin-top:2px; }
+.drw-hd-badges { display:flex;gap:6px;margin-top:8px;flex-wrap:wrap; }
+.drw-body { flex:1;overflow-y:auto;padding:18px 20px 24px; }
+.drw-price-box { background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:16px;margin-bottom:14px; }
+.drw-price-lbl { font-size:10.5px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px; }
+.drw-price-val { font-size:26px;font-weight:800;color:#15803d;line-height:1; }
+.drw-price-sub { font-size:11.5px;color:#16a34a;margin-top:4px; }
+.drw-price-row { display:flex;gap:8px;margin-top:12px;align-items:center; }
+.drw-price-inp { border:1.5px solid #86efac;border-radius:8px;padding:7px 12px;font-family:inherit;font-size:13px;font-weight:700;color:#15803d;background:#fff;outline:none;width:150px;transition:border-color .15s; }
+.drw-price-inp:focus { border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12); }
+.drw-price-inp.err { border-color:#ef4444; }
+.btn-save-price { padding:7px 16px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:background .15s; }
+.btn-save-price:hover { background:#15803d; }
+.btn-edit-price { display:flex;align-items:center;gap:5px;padding:7px 14px;background:#fff;color:#16a34a;border:1.5px solid #86efac;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-edit-price:hover { background:#f0fdf4; }
+.btn-edit-price svg { width:12px;height:12px; }
+.btn-cancel-price { padding:7px 14px;background:#fff;color:var(--gray-500);border:1.5px solid var(--gray-200);border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-cancel-price:hover { background:var(--gray-100); }
+.drw-stock-box { display:flex;align-items:center;justify-content:space-between;background:var(--gray-50);border:1px solid var(--gray-100);border-radius:10px;padding:12px 16px;margin-bottom:16px; }
+.drw-stock-num { font-size:22px;font-weight:800;color:var(--gray-900); }
+.drw-stock-lbl { font-size:11px;color:var(--gray-400);margin-top:2px; }
+.drw-section { margin-bottom:18px; }
+.drw-sec-title { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-400);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--gray-100); }
+.drw-section p { font-size:12.5px;color:var(--gray-600,#475569);line-height:1.75; }
+.drw-spec-tbl { width:100%;border-collapse:collapse; }
+.drw-spec-tbl td { padding:7px 0;font-size:12.5px;border-bottom:1px solid var(--gray-100); }
+.drw-spec-tbl tr:last-child td { border-bottom:none; }
+.drw-spec-tbl td:first-child { color:var(--gray-400);width:120px;font-weight:500; }
+.drw-spec-tbl td:last-child { color:var(--gray-700);font-weight:600; }
+.drw-crop-tags { display:flex;flex-wrap:wrap;gap:6px; }
+.drw-crop-tag { background:var(--blue-pale);color:var(--blue);font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:99px; }
+.drw-actions { display:flex;gap:8px; }
+.btn-drw-edit { display:flex;align-items:center;gap:5px;padding:6px 14px;background:#eff6ff;color:#3b82f6;border:1.5px solid #bfdbfe;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-drw-edit:hover { background:#dbeafe; }
+.btn-drw-edit svg { width:12px;height:12px; }
+.btn-drw-del { display:flex;align-items:center;gap:5px;padding:6px 14px;background:#fff5f5;color:#ef4444;border:1.5px solid #fecaca;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-drw-del:hover { background:#fee2e2; }
+.btn-drw-del svg { width:12px;height:12px; }
+/* Edit mode in drawer */
+.drw-edit-panel { display:none;flex-direction:column;gap:0; }
+.drw-edit-panel.show { display:flex; }
+.drw-view-panel { display:flex;flex-direction:column; }
+.drw-view-panel.hide { display:none; }
+.drw-field { margin-bottom:13px; }
+.drw-field label { display:block;font-size:10.5px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px; }
+.drw-field input, .drw-field select, .drw-field textarea { width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:8px 11px;font-family:inherit;font-size:12.5px;color:var(--gray-900);background:#fff;outline:none;transition:border-color .15s; }
+.drw-field input:focus, .drw-field select:focus, .drw-field textarea:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.1); }
+.drw-field textarea { resize:vertical;min-height:72px;line-height:1.6; }
+.drw-field-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.drw-edit-btns { display:flex;gap:8px;margin-top:6px;padding-top:16px;border-top:1px solid var(--gray-100); }
+.btn-drw-save { flex:1;padding:9px 0;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s; }
+.btn-drw-save:hover { background:#2563eb; }
+.btn-drw-cancel-edit { padding:9px 18px;background:#fff;color:var(--gray-500);border:1.5px solid var(--gray-200);border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s; }
+.btn-drw-cancel-edit:hover { background:var(--gray-100); }
+/* Delete modal */
+.del-modal-overlay { position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s; }
+.del-modal-overlay.open { opacity:1;pointer-events:all; }
+.del-modal { background:#fff;border-radius:16px;padding:28px 28px 24px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:scale(.95);transition:transform .2s; }
+.del-modal-overlay.open .del-modal { transform:scale(1); }
+.del-modal-ico { width:48px;height:48px;border-radius:12px;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin-bottom:16px; }
+.del-modal-ico svg { width:22px;height:22px;color:#ef4444; }
+.del-modal h3 { font-size:15px;font-weight:800;color:var(--gray-900);margin-bottom:6px; }
+.del-modal p { font-size:12.5px;color:var(--gray-500);line-height:1.65;margin-bottom:20px; }
+.del-modal-btns { display:flex;gap:10px; }
+.del-modal-btns button { flex:1;padding:9px 0;border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s; }
+.btn-del-cancel { background:var(--gray-100);color:var(--gray-700); }
+.btn-del-cancel:hover { background:var(--gray-200); }
+.btn-del-confirm { background:#ef4444;color:#fff; }
+.btn-del-confirm:hover { background:#dc2626; }
+
 /* ── TOAST ── */
 .toast { position: fixed; bottom: 24px; right: 24px; z-index: 600; background: #1e293b; color: white; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 28px rgba(0,0,0,.22); transform: translateY(70px); opacity: 0; transition: all .35s cubic-bezier(.34,1.3,.64,1); min-width: 280px; pointer-events: none; }
 .toast.show { transform: translateY(0); opacity: 1; }
@@ -223,7 +304,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       Khuyến Mãi
     </a>
   </div>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="invoices.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Hóa Đơn
   </a>
@@ -594,9 +675,148 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   </div>
 </div>
 
+<!-- ── PRODUCT DETAIL DRAWER ── -->
+<div class="drw-overlay" id="drwOverlay" onclick="closeProductDrawer()"></div>
+<div class="drw" id="productDrawer">
+  <div class="drw-hd">
+    <div class="drw-hd-top">
+      <button class="drw-close" onclick="closeProductDrawer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="drw-actions">
+        <button class="btn-drw-edit" onclick="openEditPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Chỉnh sửa
+        </button>
+        <button class="btn-drw-del" onclick="openDeleteModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Xoá
+        </button>
+      </div>
+    </div>
+    <div class="drw-hd-title" id="drw-name"></div>
+    <div class="drw-hd-code" id="drw-code"></div>
+    <div class="drw-hd-badges" id="drw-badges"></div>
+  </div>
+  <div class="drw-body">
+
+    <!-- ── VIEW PANEL ── -->
+    <div class="drw-view-panel" id="drwViewPanel">
+      <div class="drw-price-box">
+        <div class="drw-price-lbl">Giá bán hiện tại</div>
+        <div class="drw-price-val" id="drw-price-val"></div>
+        <div class="drw-price-sub" id="drw-price-sub"></div>
+        <div class="drw-price-row" id="drw-view-mode">
+          <button class="btn-edit-price" onclick="togglePriceEdit(true)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Cập nhật giá
+          </button>
+        </div>
+        <div class="drw-price-row" id="drw-edit-mode" style="display:none">
+          <input class="drw-price-inp" type="number" id="drw-price-inp" placeholder="Nhập giá mới..." />
+          <button class="btn-save-price" onclick="savePrice()">Lưu</button>
+          <button class="btn-cancel-price" onclick="togglePriceEdit(false)">Huỷ</button>
+        </div>
+      </div>
+      <div class="drw-stock-box">
+        <div>
+          <div class="drw-stock-num" id="drw-stock-num"></div>
+          <div class="drw-stock-lbl">Tồn kho hiện tại</div>
+        </div>
+        <div id="drw-stock-badge"></div>
+      </div>
+      <div class="drw-section">
+        <div class="drw-sec-title">Mô tả sản phẩm</div>
+        <p id="drw-desc"></p>
+      </div>
+      <div class="drw-section">
+        <div class="drw-sec-title">Thông số kỹ thuật</div>
+        <table class="drw-spec-tbl" id="drw-specs"></table>
+      </div>
+      <div class="drw-section">
+        <div class="drw-sec-title">Cây trồng phù hợp</div>
+        <div class="drw-crop-tags" id="drw-crops"></div>
+      </div>
+      <div class="drw-section">
+        <div class="drw-sec-title">Hướng dẫn sử dụng</div>
+        <p id="drw-usage"></p>
+      </div>
+    </div>
+
+    <!-- ── EDIT PANEL ── -->
+    <div class="drw-edit-panel" id="drwEditPanel">
+      <div class="drw-section" style="margin-bottom:16px">
+        <div class="drw-sec-title">Chỉnh sửa thông tin sản phẩm</div>
+      </div>
+      <div class="drw-field">
+        <label>Tên sản phẩm</label>
+        <input type="text" id="edit-name" placeholder="Tên sản phẩm..." />
+      </div>
+      <div class="drw-field-row">
+        <div class="drw-field">
+          <label>Thành phần (NPK)</label>
+          <input type="text" id="edit-npk" placeholder="N:16% – P₂O₅:16%..." />
+        </div>
+        <div class="drw-field">
+          <label>Đóng gói</label>
+          <input type="text" id="edit-weight" placeholder="50 kg/bao..." />
+        </div>
+      </div>
+      <div class="drw-field-row">
+        <div class="drw-field">
+          <label>Danh mục</label>
+          <select id="edit-cat">
+            <option value="Phân NPK">Phân NPK</option>
+            <option value="Phân hữu cơ">Phân hữu cơ</option>
+            <option value="Phân lân – Kali">Phân lân – Kali</option>
+            <option value="Phân chuyên dùng">Phân chuyên dùng</option>
+            <option value="Phân vi lượng">Phân vi lượng</option>
+          </select>
+        </div>
+        <div class="drw-field">
+          <label>Tồn kho (bao)</label>
+          <input type="number" id="edit-qty" placeholder="0" min="0" />
+        </div>
+      </div>
+      <div class="drw-field">
+        <label>Mô tả sản phẩm</label>
+        <textarea id="edit-desc" rows="4" placeholder="Mô tả chi tiết..."></textarea>
+      </div>
+      <div class="drw-field">
+        <label>Cây trồng phù hợp (phân cách bằng dấu phẩy)</label>
+        <input type="text" id="edit-crops" placeholder="Lúa, Ngô, Cây ăn trái..." />
+      </div>
+      <div class="drw-field">
+        <label>Hướng dẫn sử dụng</label>
+        <textarea id="edit-usage" rows="3" placeholder="Hướng dẫn..."></textarea>
+      </div>
+      <div class="drw-edit-btns">
+        <button class="btn-drw-cancel-edit" onclick="closeEditPanel()">Huỷ</button>
+        <button class="btn-drw-save" onclick="saveProductEdit()">Lưu thay đổi</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="del-modal-overlay" id="delModalOverlay">
+  <div class="del-modal">
+    <div class="del-modal-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <h3>Xác nhận xoá sản phẩm</h3>
+    <p>Bạn có chắc muốn xoá sản phẩm <strong id="del-modal-name"></strong>? Hành động này không thể hoàn tác.</p>
+    <div class="del-modal-btns">
+      <button class="btn-del-cancel" onclick="closeDeleteModal()">Huỷ bỏ</button>
+      <button class="btn-del-confirm" onclick="confirmDeleteProduct()">Xoá sản phẩm</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── TOAST ── -->
 <div class="toast" id="toast">
-  <div class="toast-ico">
+  <div class="toast-ico" id="toast-ico-inner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
   </div>
   <span id="toastMsg">Đã thêm sản phẩm thành công</span>
@@ -782,6 +1002,380 @@ function initCards() {
 
 initCards();
 filterProducts();
+
+/* ══════════════════════════════════════════
+   PRODUCT DETAIL DRAWER
+══════════════════════════════════════════ */
+const PD = {
+  'dx-npk1':  { npk:'N:16% – P₂O₅:16% – K₂O:16%', weight:'50 kg/bao', cat:'Phân NPK', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân khoáng NPK 16-16-16 Đất Xanh có tỷ lệ 3 yếu tố đa lượng cân bằng tuyệt đối. Phù hợp bón lót và bón thúc ở mọi giai đoạn sinh trưởng. Giúp cây phát triển cân đối, lá xanh bền, thân cứng chắc, tăng khả năng chống đổ ngã. Sản phẩm chủ lực của Đất Xanh, được nông dân ĐBSCL tin dùng nhiều năm.',
+    crops:['Lúa','Ngô','Mía','Cây ăn trái','Rau màu','Cây công nghiệp'],
+    usage:'Bón lót: 200–300 kg/ha trước khi trồng. Bón thúc: 150–200 kg/ha chia 2–3 lần/vụ. Kết hợp tưới nước đầy đủ sau bón để phân tan và cây hấp thu tốt.' },
+  'dx-npk2':  { npk:'N:17% – P₂O₅:16% – K₂O:8%', weight:'50 kg/bao', cat:'Phân NPK', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Hàm lượng đạm và lân cao, kích thích cây đẻ nhánh mạnh, thúc đẩy sinh trưởng nhanh trong giai đoạn đầu vụ. Đặc biệt hiệu quả cho lúa thúc 1 và các loại cây cần phát triển bộ lá mạnh trước khi ra hoa.',
+    crops:['Lúa','Ngô','Cao su','Mía','Cây ăn trái'],
+    usage:'Bón thúc 1: 150–200 kg/ha sau gieo sạ 10–12 ngày. Bón thúc 2: 100–150 kg/ha sau thúc 1 khoảng 15 ngày.' },
+  'dx-huco1': { npk:'Hữu cơ ≥15% + Trichoderma ≥10⁶ CFU/g', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân hữu cơ vi sinh cao cấp Đất Xanh chứa nấm đối kháng Trichoderma giúp cải tạo đất, ức chế nấm bệnh vùng rễ. Tăng mật số vi sinh vật có ích, cải thiện cấu trúc đất tơi xốp, giúp rễ ăn sâu và hấp thu dinh dưỡng tốt hơn.',
+    crops:['Lúa','Rau màu','Cây ăn trái','Hồ tiêu','Cà phê','Cao su'],
+    usage:'Bón lót: 500–1.000 kg/ha trộn đều vào đất. Bón thúc định kỳ: 200–300 kg/ha, cách 2–3 tháng/lần để duy trì vi sinh vật có ích trong đất.' },
+  'dx-huco2': { npk:'N:20% – P₂O₅:20% – K₂O:15% + Bo + TE', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân khoáng cao cấp hàm lượng dinh dưỡng cao kết hợp Bo và vi lượng tổng hợp. Thúc đẩy lá xanh đậm, mướt cây, tăng khả năng quang hợp. Phù hợp giai đoạn cây cần dinh dưỡng cao nhất để nuôi trái to và bóng đẹp.',
+    crops:['Thanh long','Sầu riêng','Xoài','Cây có múi','Nhãn','Bưởi'],
+    usage:'Bón thúc định kỳ: 200–300 kg/ha, 2–3 lần/vụ. Kết hợp tưới nhỏ giọt hoặc bón gốc rồi tưới đẫm ngay sau.' },
+  'dx-lan1':  { npk:'P₂O₅:16% – CaO:30% – MgO:5%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân lân canxi Đất Xanh giúp hạ phèn, nâng pH đất về ngưỡng trung tính. Canxi cao cứng tế bào, kháng bệnh, chống nứt trái và rụng hoa. MgO bổ sung magie giúp lá xanh bền lâu và tổng hợp diệp lục tốt.',
+    crops:['Lúa','Cây ăn trái','Rau màu','Mía','Ngô'],
+    usage:'Bón lót: 300–500 kg/ha trước khi làm đất. Dùng thay vôi để vừa cải tạo đất vừa cung cấp lân và canxi.' },
+  'dx-lan2':  { npk:'CaO:40% – P₂O₅:8% – MgO:6%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Kết hợp vôi và lân giúp khắc phục nhanh tình trạng đất chua phèn, vàng lá nghẹt rễ. CaO cao trung hòa acid nhanh, lân kích thích bộ rễ phát triển trở lại, thích hợp cho vùng đất phèn ĐBSCL.',
+    crops:['Lúa','Ngô','Cây ăn trái','Rau màu'],
+    usage:'Rải đều 300–500 kg/ha trước khi làm đất. Không bón cùng lúc với phân đạm urê hoặc phân DAP.' },
+  'dx-chu1':  { npk:'N:20% – P₂O₅:20% – K₂O:11% + Si', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân chuyên dùng cho lúa giai đoạn thúc 1 và thúc 2. Đạm lân cao kích thích đẻ nhánh tối đa, tạo nhiều chồi hữu hiệu. Silic bổ sung giúp thân cứng chắc, kháng đạo ôn và rầy nâu hiệu quả.',
+    crops:['Lúa nước','Lúa nếp','Lúa ST24','Lúa ST25'],
+    usage:'Bón thúc 1: 150–200 kg/ha sau sạ 10–12 ngày. Bón thúc 2: 100–150 kg/ha sau thúc 1 từ 12–15 ngày khi lúa bắt đầu đứng cái.' },
+  'dx-chu2':  { npk:'N:14% – P₂O₅:7% – K₂O:21% + Si', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân chuyên giai đoạn đòng trổ bông. Kali cao nuôi đòng, chắc hạt, bóng đài. Si làm cứng bẹ lá đòng, giảm lép lửng. Phù hợp bón đón đòng giúp tăng tỷ lệ hạt chắc và trọng lượng nghìn hạt.',
+    crops:['Lúa nước','Lúa nếp','Lúa giống'],
+    usage:'Bón đón đòng: 80–100 kg/ha khi nhìn thấy tim đèn (khoảng 60–65 ngày sau sạ với lúa ngắn ngày).' },
+  'dx-chu3':  { npk:'N:12% – P₂O₅:8% – K₂O:25% + Bo + TE', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Phân chuyên biệt cho cây chuối. Kali cực cao giúp trái to, dài nải, chắc quầy, đồng đều. Bo ngăn sượng trái và rụng buồng. TE tổng hợp cung cấp vi lượng cho màu sắc trái vàng đẹp, tăng giá trị thương phẩm.',
+    crops:['Chuối già cui','Chuối cau','Chuối sứ','Chuối Cavendish'],
+    usage:'Bón định kỳ: 200–300 kg/ha/lần, 2 lần/năm. Bón vào rãnh cạnh gốc rồi lấp đất và tưới nước.' },
+  'dx-vil1':  { npk:'CaO:18% – MgO:12% – SiO₂:15% + Bo + Zn + Cu', weight:'25 kg/bao', cat:'Phân vi lượng', brand:'Đất Xanh', bClass:'brd-dx',
+    desc:'Bổ sung đồng thời Canxi, Magie và Silic liều cao kết hợp Bo, Kẽm, Đồng. Giúp cây cứng cáp, kháng bệnh, chống rụng hoa và trái non. Canxi cao ngăn nứt trái, thối đít trái đặc biệt hiệu quả cho sầu riêng và cây có múi.',
+    crops:['Thanh long','Sầu riêng','Cây có múi','Hồ tiêu','Cà phê'],
+    usage:'Bón bổ sung: 100–200 kg/ha, 2–3 lần/năm. Kết hợp phân NPK chính để đạt hiệu quả dinh dưỡng toàn diện.' },
+  'sm-npk1':  { npk:'N:18% – P₂O₅:8% – K₂O:18% + Bo + TE', weight:'50 kg/bao', cat:'Phân NPK', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Phân NPK Song Mã hàm lượng đạm và kali cao cân bằng, phù hợp giai đoạn nuôi trái và chắc hạt. Bo ngăn rụng hoa, vi lượng TE đảm bảo chất lượng trái đồng đều và màu sắc bắt mắt, tăng tính cạnh tranh.',
+    crops:['Lúa','Ngô','Đậu phộng','Cây ăn trái','Rau màu'],
+    usage:'Bón thúc: 150–200 kg/ha, 2–3 lần/vụ. Ưu tiên sử dụng giai đoạn cây ra hoa đến khi trái chín.' },
+  'sm-npk2':  { npk:'N:21% – P₂O₅:5% – K₂O:2%', weight:'50 kg/bao', cat:'Phân NPK', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Phân chuyên tưới thúc mùa nắng, đạm cực cao kích thích cây xanh nhanh, sinh trưởng mạnh trong điều kiện nhiệt độ cao. Dạng hạt mịn dễ tan, phù hợp hòa nước tưới nhỏ giọt hoặc tưới gốc.',
+    crops:['Lúa','Rau màu','Cây ăn trái','Cây công nghiệp'],
+    usage:'Hòa 200–300 g/10 lít nước tưới gốc. Bón trực tiếp: 80–120 kg/ha. Tưới ngay sau bón để phân tan nhanh và tránh bay hơi đạm.' },
+  'sm-huco1': { npk:'N:16% – P₂O₅:16% – K₂O:8% + Hữu cơ 8% + Bo + TE', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Kết hợp khoáng vô cơ và hữu cơ, cải thiện lý hóa tính đất trong khi cung cấp đầy đủ dinh dưỡng cho cây. Hữu cơ giúp giữ ẩm đất, tăng hiệu quả hấp thu khoáng chất, thân thiện với môi trường canh tác bền vững.',
+    crops:['Lúa','Rau màu','Cây ăn trái','Mía','Ngô'],
+    usage:'Bón lót và thúc kết hợp: 200–300 kg/ha. Ưu tiên dùng cho vùng đất cát nhẹ, đất bạc màu cần cải tạo lâu dài.' },
+  'sm-huco2': { npk:'Hữu cơ ≥20% + Vi sinh ≥10⁶ CFU/g', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Phân hữu cơ vi sinh Song Mã chứa mật số vi sinh vật có ích cao, phân giải chất hữu cơ và giải phóng lân khó tan trong đất. Cải tạo đất bền vững, tăng độ phì nhiêu, giảm dần phụ thuộc vào phân hóa học.',
+    crops:['Lúa','Rau màu','Cây ăn trái','Hồ tiêu','Cao su'],
+    usage:'Bón lót: 500–800 kg/ha. Bón thúc định kỳ: 200–300 kg/ha, mỗi 3–4 tháng/lần để duy trì vi sinh vật có ích.' },
+  'sm-lan1':  { npk:'P₂O₅:14% – CaO:32% – MgO:4%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Lân canxi Song Mã chuyên giải độc hữu cơ, hạ phèn mặn cho vùng đất canh tác ven biển ĐBSCL. Canxi cao trung hòa các acid hữu cơ độc hại, tạo môi trường thuận lợi cho vi sinh vật đất phát triển mạnh.',
+    crops:['Lúa','Cây ăn trái','Rau màu','Mía'],
+    usage:'Bón lót: 300–500 kg/ha trước khi làm đất. Đặc biệt hiệu quả trên đất phèn, đất nhiễm mặn nhẹ vùng ĐBSCL.' },
+  'sm-lan2':  { npk:'CaO:38% – P₂O₅:10% – SiO₂:8%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Vôi lân bổ sung Silic giúp lá dày hơn, tăng khả năng quang hợp và sức đề kháng bệnh. Silic làm cứng thành tế bào biểu bì, hạn chế côn trùng chích hút và nấm bệnh xâm nhập.',
+    crops:['Lúa','Mía','Cây công nghiệp'],
+    usage:'Rải 300–400 kg/ha trước khi cày bừa. Hiệu quả nhất khi bón trước mùa mưa 2–3 tuần.' },
+  'sm-chu1':  { npk:'N:15% – P₂O₅:15% – K₂O:15% + MgO + Bo + Zn', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Phân chuyên biệt cho cà phê và hồ tiêu thời kỳ kiến thiết cơ bản và kinh doanh. NPK cân bằng kết hợp MgO, Bo, Kẽm thúc đẩy bộ rễ mạnh, thân cành cứng chắc, tăng tỷ lệ đậu quả vụ sau.',
+    crops:['Cà phê Robusta','Cà phê Arabica','Hồ tiêu','Điều'],
+    usage:'Thời kỳ kiến thiết: 200–300 kg/ha/năm chia 3 lần. Thời kỳ kinh doanh: 300–500 kg/ha/năm chia 3–4 lần.' },
+  'sm-chu2':  { npk:'N:15% – P₂O₅:8% – K₂O:18% + MgO + Bo', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Phân chuyên cho cây cao su kéo dài chu kỳ khai thác mủ. Kali cao giúp cây tổng hợp nhựa mủ nhiều, MgO và Bo tăng độ bền bộ vỏ cây. Hạn chế hiện tượng khô miệng cạo và giảm năng suất về cuối chu kỳ.',
+    crops:['Cao su tiểu điền','Cao su đại điền'],
+    usage:'Bón 2–3 lần/năm, tổng 300–500 kg/ha/năm. Bón theo hàng cách gốc 40–60 cm, kết hợp xới xáo nhẹ.' },
+  'sm-chu3':  { npk:'N:13% – P₂O₅:13% – K₂O:20% + Bo + TE', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Kali và Bo cao phối hợp hiệu quả ngăn rụng hoa và trái non ở giai đoạn ra hoa – đậu trái. TE tổng hợp giúp màu sắc trái đồng đều, vỏ bóng đẹp, tăng giá trị thương phẩm và khả năng bảo quản.',
+    crops:['Xoài','Sầu riêng','Nhãn','Chôm chôm','Rau ăn lá','Dưa hấu'],
+    usage:'Bón trước và sau ra hoa: 150–200 kg/ha. Tưới đầy đủ sau bón để Bo di chuyển vào hoa và quả hiệu quả.' },
+  'sm-vil1':  { npk:'Humic 15% + CaO:10% + MgO:8% + Zn + Fe + Cu', weight:'25 kg/bao', cat:'Phân vi lượng', brand:'Song Mã', bClass:'brd-sm',
+    desc:'Kết hợp axit Humic với trung vi lượng, tăng khả năng chelate hóa giúp rễ hấp thu dưỡng chất tốt hơn 30–40%. Kích thích chiều dài và mật độ lông hút, tăng sức đề kháng với nấm bệnh thối rễ và tuyến trùng.',
+    crops:['Cây ăn trái','Rau màu','Lúa','Cây công nghiệp'],
+    usage:'Bón bổ sung 100–150 kg/ha, 2–3 lần/vụ. Hiệu quả cao nhất khi trộn với phân hữu cơ vi sinh trước khi bón lót.' },
+  'dn-npk1':  { npk:'N:16% – P₂O₅:16% – K₂O:16% + Bo + TE', weight:'50 kg/bao', cat:'Phân NPK', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Phân NPK cao cấp Đầu Ngựa chất lượng vượt trội, dinh dưỡng cân bằng nuôi cây bền bỉ suốt mùa vụ. Bo tăng đậu trái, TE tổng hợp cho trái bóng đẹp, màu sắc đồng đều, tăng tính cạnh tranh trên thị trường xuất khẩu.',
+    crops:['Sầu riêng','Chôm chôm','Nhãn','Xoài','Bưởi','Cam quýt'],
+    usage:'Bón thúc định kỳ: 200–300 kg/ha, 3 lần/vụ. Kết hợp bón gốc và phun lá để đạt hiệu quả tối đa.' },
+  'dn-npk2':  { npk:'N:18% – P₂O₅:8% – K₂O:18%', weight:'50 kg/bao', cat:'Phân NPK', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Đạm và Kali cao ngang nhau tập trung nuôi trái và hạt sau đậu trái. Lân vừa đủ không làm cứng đất, tối ưu tốc độ sinh trưởng và tích lũy đường trong trái, giúp trái ngọt tự nhiên.',
+    crops:['Lúa','Ngô','Đậu phộng','Cây có múi','Xoài'],
+    usage:'Bón thúc giai đoạn phát triển trái: 150–200 kg/ha. Có thể giảm lượng phân đạm riêng khi dùng sản phẩm này.' },
+  'dn-huco1': { npk:'N:20% – P₂O₅:22% – K₂O:15% + Hữu cơ + Bo + TE', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Hàm lượng P₂O₅ cao nhất trong dòng hữu cơ khoáng, giúp cây phục hồi nhanh sau thu hoạch. Lân cao kích rễ mạnh, hữu cơ cải tạo đất tạo nền tảng dinh dưỡng tốt cho vụ tiếp theo.',
+    crops:['Sầu riêng','Cà phê','Hồ tiêu','Cao su','Cây ăn trái lâu năm'],
+    usage:'Bón sau thu hoạch: 300–500 kg/ha kết hợp cắt tỉa cành. Bón vào rãnh vòng tán, lấp đất và tưới nước đẫm.' },
+  'dn-huco2': { npk:'N:17% – P₂O₅:7% – K₂O:17% + Hữu cơ + Bo + TE', weight:'50 kg/bao', cat:'Phân hữu cơ', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Phân khoáng hữu cơ Đầu Ngựa giúp cây chống chịu điều kiện khắc nghiệt: hạn hán, sương muối, rét lạnh. Kali cân bằng áp suất thẩm thấu tế bào, hữu cơ giúp đất giữ ẩm tốt hơn trong mùa khô.',
+    crops:['Cà phê Arabica','Hồ tiêu','Cây ăn trái vùng cao','Cao su'],
+    usage:'Bón 2–3 lần/năm: 250–350 kg/ha/lần. Ưu tiên bón trước mùa khô để tăng khả năng chịu hạn cho cây.' },
+  'dn-lan1':  { npk:'P₂O₅:18% – CaO:28% – MgO:5%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Lân canxi Đầu Ngựa cải tạo pH đất, tạo môi trường thuận lợi cho vi sinh vật có ích phát triển mạnh. Canxi và Magie cân bằng giúp hệ rễ phát triển toàn diện, tăng diện tích tiếp xúc và hấp thu dinh dưỡng.',
+    crops:['Lúa','Cây ăn trái','Rau màu','Mía','Hồ tiêu'],
+    usage:'Bón lót: 300–400 kg/ha trước khi làm đất. Bón bổ sung khi cây bị vàng lá do thiếu Canxi hoặc Magie.' },
+  'dn-lan2':  { npk:'CaO:42% – P₂O₅:9% – MgO:4%', weight:'50 kg/bao', cat:'Phân lân – Kali', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Hàm lượng CaO cao nhất dòng vôi lân, kích rễ nhanh nhờ trung hòa acid đất nhanh chóng. Mật độ lông hút tăng mạnh trong 2–3 tuần sau bón, giúp cây hấp thu dinh dưỡng hiệu quả hơn đáng kể.',
+    crops:['Lúa','Ngô','Cây ăn trái','Rau màu','Cây công nghiệp'],
+    usage:'Rải đều 300–500 kg/ha trước khi làm đất. Không bón cùng lúc với phân urê hoặc phân đạm amoni khác.' },
+  'dn-chu1':  { npk:'N:16% – P₂O₅:8% – K₂O:24% + MgO + Bo + Zn', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Kali siêu cao và Bo phối hợp tạo hiệu quả chống rụng trái và siêu chắc hạt cho cà phê và tiêu. Kẽm giúp trái đồng đều, hạn chế dị hình. MgO tăng tổng hợp diệp lục, giữ lá xanh bền suốt mùa thu hoạch.',
+    crops:['Cà phê Robusta','Cà phê Arabica','Hồ tiêu Vĩnh Linh','Hồ tiêu Lộc Ninh'],
+    usage:'Bón 3 lần/năm: trước ra hoa, sau đậu quả và sau thu hoạch. Liều lượng: 250–350 kg/ha/lần.' },
+  'dn-chu2':  { npk:'N:14% – P₂O₅:7% – K₂O:21% + MgO + Bo + Mn', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Phân chuyên cao su Đầu Ngựa tăng sức đề kháng bệnh xì mủ, nứt thân và thối rễ. Mangan và Bo tăng độ bền bộ vỏ cây, duy trì chu kỳ khai thác mủ dài hơn với năng suất ổn định qua nhiều năm.',
+    crops:['Cao su tiểu điền','Cao su đại điền','Cao su tái canh'],
+    usage:'Bón 2 lần/năm: đầu và cuối mùa mưa. Liều 300–400 kg/ha/lần, bón cách gốc 50–70 cm kết hợp vun gốc.' },
+  'dn-chu3':  { npk:'N:12% – P₂O₅:6% – K₂O:28% + Bo + TE', weight:'50 kg/bao', cat:'Phân chuyên dùng', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Kali cao nhất dòng chuyên dùng Đầu Ngựa, tập trung thúc trái lớn nhanh với hương vị tự nhiên đậm đà. Bo và TE tổng hợp đảm bảo chất lượng trái đồng đều, màu sắc đẹp, vỏ căng bóng – tăng giá trị xuất khẩu.',
+    crops:['Sầu riêng','Mít Thái','Thanh long ruột đỏ','Bưởi da xanh','Xoài cát Hòa Lộc'],
+    usage:'Bón khi trái bằng quả trứng: 200–300 kg/ha. Bón lần 2 trước thu hoạch 30 ngày để tăng độ ngọt và màu sắc.' },
+  'dn-vil1':  { npk:'N:20% – P₂O₅:10% – K₂O:20% + Hữu cơ + Bo + TE liều cao', weight:'25 kg/bao', cat:'Phân vi lượng', brand:'Đầu Ngựa', bClass:'brd-dn',
+    desc:'Phân khoáng hữu cơ cao cấp bổ sung trung vi lượng liều cao nhất dòng Đầu Ngựa. TE gồm Bo, Kẽm, Đồng, Sắt, Mangan được chelate hóa để tăng tỷ lệ hấp thu lên đến 90%. Phù hợp cây trồng giá trị cao cần vi lượng đầy đủ.',
+    crops:['Sầu riêng','Bưởi da xanh','Cà phê Arabica','Thanh long','Hồ tiêu'],
+    usage:'Bón bổ sung: 100–200 kg/ha, 3–4 lần/năm. Kết hợp phân NPK chính để cung cấp đủ đa lượng và vi lượng.' },
+};
+
+let _drwCode = null;
+
+function openProductDrawer(code) {
+  const p = PD[code];
+  if (!p) return;
+  _drwCode = code;
+
+  const card = document.querySelector('.product-card[data-code="' + code + '"]');
+  const priceText = card ? (card.querySelector('.pc-val.price')?.textContent?.trim() || '0 ₫') : '0 ₫';
+  const qty = card ? (parseInt(card.dataset.qty) || 0) : 0;
+  const qtyStr = card ? (card.querySelector('.pc-row:last-child .pc-val')?.textContent?.trim() || '0') : '0';
+
+  document.getElementById('drw-name').textContent = card?.querySelector('.pc-name')?.textContent?.trim() || code;
+  document.getElementById('drw-code').textContent = '[' + code + ']';
+  document.getElementById('drw-badges').innerHTML =
+    '<span class="badge-brand ' + p.bClass + '">' + p.brand + '</span>' +
+    '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 9px;border-radius:99px;background:#f1f5f9;color:#475569">' + p.cat + '</span>';
+
+  document.getElementById('drw-price-val').textContent = priceText;
+  document.getElementById('drw-price-sub').textContent = '/ ' + p.weight;
+  document.getElementById('drw-price-inp').value = priceText.replace(/[^\d]/g, '');
+  togglePriceEdit(false);
+
+  document.getElementById('drw-stock-num').textContent = qtyStr;
+  const wSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  const xSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+  const sBadge = qty === 0
+    ? '<span class="stock-badge stock-out">' + xSvg + ' Hết hàng</span>'
+    : qty < 50 ? '<span class="stock-badge stock-low">' + wSvg + ' Sắp hết</span>'
+    : '<span class="stock-badge stock-ok">Còn hàng</span>';
+  document.getElementById('drw-stock-badge').innerHTML = sBadge;
+
+  document.getElementById('drw-desc').textContent = p.desc;
+  document.getElementById('drw-specs').innerHTML =
+    '<tr><td>Thành phần</td><td>' + p.npk + '</td></tr>' +
+    '<tr><td>Đóng gói</td><td>' + p.weight + '</td></tr>' +
+    '<tr><td>Thương hiệu</td><td>' + p.brand + '</td></tr>' +
+    '<tr><td>Danh mục</td><td>' + p.cat + '</td></tr>';
+  document.getElementById('drw-crops').innerHTML = p.crops.map(function(c){ return '<span class="drw-crop-tag">' + c + '</span>'; }).join('');
+  document.getElementById('drw-usage').textContent = p.usage;
+
+  document.getElementById('drwOverlay').classList.add('open');
+  document.getElementById('productDrawer').classList.add('open');
+}
+
+function closeProductDrawer() {
+  document.getElementById('drwOverlay').classList.remove('open');
+  document.getElementById('productDrawer').classList.remove('open');
+  _drwCode = null;
+}
+
+function togglePriceEdit(show) {
+  document.getElementById('drw-view-mode').style.display = show ? 'none' : 'flex';
+  document.getElementById('drw-edit-mode').style.display = show ? 'flex' : 'none';
+  if (show) setTimeout(function(){ document.getElementById('drw-price-inp').focus(); }, 50);
+}
+
+function savePrice() {
+  var inp = document.getElementById('drw-price-inp');
+  var val = parseFloat(inp.value);
+  if (!val || val <= 0) { inp.classList.add('err'); return; }
+  inp.classList.remove('err');
+  var fmt = val.toLocaleString('vi-VN') + ' ₫';
+  document.getElementById('drw-price-val').textContent = fmt;
+  togglePriceEdit(false);
+  if (_drwCode) {
+    var card = document.querySelector('.product-card[data-code="' + _drwCode + '"]');
+    if (card) { var el = card.querySelector('.pc-val.price'); if (el) el.textContent = fmt; }
+  }
+  var toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = 'Đã cập nhật giá: ' + fmt;
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+/* ── Edit panel ── */
+function openEditPanel() {
+  if (!_drwCode) return;
+  const p = PD[_drwCode];
+  const card = document.querySelector('.product-card[data-code="' + _drwCode + '"]');
+  document.getElementById('edit-name').value = card ? (card.querySelector('.pc-name')?.textContent?.trim() || '') : '';
+  document.getElementById('edit-npk').value = p ? p.npk : '';
+  document.getElementById('edit-weight').value = p ? p.weight : '';
+  document.getElementById('edit-cat').value = p ? p.cat : 'Phân NPK';
+  document.getElementById('edit-qty').value = card ? (parseInt(card.dataset.qty) || 0) : 0;
+  document.getElementById('edit-desc').value = p ? p.desc : '';
+  document.getElementById('edit-crops').value = p ? p.crops.join(', ') : '';
+  document.getElementById('edit-usage').value = p ? p.usage : '';
+  document.getElementById('drwViewPanel').classList.add('hide');
+  document.getElementById('drwEditPanel').classList.add('show');
+}
+
+function closeEditPanel() {
+  document.getElementById('drwViewPanel').classList.remove('hide');
+  document.getElementById('drwEditPanel').classList.remove('show');
+}
+
+function saveProductEdit() {
+  if (!_drwCode) return;
+  const name    = document.getElementById('edit-name').value.trim();
+  const npk     = document.getElementById('edit-npk').value.trim();
+  const weight  = document.getElementById('edit-weight').value.trim();
+  const cat     = document.getElementById('edit-cat').value;
+  const qty     = parseInt(document.getElementById('edit-qty').value) || 0;
+  const desc    = document.getElementById('edit-desc').value.trim();
+  const crops   = document.getElementById('edit-crops').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+  const usage   = document.getElementById('edit-usage').value.trim();
+
+  if (!name) { document.getElementById('edit-name').focus(); return; }
+
+  // Update PD object
+  if (PD[_drwCode]) {
+    PD[_drwCode].npk    = npk;
+    PD[_drwCode].weight = weight;
+    PD[_drwCode].cat    = cat;
+    PD[_drwCode].desc   = desc;
+    PD[_drwCode].crops  = crops;
+    PD[_drwCode].usage  = usage;
+  }
+
+  // Update card in grid
+  const card = document.querySelector('.product-card[data-code="' + _drwCode + '"]');
+  if (card) {
+    const nameEl = card.querySelector('.pc-name');
+    if (nameEl) nameEl.textContent = name;
+    card.dataset.qty = qty;
+    card.dataset.name = name.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
+    // Update qty display on card
+    const rows = card.querySelectorAll('.pc-row');
+    rows.forEach(function(row) {
+      var lbl = row.querySelector('.pc-lbl');
+      if (lbl && lbl.textContent.includes('Tồn')) {
+        var val = row.querySelector('.pc-val');
+        if (val) val.textContent = qty + ' bao';
+      }
+    });
+    // Update stock badge on card
+    const badge = card.querySelector('.stock-badge');
+    if (badge) {
+      badge.className = qty === 0 ? 'stock-badge stock-out' : qty < 50 ? 'stock-badge stock-low' : 'stock-badge stock-ok';
+      badge.textContent = qty === 0 ? 'Hết hàng' : qty < 50 ? 'Sắp hết' : 'Còn hàng';
+    }
+  }
+
+  // Update drawer header & view panel
+  document.getElementById('drw-name').textContent = name;
+  document.getElementById('drw-price-sub').textContent = '/ ' + weight;
+
+  // Re-populate specs & crops & desc & usage in view panel
+  document.getElementById('drw-desc').textContent = desc;
+  document.getElementById('drw-specs').innerHTML =
+    '<tr><td>Thành phần</td><td>' + npk + '</td></tr>' +
+    '<tr><td>Đóng gói</td><td>' + weight + '</td></tr>' +
+    '<tr><td>Thương hiệu</td><td>' + (PD[_drwCode]?.brand || '') + '</td></tr>' +
+    '<tr><td>Danh mục</td><td>' + cat + '</td></tr>';
+  document.getElementById('drw-crops').innerHTML = crops.map(function(c){ return '<span class="drw-crop-tag">'+c+'</span>'; }).join('');
+  document.getElementById('drw-usage').textContent = usage;
+
+  // Update stock display in view panel
+  document.getElementById('drw-stock-num').textContent = qty + ' bao';
+  const wSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  const xSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:9px;height:9px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+  document.getElementById('drw-stock-badge').innerHTML = qty === 0
+    ? '<span class="stock-badge stock-out">' + xSvg + ' Hết hàng</span>'
+    : qty < 50 ? '<span class="stock-badge stock-low">' + wSvg + ' Sắp hết</span>'
+    : '<span class="stock-badge stock-ok">Còn hàng</span>';
+
+  closeEditPanel();
+
+  // Toast
+  var toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = 'Đã lưu thay đổi: ' + name;
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+/* ── Delete ── */
+function openDeleteModal() {
+  if (!_drwCode) return;
+  const card = document.querySelector('.product-card[data-code="' + _drwCode + '"]');
+  const name = card ? (card.querySelector('.pc-name')?.textContent?.trim() || _drwCode) : _drwCode;
+  document.getElementById('del-modal-name').textContent = name;
+  document.getElementById('delModalOverlay').classList.add('open');
+}
+
+function closeDeleteModal() {
+  document.getElementById('delModalOverlay').classList.remove('open');
+}
+
+function confirmDeleteProduct() {
+  if (!_drwCode) return;
+  const card = document.querySelector('.product-card[data-code="' + _drwCode + '"]');
+  const name = card ? (card.querySelector('.pc-name')?.textContent?.trim() || _drwCode) : _drwCode;
+  if (card) {
+    // Animate out then remove
+    card.style.transition = 'opacity .25s, transform .25s';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(.95)';
+    setTimeout(function(){ card.remove(); }, 260);
+  }
+  closeDeleteModal();
+  closeProductDrawer();
+  // Toast
+  var toast = document.getElementById('toast');
+  var toastIco = document.getElementById('toast-ico-inner');
+  toastIco.style.background = '#ef4444';
+  toastIco.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;color:#fff"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+  document.getElementById('toastMsg').textContent = 'Đã xoá sản phẩm: ' + name;
+  toast.classList.add('show');
+  setTimeout(function(){
+    toast.classList.remove('show');
+    toastIco.style.background = '#22c55e';
+    toastIco.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;color:#fff"><polyline points="20 6 9 17 4 12"/></svg>';
+  }, 2500);
+}
+
+/* Wire card clicks → open drawer */
+document.querySelectorAll('.product-card').forEach(function(card) {
+  var code = card.dataset.code;
+  if (!code) return;
+  card.addEventListener('click', function(e) {
+    if (e.target.closest('.star-btn')) return;
+    openProductDrawer(code);
+  });
+});
+
+</script>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+(function(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity .2s ease';
+  window.addEventListener('load',function(){
+    document.body.offsetHeight;
+    document.body.style.opacity='1';
+  });
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a.nav-item');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    document.body.style.opacity='0';
+    setTimeout(function(){ window.location.href=href; },200);
+  });
+})();
 </script>
 </body>
 </html>

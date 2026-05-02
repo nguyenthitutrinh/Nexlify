@@ -291,7 +291,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   <div class="breadcrumb">
     <a href="customers.html">Khách hàng</a>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    <span>Cty TNHH VTNN Minh Đức</span>
+    <span id="d-breadcrumb-name">Cty TNHH VTNN Minh Đức</span>
   </div>
 
   <!-- Page Header -->
@@ -321,11 +321,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Customer Information
         </div>
-        <div class="customer-hero">
-          <div class="hero-avatar" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)">MD</div>
+        <div class="customer-hero" id="d-customer-hero">
+          <div class="hero-avatar" id="d-hero-avatar" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)">MD</div>
           <div>
-            <div class="hero-name">Cty TNHH VTNN Minh Đức</div>
-            <div class="hero-badges">
+            <div class="hero-name" id="d-hero-name">Cty TNHH VTNN Minh Đức</div>
+            <div class="hero-badges" id="d-hero-badges">
               <span class="badge badge-blue">Doanh nghiệp</span>
               <span class="badge badge-purple">Đại lý cấp 1</span>
             </div>
@@ -333,7 +333,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         </div>
       </div>
 
-      <div class="info-grid">
+      <div class="info-grid" id="d-info-grid">
         <div class="info-field">
           <div class="field-label">Mã khách hàng</div>
           <div class="field-value">KH-C0001</div>
@@ -422,7 +422,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Summary
         </div>
-        <div class="summary-list">
+        <div class="summary-list" id="d-summary-list">
           <div class="summary-row">
             <span class="summary-label">Tổng đơn hàng</span>
             <span class="summary-value blue">6</span>
@@ -456,7 +456,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           Recent Activity
         </div>
-        <div class="activity-list">
+        <div class="activity-list" id="d-activity-list">
           <div class="activity-item">
             <div class="activity-dot dot-blue"></div>
             <div class="activity-content">
@@ -653,25 +653,158 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 </div>
 
 <script>
-(function applyDetailStatus() {
-  if (localStorage.getItem('nex_minh_duc_paused') !== '1') return;
-  document.addEventListener('DOMContentLoaded', function() {
-    const badge = document.querySelector('.status-dot');
-    if (badge) {
-      badge.textContent = 'Ngưng hoạt động';
-      badge.className = 'badge badge-red status-dot';
-      badge.removeAttribute('style');
-    }
+/* ── CUSTOMER DATA ── */
+const CUSTOMERS = [
+  { id:1,  initials:'MD', bg:'linear-gradient(135deg,#60a5fa,#1d4ed8)',  name:'Cty TNHH VTNN Minh Đức',       fullName:'Cty TNHH Vật Tư Nông Nghiệp Minh Đức',       phone:'0272 391 456', email:'minhduc.vtnn@gmail.com',    area:'Long An',    group:'dl1', khtype:'dn', status:'active', contact:'Nguyễn Minh Đức',   tax:'1101987654', address:'123 QL1A, Tân An, Long An',          createdDate:'10/01/2026', note:'Đại lý cấp 1 phân phối phân bón Đất Xanh tại khu vực Long An. Đặt hàng đều đặn hàng tháng, ưu tiên sản phẩm NPK và phân hữu cơ. Khách hàng lâu năm, uy tín cao.', lastOrder:'Hôm nay',      orders:[{id:'ĐH-0042',date:'02/05/2026',amt:737413,status:'unpaid'},{id:'ĐH-0031',date:'18/04/2026',amt:512000,status:'paid'},{id:'ĐH-0020',date:'02/04/2026',amt:863000,status:'paid'}] },
+  { id:2,  initials:'TP', bg:'linear-gradient(135deg,#a78bfa,#6d28d9)',  name:'CH VTNN Thành Phát',            fullName:'Cửa Hàng VTNN Thành Phát',                   phone:'0273 512 890', email:'thanhphat.ag@gmail.com',    area:'Tiền Giang', group:'dl1', khtype:'dn', status:'active', contact:'Trần Thành Phát',  tax:'1102345678', address:'45 Nguyễn Huệ, Mỹ Tho, Tiền Giang',  createdDate:'15/01/2026', note:'Đại lý cấp 1 khu vực Tiền Giang. Chuyên kinh doanh phân bón và thuốc BVTV.', lastOrder:'Hôm qua',      orders:[{id:'ĐH-0038',date:'01/05/2026',amt:312000,status:'paid'},{id:'ĐH-0025',date:'10/04/2026',amt:445000,status:'paid'}] },
+  { id:3,  initials:'PN', bg:'linear-gradient(135deg,#34d399,#065f46)',  name:'ĐL Phân Bón Phúc Nguyên',      fullName:'Đại Lý Phân Bón Phúc Nguyên',                phone:'0277 638 124', email:'phucnguyen.pb@gmail.com',   area:'Đồng Tháp', group:'dl1', khtype:'dn', status:'active', contact:'Lê Phúc Nguyên',   tax:'1203456789', address:'78 Trần Hưng Đạo, Cao Lãnh, Đồng Tháp', createdDate:'20/01/2026', note:'Đại lý lớn tại Đồng Tháp, ưu tiên dòng phân hữu cơ sinh học.', lastOrder:'2 ngày trước', orders:[{id:'ĐH-0035',date:'30/04/2026',amt:1520000,status:'partial'},{id:'ĐH-0022',date:'05/04/2026',amt:684000,status:'paid'}] },
+  { id:4,  initials:'DB', bg:'linear-gradient(135deg,#2dd4bf,#0f766e)',  name:'Cty CP VTNN Đồng Bằng',        fullName:'Công Ty CP Vật Tư Nông Nghiệp Đồng Bằng',    phone:'0292 741 308', email:'dongbang.vtnn@gmail.com',   area:'Cần Thơ',   group:'dl1', khtype:'dn', status:'active', contact:'Phạm Văn Bình',    tax:'1804567890', address:'12 3/2, Ninh Kiều, Cần Thơ',         createdDate:'05/02/2026', note:'Công ty phân phối vật tư nông nghiệp tại khu vực Cần Thơ và các tỉnh lân cận.', lastOrder:'Hôm nay',      orders:[{id:'ĐH-0041',date:'02/05/2026',amt:945000,status:'unpaid'},{id:'ĐH-0030',date:'15/04/2026',amt:1245000,status:'paid'},{id:'ĐH-0018',date:'22/03/2026',amt:540000,status:'paid'}] },
+  { id:5,  initials:'HG', bg:'linear-gradient(135deg,#f87171,#b91c1c)',  name:'ĐL Hoàng Gia Nông Sản',        fullName:'Đại Lý Hoàng Gia Nông Sản',                  phone:'0270 854 217', email:'hoanggia.ns@gmail.com',     area:'Vĩnh Long', group:'dl1', khtype:'dn', status:'pause',  contact:'Trần Hoàng Gia',   tax:'',           address:'56 Hùng Vương, TP Vĩnh Long',        createdDate:'12/02/2026', note:'Tạm ngưng hợp tác do nợ cũ chưa thanh toán.', lastOrder:'1 năm trước',  orders:[{id:'ĐH-0005',date:'02/05/2025',amt:384500,status:'paid'}] },
+  { id:6,  initials:'TP', bg:'linear-gradient(135deg,#fb923c,#c2410c)',  name:'Cty TNHH NS Thuận Phát',       fullName:'Công Ty TNHH Nông Sản Thuận Phát',           phone:'0275 963 540', email:'thuanphat.ns@gmail.com',    area:'Bến Tre',   group:'dl1', khtype:'dn', status:'active', contact:'Nguyễn Thuận Phát', tax:'1305678901', address:'34 Đồng Khởi, TP Bến Tre',           createdDate:'18/02/2026', note:'Khách hàng ổn định, thanh toán đúng hạn.', lastOrder:'3 ngày trước', orders:[{id:'ĐH-0039',date:'29/04/2026',amt:421750,status:'paid'},{id:'ĐH-0028',date:'12/04/2026',amt:670000,status:'paid'}] },
+  { id:7,  initials:'HP', bg:'linear-gradient(135deg,#86efac,#15803d)',  name:'CH VTNN Hồng Phát',            fullName:'Cửa Hàng VTNN Hồng Phát',                    phone:'0293 417 825', email:'hongphat.hg@gmail.com',     area:'Hậu Giang', group:'dl2', khtype:'dn', status:'active', contact:'Lê Hồng Phát',     tax:'1406789012', address:'90 Trần Phú, Vị Thanh, Hậu Giang',   createdDate:'01/03/2026', note:'Đại lý cấp 2 tích cực, đặt hàng đều đặn mỗi tuần.',            lastOrder:'Hôm nay',      orders:[{id:'ĐH-0040',date:'02/05/2026',amt:297500,status:'paid'},{id:'ĐH-0027',date:'11/04/2026',amt:320000,status:'paid'}] },
+  { id:8,  initials:'TA', bg:'linear-gradient(135deg,#fcd34d,#b45309)',  name:'ĐL Phân Bón Tuấn Anh',         fullName:'Đại Lý Phân Bón Tuấn Anh',                   phone:'0299 526 183', email:'tuananh.pb.st@gmail.com',   area:'Sóc Trăng', group:'dl2', khtype:'cn', status:'active', contact:'Nguyễn Tuấn Anh',  tax:'',           address:'23 Lê Lợi, TP Sóc Trăng',            createdDate:'05/03/2026', note:'Khách lẻ quen, mua thường xuyên các loại phân NPK.', lastOrder:'Hôm qua',      orders:[{id:'ĐH-0037',date:'01/05/2026',amt:126000,status:'paid'},{id:'ĐH-0024',date:'08/04/2026',amt:280000,status:'paid'}] },
+  { id:9,  initials:'BN', bg:'linear-gradient(135deg,#fca5a5,#b91c1c)',  name:'CH VTNN Bảo Ngọc',             fullName:'Cửa Hàng VTNN Bảo Ngọc',                     phone:'0294 635 971', email:'baongoc.vtnn@gmail.com',    area:'Trà Vinh',  group:'dl2', khtype:'dn', status:'pause',  contact:'Trần Bảo Ngọc',    tax:'1507890123', address:'67 Điện Biên Phủ, Trà Vinh',         createdDate:'10/03/2026', note:'Hiện đang tạm ngưng hợp tác.', lastOrder:'1 năm trước',  orders:[{id:'ĐH-0006',date:'20/04/2025',amt:210000,status:'paid'}] },
+  { id:10, initials:'VN', bg:'linear-gradient(135deg,#7dd3fc,#0369a1)',  name:'ĐL Việt Nông Kiên Giang',      fullName:'Đại Lý Việt Nông Kiên Giang',                phone:'0297 748 362', email:'vietnong.kg@gmail.com',     area:'Kiên Giang',group:'dl2', khtype:'dn', status:'active', contact:'Phạm Việt Nông',   tax:'1608901234', address:'12 Nguyễn Trung Trực, Rạch Giá, KG', createdDate:'15/03/2026', note:'Đại lý cấp 2 tiềm năng, có xu hướng tăng đơn hàng.', lastOrder:'4 ngày trước', orders:[{id:'ĐH-0036',date:'28/04/2026',amt:345000,status:'paid'},{id:'ĐH-0023',date:'07/04/2026',amt:460000,status:'paid'}] },
+  { id:11, initials:'NM', bg:'linear-gradient(135deg,#c084fc,#7e22ce)',  name:'CH VTNN Nhật Minh',            fullName:'Cửa Hàng VTNN Nhật Minh',                    phone:'0291 859 274', email:'nhatminh.bl@gmail.com',     area:'Bạc Liêu',  group:'dl2', khtype:'cn', status:'active', contact:'Nguyễn Nhật Minh', tax:'',           address:'45 Lê Duẩn, TP Bạc Liêu',            createdDate:'20/03/2026', note:'Cửa hàng nhỏ, ổn định. Ưu tiên hàng đặt sẵn.', lastOrder:'Hôm qua',      orders:[{id:'ĐH-0034',date:'01/05/2026',amt:195000,status:'paid'},{id:'ĐH-0019',date:'25/03/2026',amt:380000,status:'paid'}] },
+  { id:12, initials:'AK', bg:'linear-gradient(135deg,#818cf8,#4338ca)',  name:'ĐL Phân Bón An Khang',         fullName:'Đại Lý Phân Bón An Khang',                   phone:'0290 962 485', email:'ankhang.cm@gmail.com',      area:'Cà Mau',    group:'dl2', khtype:'dn', status:'active', contact:'Lê An Khang',      tax:'1709012345', address:'78 Quang Trung, TP Cà Mau',          createdDate:'01/04/2026', note:'Đại lý phân bón khu vực Cà Mau, chuyên hữu cơ.', lastOrder:'5 ngày trước', orders:[{id:'ĐH-0033',date:'27/04/2026',amt:215000,status:'paid'},{id:'ĐH-0021',date:'03/04/2026',amt:450000,status:'paid'}] },
+  { id:13, initials:'PH', bg:'linear-gradient(135deg,#f9a8d4,#be185d)',  name:'ĐL Phú Hưng An Giang',         fullName:'Đại Lý Phú Hưng An Giang',                   phone:'0296 174 693', email:'phuhung.vtnn@gmail.com',    area:'An Giang',  group:'dl2', khtype:'cn', status:'active', contact:'Trần Phú Hưng',    tax:'',           address:'23 Lý Thường Kiệt, Long Xuyên, AG',  createdDate:'05/04/2026', note:'Khách hàng trẻ, tiềm năng mở rộng.', lastOrder:'Hôm nay',      orders:[{id:'ĐH-0043',date:'02/05/2026',amt:440000,status:'unpaid'},{id:'ĐH-0029',date:'14/04/2026',amt:225000,status:'paid'}] },
+  { id:14, initials:'TP', bg:'linear-gradient(135deg,#4ade80,#166534)',  name:'CH Nông Sản Tân Phát',         fullName:'Cửa Hàng Nông Sản Tân Phát',                 phone:'0274 283 816', email:'tanphat.bd@gmail.com',      area:'Bình Dương',group:'dl2', khtype:'dn', status:'active', contact:'Nguyễn Tân Phát',  tax:'1810123456', address:'56 Huỳnh Văn Lũy, Thủ Dầu Một, BD', createdDate:'10/04/2026', note:'Cửa hàng nông sản Bình Dương, đơn hàng ổn định.', lastOrder:'2 ngày trước', orders:[{id:'ĐH-0032',date:'30/04/2026',amt:370000,status:'paid'},{id:'ĐH-0017',date:'20/03/2026',amt:420000,status:'paid'}] },
+  { id:15, initials:'MP', bg:'linear-gradient(135deg,#fdba74,#c2410c)',  name:'ĐL Minh Phát Đồng Nai',        fullName:'Đại Lý Minh Phát Đồng Nai',                  phone:'0251 374 629', email:'minhphat.dn@gmail.com',     area:'Đồng Nai',  group:'dl2', khtype:'cn', status:'active', contact:'Lê Minh Phát',     tax:'',           address:'90 Nguyễn Ái Quốc, Biên Hòa, ĐN',   createdDate:'15/04/2026', note:'Đại lý năng động, hay đặt hàng combo khuyến mãi.', lastOrder:'6 ngày trước', orders:[{id:'ĐH-0026',date:'26/04/2026',amt:430000,status:'paid'},{id:'ĐH-0016',date:'18/03/2026',amt:380000,status:'paid'}] },
+  { id:16, initials:'NT', bg:'linear-gradient(135deg,#93c5fd,#2563eb)',  name:'Nguyễn Văn Tâm',               fullName:'Nguyễn Văn Tâm',                              phone:'0918 374 152', email:'nguyenvantam93@gmail.com',  area:'Long An',   group:'le',  khtype:'cn', status:'active', contact:'Nguyễn Văn Tâm',   tax:'',           address:'34 Nguyễn Văn Linh, Tân An, LA',     createdDate:'20/04/2026', note:'Khách lẻ mua theo mùa vụ.', lastOrder:'1 tuần trước', orders:[{id:'ĐH-0015',date:'25/04/2026',amt:88500,status:'paid'},{id:'ĐH-0008',date:'10/03/2026',amt:126000,status:'paid'}] },
+  { id:17, initials:'TL', bg:'linear-gradient(135deg,#e879f9,#a21caf)',  name:'Trần Thị Lan',                 fullName:'Trần Thị Lan',                                phone:'0907 485 263', email:'tranthilan.tg@gmail.com',   area:'Tiền Giang',group:'le',  khtype:'cn', status:'active', contact:'Trần Thị Lan',     tax:'',           address:'12 Ấp 3, xã Tân Hiệp, Tiền Giang',  createdDate:'22/04/2026', note:'Khách lẻ, hay mua phân hữu cơ vi sinh.', lastOrder:'3 ngày trước', orders:[{id:'ĐH-0044',date:'29/04/2026',amt:195000,status:'paid'},{id:'ĐH-0014',date:'20/04/2026',amt:88500,status:'paid'}] },
+  { id:18, initials:'LD', bg:'linear-gradient(135deg,#5eead4,#0f766e)',  name:'Lê Văn Dũng',                  fullName:'Lê Văn Dũng',                                 phone:'0935 596 374', email:'levandung.dt@gmail.com',    area:'Đồng Tháp', group:'le',  khtype:'cn', status:'active', contact:'Lê Văn Dũng',      tax:'',           address:'78 Tổ 5, xã An Bình, Đồng Tháp',    createdDate:'25/04/2026', note:'Nông dân canh tác lúa, mua theo vụ đông xuân và hè thu.', lastOrder:'2 tuần trước', orders:[{id:'ĐH-0009',date:'18/04/2026',amt:126000,status:'paid'}] },
+  { id:19, initials:'PH', bg:'linear-gradient(135deg,#fda4af,#e11d48)',  name:'Phạm Thị Hồng',                fullName:'Phạm Thị Hồng',                               phone:'0946 707 485', email:'phamthihong.ct@gmail.com',  area:'Cần Thơ',   group:'le',  khtype:'cn', status:'active', contact:'Phạm Thị Hồng',    tax:'',           address:'56 Cách Mạng T8, Ninh Kiều, CT',     createdDate:'28/04/2026', note:'Khách lẻ thân thiết, thường mua phân đầu vụ.', lastOrder:'Hôm qua',      orders:[{id:'ĐH-0045',date:'01/05/2026',amt:88500,status:'paid'},{id:'ĐH-0013',date:'18/04/2026',amt:195000,status:'paid'}] },
+  { id:20, initials:'VK', bg:'linear-gradient(135deg,#a5b4fc,#4f46e5)',  name:'Võ Văn Khoa',                  fullName:'Võ Văn Khoa',                                 phone:'0912 818 596', email:'vovankhoa.vl@gmail.com',    area:'Vĩnh Long', group:'le',  khtype:'cn', status:'active', contact:'Võ Văn Khoa',      tax:'',           address:'90 Ấp Bình Hòa, xã Bình Ninh, VL',  createdDate:'30/04/2026', note:'Nông dân trồng rau màu, mua lượng nhỏ thường xuyên.', lastOrder:'2 tuần trước', orders:[{id:'ĐH-0011',date:'16/04/2026',amt:126000,status:'paid'}] },
+];
+
+const GL = { dl1:'Đại lý cấp 1', dl2:'Đại lý cấp 2', le:'Khách lẻ', tt:'Khách thân thiết' };
+const GC = { dl1:'badge-purple', dl2:'badge-teal', le:'badge-orange', tt:'badge-green' };
+const KL = { dn:'Doanh nghiệp', cn:'Cá nhân' };
+const KC = { dn:'badge-blue', cn:'badge-blue' };
+
+function fmtMoney(n) { return Math.round(n).toLocaleString('vi-VN') + ' đ'; }
+
+function loadCustomer() {
+  const id = +new URLSearchParams(location.search).get('id') || 1;
+  const c = CUSTOMERS.find(x => x.id === id) || CUSTOMERS[0];
+
+  const totalRevenue = c.orders.reduce((s, o) => s + o.amt, 0);
+  const isActive = c.status === 'active';
+  const maKH = 'KH-C' + String(c.id).padStart(4, '0');
+
+  // Breadcrumb
+  document.getElementById('d-breadcrumb-name').textContent = c.name;
+  document.title = 'NexLify – ' + c.name;
+
+  // Hero
+  const av = document.getElementById('d-hero-avatar');
+  av.style.background = c.bg;
+  av.textContent = c.initials;
+  document.getElementById('d-hero-name').textContent = c.name;
+  document.getElementById('d-hero-badges').innerHTML =
+    `<span class="badge ${KC[c.khtype]}">${KL[c.khtype]||c.khtype}</span>
+     <span class="badge ${GC[c.group]}">${GL[c.group]||c.group}</span>`;
+
+  // Info grid
+  const phoneIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.59a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 16z"/></svg>`;
+  const emailIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`;
+  const locIconSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  const areaIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>`;
+  const calIconSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+
+  const statusBadge = isActive
+    ? `<span class="badge badge-green status-dot" style="color:#16a34a">Đang hoạt động</span>`
+    : `<span class="badge badge-red status-dot">Ngưng hoạt động</span>`;
+
+  document.getElementById('d-info-grid').innerHTML = `
+    <div class="info-field">
+      <div class="field-label">Mã khách hàng</div>
+      <div class="field-value">${maKH}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Loại</div>
+      <div class="field-value"><span class="badge ${KC[c.khtype]}">${KL[c.khtype]||c.khtype}</span></div>
+    </div>
+    <div class="info-field full">
+      <div class="field-label">Tên khách hàng</div>
+      <div class="field-value">${c.fullName}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Số điện thoại</div>
+      <div class="field-value">${phoneIconSvg} ${c.phone}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Email</div>
+      <div class="field-value">${emailIconSvg} ${c.email}</div>
+    </div>
+    <div class="info-field full">
+      <div class="field-label">Địa chỉ</div>
+      <div class="field-value">${locIconSvg} ${c.address}</div>
+    </div>
+    ${c.tax ? `<div class="info-field"><div class="field-label">Mã số thuế</div><div class="field-value">${c.tax}</div></div>` : ''}
+    <div class="info-field">
+      <div class="field-label">Khu vực</div>
+      <div class="field-value">${areaIconSvg} ${c.area}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Người liên hệ</div>
+      <div class="field-value">${c.contact}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Hoạt động</div>
+      <div class="field-value">${statusBadge}</div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Nhóm</div>
+      <div class="field-value"><span class="badge ${GC[c.group]}">${GL[c.group]||c.group}</span></div>
+    </div>
+    <div class="info-field">
+      <div class="field-label">Ngày tạo</div>
+      <div class="field-value">${calIconSvg} ${c.createdDate}</div>
+    </div>
+    <div class="info-field full">
+      <div class="field-label">Ghi chú</div>
+      <div class="field-value note">${c.note || '—'}</div>
+    </div>`;
+
+  // Summary
+  document.getElementById('d-summary-list').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Tổng đơn hàng</span><span class="summary-value blue">${c.orders.length}</span></div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span class="summary-label">Doanh thu</span><span class="summary-value">${fmtMoney(totalRevenue)}</span></div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span class="summary-label">Đơn hàng gần nhất</span><span class="summary-value green">${c.lastOrder}</span></div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span class="summary-label">Ngày tạo</span><span class="summary-value">${c.createdDate}</span></div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span class="summary-label">Khu vực</span><span class="summary-value">${c.area}</span></div>`;
+
+  // Activity (from orders)
+  const dotColor = { paid:'dot-green', unpaid:'dot-blue', partial:'dot-amber' };
+  const actLabel = { paid:'Thanh toán đơn', unpaid:'Đặt đơn mới', partial:'Thanh toán một phần' };
+  document.getElementById('d-activity-list').innerHTML = c.orders.length
+    ? c.orders.map(o => `
+      <div class="activity-item">
+        <div class="activity-dot ${dotColor[o.status]||'dot-gray'}"></div>
+        <div class="activity-content">
+          <div class="activity-text">${actLabel[o.status]||'Đơn hàng'} ${o.id} – ${fmtMoney(o.amt)}</div>
+          <div class="activity-time">${o.date}</div>
+        </div>
+      </div>`).join('')
+    : '<div style="padding:14px 0;color:var(--gray-400);font-size:12px">Chưa có hoạt động nào</div>';
+
+  // Delete modal text
+  const delBody = document.querySelector('.del-body p');
+  if (delBody) delBody.innerHTML = `Khách hàng <b>${c.name}</b> sẽ được chuyển sang trạng thái <strong>Ngưng hoạt động</strong>.`;
+
+  // Lock delete btn if already paused
+  if (!isActive) {
     const btnDanger = document.querySelector('.btn-danger');
     if (btnDanger) { btnDanger.disabled = true; btnDanger.style.opacity = '.4'; btnDanger.style.cursor = 'not-allowed'; }
-    const editSelect = document.querySelector('select option[selected]');
-    if (editSelect && editSelect.textContent.includes('Đang hoạt động')) {
-      editSelect.removeAttribute('selected');
-      const pauseOpt = [...document.querySelectorAll('select option')].find(o => o.textContent.includes('Ngưng'));
-      if (pauseOpt) pauseOpt.setAttribute('selected', '');
-    }
-  });
-})();
+  }
+}
+
+loadCustomer();
 
 function toggleNav(el) {
   el.classList.toggle('open');
@@ -688,32 +821,25 @@ function closeDeleteModal() {
 }
 function confirmDelete() {
   closeDeleteModal();
+  const id = +new URLSearchParams(location.search).get('id') || 1;
+  const c = CUSTOMERS.find(x => x.id === id) || CUSTOMERS[0];
 
-  // Cập nhật badge ngay trên trang detail
+  // Cập nhật badge trên trang
   const badge = document.querySelector('.badge-green.status-dot');
   if (badge) {
     badge.textContent = 'Ngưng hoạt động';
     badge.style.cssText = 'background:#fee2e2;color:#dc2626;padding:2px 10px;border-radius:99px;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px;';
   }
-  // Khoá nút Xoá
   const btnDanger = document.querySelector('.btn-danger');
   if (btnDanger) { btnDanger.disabled = true; btnDanger.style.opacity = '.4'; btnDanger.style.cursor = 'not-allowed'; }
 
-  const khName = 'Cty TNHH VTNN Minh Đức';
-  const msg = 'Đã chuyển ' + khName + ' sang Ngưng hoạt động';
-
-  // Lưu flag đơn giản để customers.html đọc
-  localStorage.setItem('nex_minh_duc_paused', '1');
-
-  // Lưu thông báo
+  const msg = 'Đã chuyển ' + c.name + ' sang Ngưng hoạt động';
   const notifs = JSON.parse(localStorage.getItem('nex_notifications') || '[]');
-  notifs.unshift({ id: Date.now(), message: 'Đã chuyển ' + khName + ' sang Ngưng hoạt động', time: new Date().toISOString(), read: false, shown: false, type: 'delete' });
+  notifs.unshift({ id: Date.now(), message: msg, time: new Date().toISOString(), read: false, shown: false, type: 'delete' });
   localStorage.setItem('nex_notifications', JSON.stringify(notifs));
 
-  // Hiện toast
-  document.getElementById('toastMsg').textContent = 'Đã chuyển ' + khName + ' sang Ngưng hoạt động';
+  document.getElementById('toastMsg').textContent = msg;
   document.getElementById('toast').classList.add('show');
-
   setTimeout(() => { window.location.href = 'customers.html'; }, 2000);
 }
 

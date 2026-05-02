@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
@@ -107,6 +107,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .type-dl1  { background: #ede9fe; color: #7c3aed; }
 .type-dl2  { background: #d1fae5; color: #059669; }
 .type-le   { background: #fff7ed; color: #ea580c; }
+.type-tt   { background: #fce7f3; color: #be185d; }
 .card-footer { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--gray-100); font-size: 11px; color: var(--gray-400); }
 .card-footer span { color: var(--gray-600, #475569); font-weight: 500; }
 .customer-card.hidden { display: none; }
@@ -171,6 +172,64 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .btn-save-m:hover { background: #2563eb; }
 .field-err-msg { font-size: 11px; color: #ef4444; display: none; }
 .field-err-msg.show { display: block; }
+
+/* ── DETAIL DRAWER ── */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.35); z-index: 400; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; background: var(--white); z-index: 401; display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(0,0,0,.15); transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1); }
+.drawer.open { transform: translateX(0); }
+
+.drawer-hd { padding: 0 20px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.drawer-hd-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 0 12px; }
+.drawer-close { width: 30px; height: 30px; border: none; background: var(--gray-100); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all .15s; }
+.drawer-close:hover { background: var(--gray-200); }
+.drawer-close svg { width: 14px; height: 14px; }
+.drawer-hd-actions { display: flex; gap: 8px; }
+.drawer-act-btn { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 7px; border: 1.5px solid var(--gray-200); background: white; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--gray-600, #475569); transition: all .15s; }
+.drawer-act-btn svg { width: 13px; height: 13px; }
+.drawer-act-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+.drawer-act-btn.danger:hover { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
+
+.drawer-profile { display: flex; align-items: center; gap: 14px; padding: 16px 0 14px; }
+.drawer-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; flex-shrink: 0; }
+.drawer-name { font-size: 15px; font-weight: 800; color: var(--gray-900); line-height: 1.3; }
+.drawer-phone { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
+
+.drawer-tabs { display: flex; border-bottom: 1px solid var(--gray-100); }
+.dtab-btn { flex: 1; padding: 10px 0; font-size: 12.5px; font-weight: 600; color: var(--gray-400); border: none; background: none; cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1px; transition: all .15s; font-family: inherit; }
+.dtab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+.drawer-body { flex: 1; overflow-y: auto; }
+.dtab-panel { display: none; padding: 18px 20px; }
+.dtab-panel.active { display: block; }
+
+/* stat row */
+.d-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+.d-stat { background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 9px; padding: 12px 14px; }
+.d-stat-val { font-size: 17px; font-weight: 800; color: var(--gray-900); line-height: 1.2; }
+.d-stat-lbl { font-size: 10.5px; color: var(--gray-400); margin-top: 3px; font-weight: 500; }
+
+/* info section */
+.d-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--gray-100); }
+.d-info-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.d-info-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; }
+.d-info-row svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; margin-top: 1px; }
+.d-info-key { color: var(--gray-400); min-width: 90px; flex-shrink: 0; font-size: 12px; }
+.d-info-val { color: var(--gray-700); font-weight: 500; flex: 1; }
+
+/* order list */
+.d-order-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--gray-100); }
+.d-order-item:last-child { border-bottom: none; }
+.d-order-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.d-order-icon svg { width: 14px; height: 14px; stroke: var(--blue); }
+.d-order-id { font-size: 12.5px; font-weight: 700; color: var(--gray-900); }
+.d-order-date { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.d-order-right { margin-left: auto; text-align: right; flex-shrink: 0; }
+.d-order-amt { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+.d-order-status { font-size: 10.5px; font-weight: 600; padding: 1.5px 8px; border-radius: 99px; margin-top: 3px; display: inline-block; }
+.d-os-paid { background: #dcfce7; color: #16a34a; }
+.d-os-unpaid { background: #fef3c7; color: #92400e; }
+.d-os-partial { background: #ffedd5; color: #c2410c; }
 </style>
 </head>
 <body>
@@ -239,7 +298,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       Khuyến Mãi
     </a>
   </div>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="invoices.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Hóa Đơn
   </a>
@@ -304,6 +363,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       <option value="dl1">Đại lý cấp 1</option>
       <option value="dl2">Đại lý cấp 2</option>
       <option value="le">Khách lẻ</option>
+      <option value="tt">Khách hàng thân thiết</option>
     </select>
     <select class="filter-select" id="khtypeFilter" onchange="filterCards()">
       <option value="">Loại KH: Tất cả</option>
@@ -317,7 +377,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 
     <!-- ── ĐẠI LÝ CẤP 1 ── -->
 
-    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="công ty tnhh vtnn minh đức long an" onclick="window.location.href='customer-detail.html'">
+    <div class="customer-card" data-status="active" data-type="dl1" data-khtype="dn" data-name="công ty tnhh vtnn minh đức long an">
       <div class="card-top">
         <div class="avatar" style="background:linear-gradient(135deg,#60a5fa,#1d4ed8)">MD</div>
         <div class="card-name-wrap">
@@ -756,6 +816,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
             <option value="dl1">Đại lý cấp 1</option>
             <option value="dl2">Đại lý cấp 2</option>
             <option value="le">Khách lẻ</option>
+            <option value="tt">Khách hàng thân thiết</option>
           </select>
         </div>
 
@@ -934,8 +995,8 @@ function saveNewCustomer() {
   const colors = ['linear-gradient(135deg,#60a5fa,#2563eb)','linear-gradient(135deg,#34d399,#059669)','linear-gradient(135deg,#f472b6,#db2777)','linear-gradient(135deg,#a78bfa,#7c3aed)','linear-gradient(135deg,#fbbf24,#d97706)'];
   const color = colors[Math.floor(Math.random() * colors.length)];
 
-  const groupLabel = { dl1:'Đại lý cấp 1', dl2:'Đại lý cấp 2', le:'Khách lẻ' }[group];
-  const groupClass = { dl1:'type-dl1', dl2:'type-dl2', le:'type-le' }[group];
+  const groupLabel = { dl1:'Đại lý cấp 1', dl2:'Đại lý cấp 2', le:'Khách lẻ', tt:'Khách hàng thân thiết' }[group];
+  const groupClass = { dl1:'type-dl1', dl2:'type-dl2', le:'type-le', tt:'type-tt' }[group];
   const statusLabel = status === 'active' ? 'Đang hoạt động' : 'Ngưng hoạt động';
   const statusClass = status === 'active' ? 'status-active' : 'status-pause';
   const nameSearch  = name.toLowerCase() + ' ' + region.toLowerCase();
@@ -1043,6 +1104,140 @@ function clearSearch() {
 
 // Chạy filter ngay khi trang load để đồng bộ bộ đếm
 filterCards();
+
+
+</script>
+
+<script>
+/* ── CUSTOMER DATA ── */
+const CUSTOMERS = [
+  { id:1,  initials:'MD', bg:'linear-gradient(135deg,#60a5fa,#1d4ed8)',  name:'Cty TNHH VTNN Minh Đức',       phone:'0272 391 456', email:'minhduc.vtnn@gmail.com',    area:'Long An',    group:'dl1', khtype:'dn', status:'active', contact:'Nguyễn Minh Đức',  address:'123 QL1A, Tân An, Long An',         lastOrder:'Hôm nay',      orders:[{id:'ĐH-0042',date:'02/05/2026',amt:737413,status:'unpaid'},{id:'ĐH-0031',date:'18/04/2026',amt:512000,status:'paid'},{id:'ĐH-0020',date:'02/04/2026',amt:863000,status:'paid'}] },
+  { id:2,  initials:'TP', bg:'linear-gradient(135deg,#a78bfa,#6d28d9)',  name:'CH VTNN Thành Phát',            phone:'0273 512 890', email:'thanhphat.ag@gmail.com',    area:'Tiền Giang', group:'dl1', khtype:'dn', status:'active', contact:'Trần Thành Phát', address:'45 Nguyễn Huệ, Mỹ Tho, TG',        lastOrder:'Hôm qua',      orders:[{id:'ĐH-0038',date:'01/05/2026',amt:312000,status:'paid'},{id:'ĐH-0025',date:'10/04/2026',amt:445000,status:'paid'}] },
+  { id:3,  initials:'PN', bg:'linear-gradient(135deg,#34d399,#065f46)',  name:'ĐL Phân Bón Phúc Nguyên',      phone:'0277 638 124', email:'phucnguyen.pb@gmail.com',   area:'Đồng Tháp', group:'dl1', khtype:'dn', status:'active', contact:'Lê Phúc Nguyên',  address:'78 Trần Hưng Đạo, Cao Lãnh, ĐT',  lastOrder:'2 ngày trước', orders:[{id:'ĐH-0035',date:'30/04/2026',amt:1520000,status:'partial'},{id:'ĐH-0022',date:'05/04/2026',amt:684000,status:'paid'}] },
+  { id:4,  initials:'DB', bg:'linear-gradient(135deg,#2dd4bf,#0f766e)',  name:'Cty CP VTNN Đồng Bằng',        phone:'0292 741 308', email:'dongbang.vtnn@gmail.com',   area:'Cần Thơ',   group:'dl1', khtype:'dn', status:'active', contact:'Phạm Văn Bình',   address:'12 3/2, Ninh Kiều, Cần Thơ',       lastOrder:'Hôm nay',      orders:[{id:'ĐH-0041',date:'02/05/2026',amt:945000,status:'unpaid'},{id:'ĐH-0030',date:'15/04/2026',amt:1245000,status:'paid'},{id:'ĐH-0018',date:'22/03/2026',amt:540000,status:'paid'}] },
+  { id:5,  initials:'HG', bg:'linear-gradient(135deg,#f87171,#b91c1c)',  name:'ĐL Hoàng Gia Nông Sản',        phone:'0270 854 217', email:'hoanggia.ns@gmail.com',     area:'Vĩnh Long', group:'dl1', khtype:'dn', status:'pause',  contact:'Trần Hoàng Gia',  address:'56 Hùng Vương, TP Vĩnh Long',      lastOrder:'1 năm trước',  orders:[{id:'ĐH-0005',date:'02/05/2025',amt:384500,status:'paid'}] },
+  { id:6,  initials:'TP', bg:'linear-gradient(135deg,#fb923c,#c2410c)',  name:'Cty TNHH NS Thuận Phát',       phone:'0275 963 540', email:'thuanphat.ns@gmail.com',    area:'Bến Tre',   group:'dl1', khtype:'dn', status:'active', contact:'Nguyễn Thuận Phát','address':'34 Đồng Khởi, Bến Tre',          lastOrder:'3 ngày trước', orders:[{id:'ĐH-0039',date:'29/04/2026',amt:421750,status:'paid'},{id:'ĐH-0028',date:'12/04/2026',amt:670000,status:'paid'}] },
+  { id:7,  initials:'HP', bg:'linear-gradient(135deg,#86efac,#15803d)',  name:'CH VTNN Hồng Phát',            phone:'0293 417 825', email:'hongphat.hg@gmail.com',     area:'Hậu Giang', group:'dl2', khtype:'dn', status:'active', contact:'Lê Hồng Phát',    address:'90 Trần Phú, Vị Thanh, HG',        lastOrder:'Hôm nay',      orders:[{id:'ĐH-0040',date:'02/05/2026',amt:297500,status:'paid'},{id:'ĐH-0027',date:'11/04/2026',amt:320000,status:'paid'}] },
+  { id:8,  initials:'TA', bg:'linear-gradient(135deg,#fcd34d,#b45309)',  name:'ĐL Phân Bón Tuấn Anh',         phone:'0299 526 183', email:'tuananh.pb.st@gmail.com',   area:'Sóc Trăng', group:'dl2', khtype:'cn', status:'active', contact:'Nguyễn Tuấn Anh', address:'23 Lê Lợi, TP Sóc Trăng',         lastOrder:'Hôm qua',      orders:[{id:'ĐH-0037',date:'01/05/2026',amt:126000,status:'paid'},{id:'ĐH-0024',date:'08/04/2026',amt:280000,status:'paid'}] },
+  { id:9,  initials:'BN', bg:'linear-gradient(135deg,#fca5a5,#b91c1c)',  name:'CH VTNN Bảo Ngọc',             phone:'0294 635 971', email:'baongoc.vtnn@gmail.com',    area:'Trà Vinh',  group:'dl2', khtype:'dn', status:'pause',  contact:'Trần Bảo Ngọc',   address:'67 Điện Biên Phủ, Trà Vinh',       lastOrder:'1 năm trước',  orders:[{id:'ĐH-0006',date:'20/04/2025',amt:210000,status:'paid'}] },
+  { id:10, initials:'VN', bg:'linear-gradient(135deg,#7dd3fc,#0369a1)',  name:'ĐL Việt Nông Kiên Giang',      phone:'0297 748 362', email:'vietnong.kg@gmail.com',     area:'Kiên Giang',group:'dl2', khtype:'dn', status:'active', contact:'Phạm Việt Nông',  address:'12 Nguyễn Trung Trực, Rạch Giá',   lastOrder:'4 ngày trước', orders:[{id:'ĐH-0036',date:'28/04/2026',amt:345000,status:'paid'},{id:'ĐH-0023',date:'07/04/2026',amt:460000,status:'paid'}] },
+  { id:11, initials:'NM', bg:'linear-gradient(135deg,#c084fc,#7e22ce)',  name:'CH VTNN Nhật Minh',            phone:'0291 859 274', email:'nhatminh.bl@gmail.com',     area:'Bạc Liêu',  group:'dl2', khtype:'cn', status:'active', contact:'Nguyễn Nhật Minh','address':'45 Lê Duẩn, TP Bạc Liêu',        lastOrder:'Hôm qua',      orders:[{id:'ĐH-0034',date:'01/05/2026',amt:195000,status:'paid'},{id:'ĐH-0019',date:'25/03/2026',amt:380000,status:'paid'}] },
+  { id:12, initials:'AK', bg:'linear-gradient(135deg,#818cf8,#4338ca)',  name:'ĐL Phân Bón An Khang',         phone:'0290 962 485', email:'ankhang.cm@gmail.com',      area:'Cà Mau',    group:'dl2', khtype:'dn', status:'active', contact:'Lê An Khang',     address:'78 Quang Trung, TP Cà Mau',        lastOrder:'5 ngày trước', orders:[{id:'ĐH-0033',date:'27/04/2026',amt:215000,status:'paid'},{id:'ĐH-0021',date:'03/04/2026',amt:450000,status:'paid'}] },
+  { id:13, initials:'PH', bg:'linear-gradient(135deg,#f9a8d4,#be185d)',  name:'ĐL Phú Hưng An Giang',         phone:'0296 174 693', email:'phuhung.vtnn@gmail.com',    area:'An Giang',  group:'dl2', khtype:'cn', status:'active', contact:'Trần Phú Hưng',   address:'23 Lý Thường Kiệt, Long Xuyên, AG',lastOrder:'Hôm nay',      orders:[{id:'ĐH-0043',date:'02/05/2026',amt:440000,status:'unpaid'},{id:'ĐH-0029',date:'14/04/2026',amt:225000,status:'paid'}] },
+  { id:14, initials:'TP', bg:'linear-gradient(135deg,#4ade80,#166534)',  name:'CH Nông Sản Tân Phát',         phone:'0274 283 816', email:'tanphat.bd@gmail.com',      area:'Bình Dương',group:'dl2', khtype:'dn', status:'active', contact:'Nguyễn Tân Phát', address:'56 Huỳnh Văn Lũy, Thủ Dầu Một',   lastOrder:'2 ngày trước', orders:[{id:'ĐH-0032',date:'30/04/2026',amt:370000,status:'paid'},{id:'ĐH-0017',date:'20/03/2026',amt:420000,status:'paid'}] },
+  { id:15, initials:'MP', bg:'linear-gradient(135deg,#fdba74,#c2410c)',  name:'ĐL Minh Phát Đồng Nai',        phone:'0251 374 629', email:'minhphat.dn@gmail.com',     area:'Đồng Nai',  group:'dl2', khtype:'cn', status:'active', contact:'Lê Minh Phát',    address:'90 Nguyễn Ái Quốc, Biên Hòa, ĐN', lastOrder:'6 ngày trước', orders:[{id:'ĐH-0026',date:'26/04/2026',amt:430000,status:'paid'},{id:'ĐH-0016',date:'18/03/2026',amt:380000,status:'paid'}] },
+  { id:16, initials:'NT', bg:'linear-gradient(135deg,#93c5fd,#2563eb)',  name:'Nguyễn Văn Tâm',               phone:'0918 374 152', email:'nguyenvantam93@gmail.com',  area:'Long An',   group:'le',  khtype:'cn', status:'active', contact:'Nguyễn Văn Tâm',  address:'34 Nguyễn Văn Linh, Tân An, LA',   lastOrder:'1 tuần trước', orders:[{id:'ĐH-0015',date:'25/04/2026',amt:88500,status:'paid'},{id:'ĐH-0008',date:'10/03/2026',amt:126000,status:'paid'}] },
+  { id:17, initials:'TL', bg:'linear-gradient(135deg,#e879f9,#a21caf)',  name:'Trần Thị Lan',                 phone:'0907 485 263', email:'tranthilan.tg@gmail.com',   area:'Tiền Giang',group:'le',  khtype:'cn', status:'active', contact:'Trần Thị Lan',    address:'12 Ấp 3, xã Tân Hiệp, Tiền Giang', lastOrder:'3 ngày trước', orders:[{id:'ĐH-0044',date:'29/04/2026',amt:195000,status:'paid'},{id:'ĐH-0014',date:'20/04/2026',amt:88500,status:'paid'}] },
+  { id:18, initials:'LD', bg:'linear-gradient(135deg,#5eead4,#0f766e)',  name:'Lê Văn Dũng',                  phone:'0935 596 374', email:'levandung.dt@gmail.com',    area:'Đồng Tháp', group:'le',  khtype:'cn', status:'active', contact:'Lê Văn Dũng',     address:'78 Tổ 5, xã An Bình, Đồng Tháp',   lastOrder:'2 tuần trước', orders:[{id:'ĐH-0009',date:'18/04/2026',amt:126000,status:'paid'}] },
+  { id:19, initials:'PH', bg:'linear-gradient(135deg,#fda4af,#e11d48)',  name:'Phạm Thị Hồng',                phone:'0946 707 485', email:'phamthihong.ct@gmail.com',  area:'Cần Thơ',   group:'le',  khtype:'cn', status:'active', contact:'Phạm Thị Hồng',   address:'56 Cách Mạng T8, Ninh Kiều, CT',    lastOrder:'Hôm qua',      orders:[{id:'ĐH-0045',date:'01/05/2026',amt:88500,status:'paid'},{id:'ĐH-0013',date:'18/04/2026',amt:195000,status:'paid'}] },
+  { id:20, initials:'VK', bg:'linear-gradient(135deg,#a5b4fc,#4f46e5)',  name:'Võ Văn Khoa',                  phone:'0912 818 596', email:'vovankhoa.vl@gmail.com',    area:'Vĩnh Long', group:'le',  khtype:'cn', status:'active', contact:'Võ Văn Khoa',     address:'90 Ấp Bình Hòa, xã Bình Ninh, VL', lastOrder:'2 tuần trước', orders:[{id:'ĐH-0011',date:'16/04/2026',amt:126000,status:'paid'}] },
+];
+
+const groupLabel = { dl1:'Đại lý cấp 1', dl2:'Đại lý cấp 2', le:'Khách lẻ', tt:'Khách hàng thân thiết' };
+const groupClass = { dl1:'type-dl1', dl2:'type-dl2', le:'type-le', tt:'type-tt' };
+const khtypeLabel = { dn:'Doanh nghiệp', cn:'Cá nhân' };
+
+function fmtMoney(n) { return Math.round(n).toLocaleString('vi-VN') + ' đ'; }
+
+function openDrawer(id) {
+  const c = CUSTOMERS.find(x => x.id === +id);
+  if (!c) return;
+
+  const totalRevenue = c.orders.reduce((s, o) => s + o.amt, 0);
+  const statusHtml = c.status === 'active'
+    ? '<span class="status-badge status-active">Đang hoạt động</span>'
+    : '<span class="status-badge status-pause">Ngưng hoạt động</span>';
+
+  // Header
+  document.getElementById('d-avatar').style.background = c.bg;
+  document.getElementById('d-initials').textContent = c.initials;
+  document.getElementById('d-name').textContent = c.name;
+  document.getElementById('d-phone').textContent = c.phone;
+  document.getElementById('d-status').innerHTML = statusHtml;
+
+  // Stats
+  document.getElementById('d-stat-orders').textContent = c.orders.length;
+  document.getElementById('d-stat-revenue').textContent = fmtMoney(totalRevenue);
+  document.getElementById('d-stat-last').textContent = c.lastOrder;
+
+  // Info tab
+  document.getElementById('d-info').innerHTML = `
+    <div class="d-section-title">Thông tin liên hệ</div>
+    <div class="d-info-list">
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="d-info-key">Người liên hệ</span><span class="d-info-val">${c.contact}</span></div>
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.57 5a2 2 0 0 1 1.8-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.09a16 16 0 0 0 6 6l.72-.72a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.28 18z"/></svg><span class="d-info-key">Điện thoại</span><span class="d-info-val">${c.phone}</span></div>
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="d-info-key">Email</span><span class="d-info-val">${c.email}</span></div>
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="d-info-key">Khu vực</span><span class="d-info-val">${c.area}</span></div>
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="d-info-key">Địa chỉ</span><span class="d-info-val">${c.address}</span></div>
+    </div>
+    <div class="d-section-title">Phân loại</div>
+    <div class="d-info-list">
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="d-info-key">Nhóm</span><span class="d-info-val"><span class="type-badge ${groupClass[c.group]}">${groupLabel[c.group]||c.group}</span></span></div>
+      <div class="d-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="d-info-key">Loại KH</span><span class="d-info-val">${khtypeLabel[c.khtype]||c.khtype}</span></div>
+    </div>`;
+
+  // Orders tab
+  const osClass = { paid:'d-os-paid', unpaid:'d-os-unpaid', partial:'d-os-partial' };
+  const osLabel = { paid:'Đã thanh toán', unpaid:'Chờ TT', partial:'Một phần' };
+  document.getElementById('d-orders').innerHTML = c.orders.length ? c.orders.map(o => `
+    <div class="d-order-item">
+      <div class="d-order-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
+      <div>
+        <div class="d-order-id">${o.id}</div>
+        <div class="d-order-date">${o.date}</div>
+      </div>
+      <div class="d-order-right">
+        <div class="d-order-amt">${fmtMoney(o.amt)}</div>
+        <span class="d-order-status ${osClass[o.status]||''}">${osLabel[o.status]||o.status}</span>
+      </div>
+    </div>`).join('') : '<div style="text-align:center;padding:28px 0;color:var(--gray-400);font-size:12.5px">Chưa có đơn hàng nào</div>';
+
+  // reset tab
+  switchDTab('info');
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function switchDTab(tab) {
+  document.querySelectorAll('.dtab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.dtab-panel').forEach(p => p.classList.toggle('active', p.id === 'd-' + tab));
+}
+
+/* Auto-wire customer card clicks → navigate to detail page */
+document.querySelectorAll('.customer-card').forEach((card, i) => {
+  if (i < CUSTOMERS.length) {
+    const id = CUSTOMERS[i].id;
+    card.style.cursor = 'pointer';
+    card.onclick = function() { window.location.href = 'customer-detail.html?id=' + id; };
+  }
+});
+</script>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+(function(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity .2s ease';
+  window.addEventListener('load',function(){
+    document.body.offsetHeight;
+    document.body.style.opacity='1';
+  });
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a.nav-item');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    document.body.style.opacity='0';
+    setTimeout(function(){ window.location.href=href; },200);
+  });
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NexLify – Danh Sách Hoá Đơn</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --sidebar-w: 210px; --topbar-h: 52px;
+  --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --blue: #3b82f6; --blue-light: #dbeafe; --blue-pale: #eff6ff;
+  --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+  --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
+  --white: #ffffff; --danger: #ef4444;
+  --success: #16a34a; --success-bg: #dcfce7;
+  --warn: #f59e0b; --warn-bg: #fef3c7;
+  --amber: #d97706; --amber-bg: #fef3c7;
+}
+body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); color: var(--gray-900); font-size: 13px; display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--gray-200); position: fixed; top: 0; left: 0; bottom: 0; display: flex; flex-direction: column; z-index: 100; padding: 0 10px; overflow-y: auto; }
+.sidebar-logo { padding: 16px 8px 14px; border-bottom: 1px solid var(--gray-100); margin-bottom: 6px; text-align: center; }
+.logo-info strong { display: block; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.3; letter-spacing: 1px; background: linear-gradient(135deg,#e879f9 0%,#818cf8 50%,#38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
+.nav-item:hover { background: var(--purple-pale); color: var(--purple); }
+.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; }
+.nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
+.nav-arrow { width: 13px; height: 13px; flex-shrink: 0; transition: transform .2s; color: var(--gray-400); }
+.nav-parent.open .nav-arrow { transform: rotate(180deg); }
+.nav-sub { display: none; padding-left: 10px; }
+.nav-sub.open { display: block; }
+.nav-sub .nav-item { font-size: 12px; padding: 5px 10px; margin-bottom: 1px; }
+
+/* ── TOPBAR ── */
+.topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 90; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#a78bfa,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+.notif-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--gray-200); background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; color: var(--gray-500); }
+.notif-btn svg { width: 15px; height: 15px; }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; border: 1.5px solid white; }
+.search-wrap { position: relative; flex: 1; max-width: 280px; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--gray-400); }
+.search-wrap input { width: 100%; border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 6px 12px 6px 32px; font-size: 13px; font-family: inherit; outline: none; }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-title { font-size: 18px; font-weight: 800; color: var(--gray-900); display: flex; align-items: center; gap: 10px; }
+.page-title-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--amber-bg); display: flex; align-items: center; justify-content: center; }
+.page-title-icon svg { width: 18px; height: 18px; stroke: var(--amber); }
+.btn { border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; transition: all .15s; white-space: nowrap; }
+.btn svg { width: 14px; height: 14px; }
+.btn-primary { background: var(--purple); color: white; }
+.btn-primary:hover { background: #6d28d9; }
+.btn-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid #fde68a; }
+.btn-amber:hover { background: #fde68a; }
+.modal-cancel { border: 1px solid var(--gray-200); background: #fff; border-radius: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--gray-500); }
+
+/* STAT CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+.stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-val { font-size: 22px; font-weight: 800; line-height: 1.2; }
+.stat-lbl { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+
+/* FILTER BAR */
+.filter-bar { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.search-fw { position: relative; flex: 1; min-width: 200px; }
+.search-fw svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--gray-400); }
+.search-input { width: 100%; border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 12px 7px 32px; font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s; }
+.search-input:focus { border-color: var(--purple); }
+.filter-select { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none; background: white; cursor: pointer; color: var(--gray-700); }
+.filter-select:focus { border-color: var(--purple); }
+
+/* TABLE */
+.table-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+.table-hd { padding: 12px 18px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+.table-hd-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.table-hd-title svg { width: 14px; height: 14px; stroke: var(--amber); }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { padding: 10px 16px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-400); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
+.data-table th.r { text-align: right; }
+.data-table td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--purple-pale); }
+.inv-num { font-weight: 700; color: var(--amber); cursor: pointer; }
+.inv-num:hover { text-decoration: underline; }
+.ref-link { color: var(--blue); font-weight: 600; font-size: 12px; text-decoration: none; }
+.ref-link:hover { text-decoration: underline; }
+.cust-cell { font-weight: 600; }
+.cust-sub { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+.amount { font-weight: 700; text-align: right; color: var(--gray-900); }
+.date-cell { font-size: 12.5px; color: var(--gray-500); }
+.date-overdue { color: var(--danger); font-weight: 600; }
+.action-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--gray-400); transition: all .15s; margin-right: 4px; }
+.action-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-pale); }
+.action-btn svg { width: 13px; height: 13px; }
+
+/* STATUS BADGE */
+.sq { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.sq::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .7; }
+.sq-unpaid  { background: #fef3c7; color: #92400e; }
+.sq-partial { background: #ffedd5; color: #c2410c; }
+.sq-paid    { background: #dcfce7; color: #16a34a; }
+.sq-overdue { background: #fee2e2; color: #dc2626; }
+.sq-cancel  { background: #f1f5f9; color: #64748b; }
+
+/* PAGINATION */
+.pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid var(--gray-100); font-size: 12.5px; color: var(--gray-500); }
+.page-btns { display: flex; gap: 4px; }
+.page-btn { width: 30px; height: 30px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: inherit; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all .15s; }
+.page-btn:hover { border-color: var(--purple); color: var(--purple); }
+.page-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--gray-900); color: white; border-radius: 9px; padding: 10px 20px; font-size: 13px; font-weight: 500; z-index: 999; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.2); opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* CREATE MODAL */
+.cm-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.cm-backdrop.open { opacity: 1; pointer-events: all; }
+.cm-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 680px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(14px); transition: transform .2s; }
+.cm-backdrop.open .cm-modal { transform: translateY(0); }
+.cm-hd { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.cm-hd h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.cm-hd h3 svg { width: 16px; height: 16px; stroke: var(--amber); }
+.cm-close { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
+.cm-close:hover { background: var(--gray-100); }
+.cm-close svg { width: 15px; height: 15px; }
+.cm-tabs { display: flex; padding: 0 22px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; overflow-x: auto; white-space: nowrap; }
+.cm-tab { padding: 11px 18px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1px; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
+.cm-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+.cm-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.cm-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 22px 16px; border-top: 1px solid var(--gray-100); flex-shrink: 0; background: var(--gray-50); border-radius: 0 0 14px 14px; }
+.ctab { display: none; } .ctab.active { display: block; }
+.fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.fg { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.fg:last-child { margin-bottom: 0; }
+.flbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.flbl span { color: var(--danger); }
+.finput { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; transition: border-color .15s; background: #fff; width: 100%; }
+.finput:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,.1); }
+.fselect { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; background: #fff; width: 100%; cursor: pointer; }
+.fselect:focus { border-color: var(--amber); }
+.ftextarea { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; width: 100%; resize: vertical; min-height: 60px; }
+.ftextarea:focus { border-color: var(--amber); }
+.fhint { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.fsec { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-top: 1px solid var(--gray-100); padding-top: 14px; margin-top: 4px; }
+.fsec:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.prd-group { display: flex; gap: 10px; margin-bottom: 12px; }
+.prd-lbl { flex: 1; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--gray-200); background: #fff; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
+.prd-lbl.sel { border-color: var(--amber); background: #fffbeb; }
+.prd-lbl .pt { font-size: 13px; font-weight: 700; color: var(--gray-700); }
+.prd-lbl.sel .pt { color: var(--amber); }
+.prd-lbl .ps { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+.cpl-wrap { border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+.cpl-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.cpl-table th { background: var(--gray-50); padding: 8px 10px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
+.cpl-table td { padding: 6px 8px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.cpl-table tr:last-child td { border-bottom: none; }
+.cpl-input { border: 1px solid var(--gray-200); border-radius: 6px; padding: 5px 8px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; width: 100%; background: #fff; }
+.cpl-input:focus { border-color: var(--amber); }
+.cpl-rm { width: 24px; height: 24px; border-radius: 5px; border: none; background: #fee2e2; color: var(--danger); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.cpl-rm svg { width: 11px; height: 11px; }
+.cpl-add { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--amber); background: none; border: 1px dashed #fcd34d; border-radius: 7px; padding: 7px 14px; cursor: pointer; font-family: inherit; }
+.cpl-add:hover { background: var(--warn-bg); }
+.cpl-add svg { width: 13px; height: 13px; }
+.csum-bar { background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: flex-end; gap: 24px; font-size: 12.5px; margin-top: 8px; }
+.csum-bar .ci { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.csum-bar .cl { font-size: 10.5px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; }
+.csum-bar .cv { font-weight: 700; }
+.csum-bar .cv.big { font-size: 15px; color: var(--amber); }
+.inst-box { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+.inst-box table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.inst-box th { padding: 7px 10px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); background: #fff; text-align: left; }
+.inst-box td { padding: 6px 8px; border-bottom: 1px solid var(--gray-100); }
+.inst-box tr:last-child td { border-bottom: none; }
+.inv-preview { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+.inv-preview-row { display: flex; justify-content: space-between; padding: 8px 14px; font-size: 12.5px; border-bottom: 1px solid var(--gray-100); }
+.inv-preview-row:last-child { border-bottom: none; }
+.inv-preview-row .k { color: var(--gray-500); }
+.inv-preview-row .v { font-weight: 600; }
+.inv-preview-row.grand { font-weight: 800; font-size: 14px; background: #fff; border-top: 2px solid var(--gray-200); }
+.inv-preview-row.grand .v { color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-info"><strong>NexLify</strong><small>Hệ thống quản lý bán hàng</small></div>
+  </div>
+  <div class="section-label">Menu</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Tổng Quan
+  </a>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Đơn Hàng
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="quotes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Báo Giá</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Đơn Hàng</a>
+    <a class="nav-item" href="customers.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Khách Hàng</a>
+  </div>
+  <div class="nav-item nav-parent" onclick="toggleNav(this)">
+    <span class="nav-left">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Sản Phẩm
+    </span>
+    <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+  <div class="nav-sub">
+    <a class="nav-item" href="products.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Sản Phẩm
+    </a>
+    <a class="nav-item" href="categories.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Danh Mục Sản Phẩm
+    </a>
+    <a class="nav-item" href="variants.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Biến Thể Sản Phẩm
+    </a>
+    <a class="nav-item" href="pricing.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Bảng Giá
+    </a>
+    <a class="nav-item" href="promotions.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+      Khuyến Mãi
+    </a>
+  </div>
+  <a class="nav-item active" href="invoices.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Hóa Đơn
+  </a>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Báo Cáo
+  </a>
+  <div class="section-label">Khác</div>
+  <a class="nav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Setting
+  </a>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-right">
+    <button class="notif-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot"></span>
+    </button>
+    <button class="profile-btn">
+      <div class="profile-avatar">A</div>
+      <span class="p-name">Admin</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-title">
+      <div class="page-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      Danh Sách Hoá Đơn
+    </div>
+    <button class="btn btn-primary" onclick="openCreateModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tạo Hoá Đơn
+    </button>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#ede9fe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div>
+        <div class="stat-val" style="color:#7c3aed" id="s-total">0</div>
+        <div class="stat-lbl">Tổng hoá đơn</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--warn-bg)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <div class="stat-val" style="color:var(--warn)" id="s-unpaid">0</div>
+        <div class="stat-lbl">Chờ thanh toán</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--success-bg)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <div class="stat-val" style="color:var(--success)" id="s-paid">0</div>
+        <div class="stat-lbl">Đã thanh toán</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fee2e2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div>
+        <div class="stat-val" style="color:var(--danger)" id="s-overdue">0</div>
+        <div class="stat-lbl">Quá hạn</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="search-fw">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="searchInput" placeholder="Tìm số HĐ, khách hàng, đơn hàng..." oninput="filterTable()" />
+    </div>
+    <select class="filter-select" id="filterStatus" onchange="filterTable()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="unpaid">Chờ thanh toán</option>
+      <option value="partial">Thanh toán một phần</option>
+      <option value="paid">Đã thanh toán</option>
+      <option value="overdue">Quá hạn</option>
+    </select>
+    <select class="filter-select" id="filterMethod" onchange="filterTable()">
+      <option value="">Tất cả hình thức</option>
+      <option value="bank">Chuyển khoản</option>
+      <option value="cash">Tiền mặt</option>
+      <option value="cod">COD</option>
+    </select>
+    <select class="filter-select" id="filterSchedule" onchange="filterTable()">
+      <option value="">Tất cả phương thức</option>
+      <option value="one">Trả 1 lần</option>
+      <option value="install">Trả nhiều lần</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <div class="table-hd">
+      <div class="table-hd-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Hoá Đơn
+      </div>
+      <div style="font-size:12px;color:var(--gray-400)" id="rowCount">0 hoá đơn</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Số HĐ</th>
+            <th>Đơn hàng</th>
+            <th>Khách hàng</th>
+            <th>Ngày xuất</th>
+            <th>Hạn TT</th>
+            <th>Hình thức</th>
+            <th>Phương thức</th>
+            <th class="r">Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="invoicetbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span id="paginationInfo">Hiển thị 0 hoá đơn</span>
+      <div class="page-btns">
+        <button class="page-btn">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">›</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CREATE INVOICE MODAL -->
+<div class="cm-backdrop" id="createModal" onclick="if(event.target===this)closeCreateModal()">
+  <div class="cm-modal">
+    <div class="cm-hd">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Tạo Hoá Đơn Mới
+      </h3>
+      <button class="cm-close" onclick="closeCreateModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="cm-tabs">
+      <div class="cm-tab active" onclick="cSwitchTab('ct-info',this)">Thông tin HĐ</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-cust',this)">Khách hàng</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-pay',this)">Thanh toán</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-prods',this)">Sản phẩm</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-preview',this)">Xem trước</div>
+    </div>
+
+    <div class="cm-body">
+
+      <!-- TAB 1: Thông tin HĐ -->
+      <div class="ctab active" id="ct-info">
+        <div class="fsec">Thông tin cơ bản</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Số hoá đơn <span>*</span></div>
+            <input class="finput" id="c-num" value="HĐ-0016" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Từ đơn hàng</div>
+            <select class="fselect" id="c-order">
+              <option value="">— Không liên kết —</option>
+              <option value="DH-0042">ĐH-0042 · Minh Đức</option>
+              <option value="DH-0043">ĐH-0043 · Phú Quý</option>
+              <option value="DH-0044">ĐH-0044 · Nông Sản Xanh</option>
+              <option value="DH-0045">ĐH-0045 · Minh Phúc</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Ngày xuất <span>*</span></div>
+            <input class="finput" type="date" id="c-issued" oninput="autoSetDue()" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Hạn thanh toán <span>*</span></div>
+            <input class="finput" type="date" id="c-due" />
+            <div class="fhint">Mặc định +14 ngày từ ngày xuất</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="flbl">Mã số thuế khách hàng</div>
+          <input class="finput" id="c-taxid" placeholder="Ví dụ: 0123456789 (nếu có)" />
+        </div>
+        <div class="fg">
+          <div class="flbl">Ghi chú hoá đơn</div>
+          <textarea class="ftextarea" id="c-note" placeholder="Điều khoản, ghi chú thêm..."></textarea>
+        </div>
+      </div>
+
+      <!-- TAB 2: Khách hàng -->
+      <div class="ctab" id="ct-cust">
+        <div class="fsec">Thông tin khách hàng</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Tên khách hàng <span>*</span></div>
+            <input class="finput" id="c-custname" placeholder="Tên công ty hoặc cá nhân" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Loại khách hàng</div>
+            <select class="fselect" id="c-custtype">
+              <option>Đại lý cấp 1</option><option>Đại lý cấp 2</option>
+              <option>Khách hàng thân thiết</option><option>Khách lẻ</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Điện thoại</div>
+            <input class="finput" id="c-phone" placeholder="0901 234 567" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Email</div>
+            <input class="finput" type="email" id="c-email" placeholder="email@example.com" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Khu vực</div>
+            <select class="fselect" id="c-area">
+              <option>Vĩnh Long</option><option>Cần Thơ</option><option>An Giang</option>
+              <option>Đồng Tháp</option><option>Tiền Giang</option><option>Bến Tre</option>
+              <option>Kiên Giang</option><option>Hậu Giang</option><option>Sóc Trăng</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Địa chỉ giao</div>
+            <input class="finput" id="c-addr" placeholder="Số nhà, đường, tỉnh thành..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Thanh toán -->
+      <div class="ctab" id="ct-pay">
+        <div class="fsec">Hình thức & Phương thức</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Hình thức thanh toán</div>
+            <select class="fselect" id="c-method">
+              <option value="bank">Chuyển khoản ngân hàng</option>
+              <option value="cash">Tiền mặt</option>
+              <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Trạng thái ban đầu</div>
+            <select class="fselect" id="c-paystatus" onchange="toggleCPartial(this.value)">
+              <option value="unpaid">Chờ thanh toán</option>
+              <option value="partial">Thanh toán một phần</option>
+              <option value="paid">Đã thanh toán đủ</option>
+            </select>
+          </div>
+        </div>
+        <div id="cPartialWrap" style="display:none;margin-bottom:14px">
+          <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:14px">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#c2410c;margin-bottom:10px">Thanh toán một phần</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="finput" type="number" id="c-paidamt" placeholder="Số tiền đã nhận..." min="0" step="1000"
+                style="text-align:right;font-size:14px;font-weight:700;border-color:#fed7aa;flex:1" oninput="updateCPartial()" />
+              <span style="font-weight:700;color:var(--gray-500)">đ</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-top:10px;padding-top:8px;border-top:1px dashed #fed7aa">
+              <span style="color:var(--gray-500)">Còn lại</span>
+              <span id="cRemain" style="font-weight:800;color:var(--danger)">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="fsec">Phương thức trả tiền</div>
+        <div class="prd-group">
+          <label class="prd-lbl sel" id="cRdOne">
+            <input type="radio" name="c-schedule" value="one" checked onchange="toggleCInstall('one')" style="accent-color:var(--amber);width:15px;height:15px;flex-shrink:0" />
+            <div><div class="pt">Trả hết 1 lần</div><div class="ps">Thanh toán toàn bộ 1 lần</div></div>
+          </label>
+          <label class="prd-lbl" id="cRdInstall">
+            <input type="radio" name="c-schedule" value="install" onchange="toggleCInstall('install')" style="accent-color:var(--amber);width:15px;height:15px;flex-shrink:0" />
+            <div><div class="pt">Trả nhiều lần</div><div class="ps">Chia nhỏ theo từng đợt</div></div>
+          </label>
+        </div>
+        <div id="cInstallWrap" style="display:none">
+          <div class="inst-box">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="font-size:12px;font-weight:700;color:var(--gray-700)">Lịch thanh toán</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-500)">
+                Số đợt:
+                <select id="cInstallCount" onchange="buildCInstallRows()" style="border:1px solid var(--gray-200);border-radius:6px;padding:3px 8px;font-size:12px;font-family:inherit;outline:none;background:#fff">
+                  <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead><tr>
+                <th>Đợt</th><th style="text-align:right">Số tiền (đ)</th><th>Ngày dự kiến</th><th>Trạng thái</th>
+              </tr></thead>
+              <tbody id="cInstallTbody"></tbody>
+            </table>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;font-size:12.5px">
+              <span style="color:var(--gray-500);font-weight:600">Tổng phân kỳ</span>
+              <span style="font-weight:800;color:var(--amber)" id="cInstallSum">0 đ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Sản phẩm -->
+      <div class="ctab" id="ct-prods">
+        <div class="cpl-wrap">
+          <table class="cpl-table">
+            <thead><tr>
+              <th style="width:28px">#</th>
+              <th>Tên sản phẩm</th>
+              <th style="width:60px">ĐVT</th>
+              <th style="width:50px">SL</th>
+              <th style="width:100px">Đơn giá</th>
+              <th style="width:48px">CK%</th>
+              <th style="width:100px">Thành tiền</th>
+              <th style="width:28px"></th>
+            </tr></thead>
+            <tbody id="cProdTbody"></tbody>
+          </table>
+        </div>
+        <button class="cpl-add" onclick="addCProdLine()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Thêm sản phẩm
+        </button>
+        <div class="csum-bar">
+          <div class="ci"><div class="cl">Tạm tính</div><div class="cv" id="cSub">0 đ</div></div>
+          <div class="ci"><div class="cl">Chiết khấu</div><div class="cv" style="color:var(--danger)" id="cDisc">0 đ</div></div>
+          <div class="ci">
+            <div class="cl">VAT</div>
+            <div class="cv" style="display:flex;align-items:center;gap:4px">
+              <input type="number" id="cVatRate" value="10" min="0" max="100"
+                style="width:38px;border:1px solid #fde68a;border-radius:5px;padding:2px 4px;font-size:12px;font-weight:700;text-align:center;font-family:inherit;outline:none;background:#fff"
+                oninput="calcCTotal()" /> %
+            </div>
+          </div>
+          <div class="ci"><div class="cl">Tổng cộng</div><div class="cv big" id="cTotal">0 đ</div></div>
+        </div>
+      </div>
+
+      <!-- TAB 5: Xem trước -->
+      <div class="ctab" id="ct-preview">
+        <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:16px;margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--amber)">
+            <div style="font-size:18px;font-weight:800;font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,#e879f9,#818cf8,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">NexLify</div>
+            <div style="text-align:right">
+              <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-400);font-weight:600">Hoá đơn</div>
+              <div style="font-size:15px;font-weight:800" id="prev-num">—</div>
+              <div style="font-size:11px;color:var(--gray-500)" id="prev-date">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;font-size:12px">
+            <div>
+              <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:6px">Thông tin HĐ</div>
+              <div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--gray-100)"><span style="color:var(--gray-500)">Hạn TT</span><span style="font-weight:600" id="prev-due">—</span></div>
+              <div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--gray-100)"><span style="color:var(--gray-500)">Hình thức</span><span style="font-weight:600" id="prev-method">—</span></div>
+              <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:var(--gray-500)">Phương thức</span><span style="font-weight:600" id="prev-schedule">Trả 1 lần</span></div>
+            </div>
+            <div>
+              <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--gray-400);margin-bottom:6px">Khách hàng</div>
+              <div style="font-weight:700;font-size:13px" id="prev-cust">—</div>
+              <div style="color:var(--gray-500);margin-top:2px" id="prev-phone">—</div>
+              <div style="color:var(--gray-500)" id="prev-addr">—</div>
+            </div>
+          </div>
+          <div id="prevProdList" style="margin-bottom:10px;font-size:12px"></div>
+          <div class="inv-preview">
+            <div class="inv-preview-row"><span class="k">Tạm tính</span><span class="v" id="prev-sub">—</span></div>
+            <div class="inv-preview-row"><span class="k">Chiết khấu</span><span class="v" style="color:var(--danger)" id="prev-disc">—</span></div>
+            <div class="inv-preview-row"><span class="k">Thuế VAT (<span id="prev-vat-pct">10</span>%)</span><span class="v" id="prev-vat">—</span></div>
+            <div class="inv-preview-row grand"><span class="k">Tổng thanh toán</span><span class="v" id="prev-total">—</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cm-footer">
+      <button class="modal-cancel" onclick="closeCreateModal()">Huỷ bỏ</button>
+      <button class="btn btn-amber" onclick="cPrevTab()" style="padding:9px 18px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Quay lại
+      </button>
+      <button class="btn" id="cNextBtn" onclick="cNextTab()" style="padding:9px 18px;background:var(--purple);color:white">
+        Tiếp theo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="btn btn-amber" id="cSaveBtn" onclick="createInvoice()" style="display:none;padding:9px 22px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+        Tạo Hoá Đơn
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+const TABS = ['ct-info','ct-cust','ct-pay','ct-prods','ct-preview'];
+let cTabIdx = 0;
+
+const INVOICES = [
+  { id:'HĐ-0001', order:'ĐH-0042', cust:'Cty TNHH VTNN Minh Đức',    type:'Đại lý cấp 1',           issued:'28/04/2026', due:'12/05/2026', method:'bank', schedule:'one',     total:737413,  status:'unpaid'  },
+  { id:'HĐ-0002', order:'ĐH-0038', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'25/04/2026', due:'09/05/2026', method:'cash', schedule:'one',     total:312000,  status:'paid'    },
+  { id:'HĐ-0003', order:'ĐH-0035', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'20/04/2026', due:'04/05/2026', method:'bank', schedule:'install', total:1520000, status:'partial' },
+  { id:'HĐ-0004', order:'ĐH-0031', cust:'Trang trại Minh Phúc',       type:'Khách lẻ',               issued:'15/04/2026', due:'29/04/2026', method:'cod',  schedule:'one',     total:88500,   status:'overdue' },
+  { id:'HĐ-0005', order:'ĐH-0029', cust:'Cty TNHH VTNN Minh Đức',     type:'Đại lý cấp 1',           issued:'10/04/2026', due:'24/04/2026', method:'bank', schedule:'install', total:945000,  status:'paid'    },
+  { id:'HĐ-0006', order:'ĐH-0027', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'05/04/2026', due:'19/04/2026', method:'bank', schedule:'one',     total:421750,  status:'paid'    },
+  { id:'HĐ-0007', order:'ĐH-0024', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'01/04/2026', due:'15/04/2026', method:'cash', schedule:'one',     total:670000,  status:'paid'    },
+  { id:'HĐ-0008', order:'ĐH-0020', cust:'Vựa Phân Bón Tân Tiến',      type:'Đại lý cấp 1',           issued:'28/03/2026', due:'25/04/2026', method:'bank', schedule:'install', total:2100000, status:'unpaid'  },
+  { id:'HĐ-0009', order:'ĐH-0018', cust:'Cty CP Nông Dược Xanh',      type:'Khách hàng thân thiết',  issued:'22/03/2026', due:'05/04/2026', method:'bank', schedule:'one',     total:540000,  status:'paid'    },
+  { id:'HĐ-0010', order:'ĐH-0015', cust:'Trang trại Minh Phúc',       type:'Khách lẻ',               issued:'18/03/2026', due:'01/04/2026', method:'cash', schedule:'one',     total:126000,  status:'overdue' },
+  { id:'HĐ-0011', order:'ĐH-0013', cust:'Cty TNHH VTNN Minh Đức',     type:'Đại lý cấp 1',           issued:'14/03/2026', due:'28/03/2026', method:'bank', schedule:'install', total:1830000, status:'paid'    },
+  { id:'HĐ-0012', order:'ĐH-0011', cust:'HTX Nông nghiệp Bình Minh',  type:'Đại lý cấp 2',           issued:'10/03/2026', due:'24/03/2026', method:'cod',  schedule:'one',     total:297500,  status:'paid'    },
+  { id:'HĐ-0013', order:'ĐH-0009', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'05/03/2026', due:'19/03/2026', method:'bank', schedule:'one',     total:863000,  status:'unpaid'  },
+  { id:'HĐ-0014', order:'ĐH-0007', cust:'Đại lý phân bón Hòa Phát',   type:'Đại lý cấp 1',           issued:'28/02/2026', due:'14/03/2026', method:'bank', schedule:'install', total:1245000, status:'paid'    },
+  { id:'HĐ-0015', order:'ĐH-0005', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'20/02/2026', due:'06/03/2026', method:'cash', schedule:'one',     total:384500,  status:'paid'    },
+];
+
+const STATUS_MAP   = { unpaid:{cls:'sq-unpaid',txt:'Chờ thanh toán'}, partial:{cls:'sq-partial',txt:'Thanh toán một phần'}, paid:{cls:'sq-paid',txt:'Đã thanh toán'}, overdue:{cls:'sq-overdue',txt:'Quá hạn'} };
+const METHOD_MAP   = { bank:'Chuyển khoản', cash:'Tiền mặt', cod:'COD' };
+const SCHEDULE_MAP = { one:'Trả 1 lần', install:'Trả nhiều lần' };
+
+function fmt(n) { return Math.round(n).toLocaleString('vi-VN'); }
+
+function renderTable(data) {
+  const tbody = document.getElementById('invoicetbody');
+  tbody.innerHTML = data.map(inv => {
+    const st = STATUS_MAP[inv.status] || STATUS_MAP.unpaid;
+    return `<tr style="cursor:pointer" onclick="handleRowClick(event,'${inv.id}')">
+      <td><span class="inv-num">${inv.id}</span></td>
+      <td><span class="ref-link">${inv.order}</span></td>
+      <td><div class="cust-cell">${inv.cust}</div><div class="cust-sub">${inv.type}</div></td>
+      <td class="date-cell">${inv.issued}</td>
+      <td class="date-cell ${inv.status==='overdue'?'date-overdue':''}">${inv.due}${inv.status==='overdue'?' ⚠':''}</td>
+      <td style="font-size:12.5px;color:var(--gray-500)">${METHOD_MAP[inv.method]||''}</td>
+      <td><span style="font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:${inv.schedule==='install'?'#ede9fe':'#dbeafe'};color:${inv.schedule==='install'?'#7c3aed':'#1d4ed8'}">${SCHEDULE_MAP[inv.schedule]||''}</span></td>
+      <td class="amount">${fmt(inv.total)} đ</td>
+      <td><span class="sq ${st.cls}">${st.txt}</span></td>
+      <td onclick="event.stopPropagation()">
+        <button class="action-btn" title="In hoá đơn" onclick="showToast('In hoá đơn ${inv.id}...')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('rowCount').textContent = data.length + ' hoá đơn';
+  document.getElementById('paginationInfo').textContent = `Hiển thị 1–${data.length} / ${data.length} hoá đơn`;
+}
+
+function handleRowClick(e, id) {
+  if (e.target.closest('button')) return;
+  showToast('Chi tiết hoá đơn ' + id);
+}
+
+function updateStats(data) {
+  document.getElementById('s-total').textContent   = data.length;
+  document.getElementById('s-unpaid').textContent  = data.filter(i=>i.status==='unpaid'||i.status==='partial').length;
+  document.getElementById('s-paid').textContent    = data.filter(i=>i.status==='paid').length;
+  document.getElementById('s-overdue').textContent = data.filter(i=>i.status==='overdue').length;
+}
+
+function filterTable() {
+  const q    = document.getElementById('searchInput').value.toLowerCase();
+  const st   = document.getElementById('filterStatus').value;
+  const meth = document.getElementById('filterMethod').value;
+  const sch  = document.getElementById('filterSchedule').value;
+  const filtered = INVOICES.filter(inv =>
+    (!q    || inv.id.toLowerCase().includes(q) || inv.cust.toLowerCase().includes(q) || inv.order.toLowerCase().includes(q)) &&
+    (!st   || inv.status   === st) &&
+    (!meth || inv.method   === meth) &&
+    (!sch  || inv.schedule === sch)
+  );
+  renderTable(filtered);
+}
+
+function toggleNav(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── PRODUCT CATALOG (từ tab Sản Phẩm) ──
+const CATALOG = [
+  { code:'dx-npk1',  name:'NPK 16-16-16',                      unit:'bao', price:380000 },
+  { code:'dx-npk2',  name:'NPK 17-16-8',                        unit:'bao', price:420000 },
+  { code:'dx-huco1', name:'Hữu cơ Vi sinh cao cấp',             unit:'bao', price:295000 },
+  { code:'dx-huco2', name:'Khoáng cao cấp 20-20-15+Bo+TE',      unit:'bao', price:350000 },
+  { code:'dx-lan1',  name:'Lân Canxi Đất Xanh',                 unit:'bao', price:195000 },
+  { code:'dx-lan2',  name:'Vôi Lân Đất Xanh',                   unit:'bao', price:210000 },
+  { code:'dx-chu1',  name:'Chuyên Lúa 1',                       unit:'bao', price:430000 },
+  { code:'dx-chu2',  name:'Chuyên Lúa 2',                       unit:'bao', price:430000 },
+  { code:'dx-chu3',  name:'Chuyên dùng cho Chuối',              unit:'bao', price:460000 },
+  { code:'dx-vil1',  name:'Đất Xanh Trung Vi Lượng',            unit:'bao', price:380000 },
+  { code:'sm-npk1',  name:'NPK 18-8-18+Bo+TE (Song Mã)',        unit:'bao', price:410000 },
+  { code:'sm-npk2',  name:'NPK Mùa Khô 21-5-2',                unit:'bao', price:390000 },
+  { code:'sm-huco1', name:'Hữu cơ khoáng 16-16-8+Bo+TE',       unit:'bao', price:320000 },
+  { code:'sm-huco2', name:'Hữu cơ Vi sinh Song Mã',             unit:'bao', price:280000 },
+  { code:'sm-lan1',  name:'Lân Canxi Song Mã',                  unit:'bao', price:200000 },
+  { code:'sm-lan2',  name:'Vôi Lân Song Mã',                    unit:'bao', price:215000 },
+  { code:'sm-chu1',  name:'Chuyên Cà phê – Tiêu',               unit:'bao', price:450000 },
+  { code:'sm-chu2',  name:'Chuyên Cao su (Song Mã)',             unit:'bao', price:440000 },
+  { code:'sm-chu3',  name:'Chuyên Cây ăn trái & Rau màu',       unit:'bao', price:455000 },
+  { code:'sm-vil1',  name:'Trung vi lượng – Humic',             unit:'bao', price:345000 },
+  { code:'dn-npk1',  name:'Cao cấp NPK 16-16-16+Bo+TE',         unit:'bao', price:480000 },
+  { code:'dn-npk2',  name:'NPK 18-8-18 (Đầu Ngựa)',             unit:'bao', price:460000 },
+  { code:'dn-huco1', name:'Hữu cơ khoáng 20-22-15+Bo+TE',      unit:'bao', price:395000 },
+  { code:'dn-huco2', name:'Khoáng hữu cơ 17-7-17+Bo+TE',       unit:'bao', price:370000 },
+  { code:'dn-lan1',  name:'Lân Canxi Đầu Ngựa',                 unit:'bao', price:230000 },
+  { code:'dn-lan2',  name:'Vôi Lân Đầu Ngựa',                  unit:'bao', price:225000 },
+  { code:'dn-chu1',  name:'Chuyên Cà phê & Hồ tiêu',           unit:'bao', price:475000 },
+  { code:'dn-chu2',  name:'Chuyên Cao su Đầu Ngựa',             unit:'bao', price:465000 },
+  { code:'dn-chu3',  name:'Chuyên Cây ăn trái (Lớn trái)',      unit:'bao', price:490000 },
+  { code:'dn-vil1',  name:'Khoáng hữu cơ 20-10-20+Bo+TE',      unit:'bao', price:420000 },
+];
+
+// ── CREATE MODAL ──
+let cProds = [];
+
+function openCreateModal() {
+  cTabIdx = 0; cProds = [];
+  cSwitchTabIdx(0);
+  const today = new Date();
+  document.getElementById('c-issued').value = today.toISOString().split('T')[0];
+  autoSetDue();
+  const nextNum = String(INVOICES.length + 1).padStart(4,'0');
+  document.getElementById('c-num').value = 'HĐ-' + nextNum;
+  ['c-custname','c-phone','c-email','c-addr','c-note','c-taxid','c-paidamt'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('c-paystatus').value = 'unpaid';
+  document.getElementById('cPartialWrap').style.display = 'none';
+  document.getElementById('cInstallWrap').style.display = 'none';
+  document.getElementById('cRdOne').classList.add('sel');
+  document.getElementById('cRdInstall').classList.remove('sel');
+  document.querySelector('input[name="c-schedule"][value="one"]').checked = true;
+  renderCProds();
+  document.getElementById('createModal').classList.add('open');
+}
+function closeCreateModal() { document.getElementById('createModal').classList.remove('open'); }
+
+function cSwitchTab(id, el) { cTabIdx = TABS.indexOf(id); cSwitchTabIdx(cTabIdx); }
+function cSwitchTabIdx(idx) {
+  TABS.forEach((t,i) => document.getElementById(t).classList.toggle('active', i===idx));
+  document.querySelectorAll('.cm-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.getElementById('cNextBtn').style.display = idx < TABS.length-1 ? 'flex' : 'none';
+  document.getElementById('cSaveBtn').style.display = idx === TABS.length-1 ? 'flex' : 'none';
+  if (idx === TABS.length-1) buildCPreview();
+}
+function cNextTab() { if(cTabIdx < TABS.length-1) cSwitchTabIdx(++cTabIdx); }
+function cPrevTab() { if(cTabIdx > 0) cSwitchTabIdx(--cTabIdx); }
+
+function autoSetDue() {
+  const issued = document.getElementById('c-issued').value;
+  if (!issued) return;
+  const d = new Date(issued); d.setDate(d.getDate() + 14);
+  document.getElementById('c-due').value = d.toISOString().split('T')[0];
+}
+function toggleCPartial(val) {
+  document.getElementById('cPartialWrap').style.display = val === 'partial' ? 'block' : 'none';
+  if (val === 'partial') updateCPartial();
+}
+function updateCPartial() {
+  const total = getCTotal();
+  const paid  = Math.max(0, parseFloat(document.getElementById('c-paidamt')?.value) || 0);
+  const rem   = Math.max(0, total - paid);
+  const el    = document.getElementById('cRemain');
+  el.textContent = rem > 0 ? fmt(rem) + ' đ' : 'Đã đủ';
+  el.style.color = rem > 0 ? 'var(--danger)' : 'var(--success)';
+}
+function getCTotal() {
+  let sub = 0, disc = 0;
+  cProds.forEach(p => { const d = Math.round(p.price*p.disc/100); sub += p.price*p.qty; disc += d*p.qty; });
+  return Math.round((sub-disc) * (1 + (parseFloat(document.getElementById('cVatRate')?.value)||10)/100));
+}
+function toggleCInstall(val) {
+  document.getElementById('cInstallWrap').style.display = val === 'install' ? 'block' : 'none';
+  document.getElementById('cRdOne').classList.toggle('sel', val === 'one');
+  document.getElementById('cRdInstall').classList.toggle('sel', val === 'install');
+  if (val === 'install') buildCInstallRows();
+}
+function buildCInstallRows() {
+  const total = getCTotal(), n = parseInt(document.getElementById('cInstallCount').value)||2;
+  const base = Math.floor(total/n), last = total - base*(n-1);
+  const today = new Date(), tbody = document.getElementById('cInstallTbody');
+  tbody.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const amt = i===n-1 ? last : base, d = new Date(today);
+    d.setDate(d.getDate() + (i+1)*30);
+    const row = document.createElement('tr');
+    row.innerHTML = `<td style="font-weight:700;color:var(--gray-700)">Đợt ${i+1}</td>
+      <td style="text-align:right"><input type="number" value="${amt}" min="0" step="1000" oninput="recalcCInstallSum()"
+        style="width:100px;border:1px solid var(--gray-200);border-radius:6px;padding:4px 8px;font-size:12.5px;font-weight:700;text-align:right;font-family:inherit;outline:none"/></td>
+      <td><input type="date" value="${d.toISOString().split('T')[0]}" style="border:1px solid var(--gray-200);border-radius:6px;padding:4px 8px;font-size:12px;font-family:inherit;outline:none"/></td>
+      <td><select style="border:1px solid var(--gray-200);border-radius:6px;padding:4px 8px;font-size:11.5px;font-family:inherit;outline:none;background:#fff">
+        <option>Chưa trả</option><option>Đã trả</option><option>Trễ hạn</option></select></td>`;
+    tbody.appendChild(row);
+  }
+  recalcCInstallSum();
+}
+function recalcCInstallSum() {
+  let sum = 0; document.querySelectorAll('#cInstallTbody input[type="number"]').forEach(i => sum += parseFloat(i.value)||0);
+  document.getElementById('cInstallSum').textContent = fmt(sum) + ' đ';
+}
+function prodSelectHtml(i, selectedCode) {
+  const opts = CATALOG.map(c =>
+    `<option value="${c.code}" ${c.code===selectedCode?'selected':''}>${c.name}</option>`
+  ).join('');
+  return `<select class="cpl-input" style="min-width:160px" onchange="onSelectProd(${i},this)">
+    <option value="">— Chọn sản phẩm —</option>
+    ${opts}
+  </select>`;
+}
+
+function onSelectProd(i, sel) {
+  const prod = CATALOG.find(c => c.code === sel.value);
+  if (!prod) return;
+  cProds[i].code  = prod.code;
+  cProds[i].name  = prod.name;
+  cProds[i].unit  = prod.unit;
+  cProds[i].price = prod.price;
+  // update unit & price inputs in the same row without full re-render
+  const row = sel.closest('tr');
+  row.querySelector('.unit-inp').value  = prod.unit;
+  row.querySelector('.price-inp').value = prod.price;
+  recalcRow(i, row);
+  calcCTotal();
+}
+
+function recalcRow(i, row) {
+  const p = cProds[i];
+  const tot = (p.price - Math.round(p.price * p.disc / 100)) * p.qty;
+  const el = document.getElementById('cptot-' + i);
+  if (el) el.textContent = fmt(tot) + ' đ';
+}
+
+function renderCProds() {
+  document.getElementById('cProdTbody').innerHTML = cProds.map((p,i) => {
+    const tot = (p.price - Math.round(p.price*p.disc/100)) * p.qty;
+    return `<tr>
+      <td style="color:var(--gray-400);font-size:11px;text-align:center">${i+1}</td>
+      <td>${prodSelectHtml(i, p.code||'')}</td>
+      <td><input class="cpl-input unit-inp" value="${p.unit}" oninput="updateCProd(${i},'unit',this.value)" style="width:52px"/></td>
+      <td><input class="cpl-input" type="number" value="${p.qty}" min="1" oninput="updateCProd(${i},'qty',+this.value)" style="width:44px;text-align:right"/></td>
+      <td><input class="cpl-input price-inp" type="number" value="${p.price}" min="0" oninput="updateCProd(${i},'price',+this.value)" style="width:86px;text-align:right"/></td>
+      <td><input class="cpl-input" type="number" value="${p.disc}" min="0" max="100" oninput="updateCProd(${i},'disc',+this.value)" style="width:42px;text-align:right"/></td>
+      <td style="text-align:right;font-weight:700;color:var(--amber);font-size:12.5px" id="cptot-${i}">${fmt(tot)} đ</td>
+      <td><button class="cpl-rm" onclick="removeCProd(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('cProdCount').textContent = cProds.length;
+  calcCTotal();
+}
+function updateCProd(i,f,v) {
+  cProds[i][f]=v; const p=cProds[i];
+  const tot=(p.price-Math.round(p.price*p.disc/100))*p.qty;
+  const el=document.getElementById('cptot-'+i); if(el) el.textContent=fmt(tot)+' đ';
+  calcCTotal();
+}
+function removeCProd(i) { cProds.splice(i,1); renderCProds(); }
+function addCProdLine() {
+  cProds.push({code:'',name:'',unit:'bao',qty:1,price:0,disc:0});
+  renderCProds();
+  // focus the select of new row
+  const rows = document.getElementById('cProdTbody').querySelectorAll('tr');
+  const lastRow = rows[rows.length-1];
+  if(lastRow) lastRow.querySelector('select')?.focus();
+}
+function calcCTotal() {
+  let sub=0,disc=0;
+  cProds.forEach(p=>{const d=Math.round(p.price*p.disc/100);sub+=p.price*p.qty;disc+=d*p.qty;});
+  const vat=Math.round((sub-disc)*(parseFloat(document.getElementById('cVatRate')?.value||10)/100));
+  document.getElementById('cSub').textContent  = fmt(sub)+' đ';
+  document.getElementById('cDisc').textContent = disc ? '- '+fmt(disc)+' đ' : '0 đ';
+  document.getElementById('cTotal').textContent = fmt(sub-disc+vat)+' đ';
+}
+function buildCPreview() {
+  function fmtD(r){if(!r)return'—';const[y,m,d]=r.split('-');return`${d}/${m}/${y}`;}
+  const mmap={bank:'Chuyển khoản NH',cash:'Tiền mặt',cod:'COD'};
+  const sched=document.querySelector('input[name="c-schedule"]:checked')?.value||'one';
+  document.getElementById('prev-num').textContent=document.getElementById('c-num').value||'—';
+  document.getElementById('prev-date').textContent='Ngày xuất: '+fmtD(document.getElementById('c-issued').value);
+  document.getElementById('prev-due').textContent=fmtD(document.getElementById('c-due').value);
+  document.getElementById('prev-method').textContent=mmap[document.getElementById('c-method').value]||'—';
+  document.getElementById('prev-schedule').textContent=sched==='install'?'Trả nhiều lần':'Trả 1 lần';
+  document.getElementById('prev-cust').textContent=document.getElementById('c-custname').value||'—';
+  document.getElementById('prev-phone').textContent=document.getElementById('c-phone').value||'—';
+  document.getElementById('prev-addr').textContent=document.getElementById('c-addr').value||'—';
+  let sub=0,disc=0;
+  const prodHTML=cProds.map((p,i)=>{const d=Math.round(p.price*p.disc/100);const tot=(p.price-d)*p.qty;sub+=p.price*p.qty;disc+=d*p.qty;
+    return`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12px">
+      <span>${i+1}. ${p.name} (${p.qty} ${p.unit})</span><span style="font-weight:600;color:var(--amber)">${fmt(tot)} đ</span></div>`;}).join('');
+  document.getElementById('prevProdList').innerHTML=prodHTML||'<div style="color:var(--gray-400);font-size:12px;text-align:center;padding:10px">Chưa có sản phẩm nào</div>';
+  const vatPct=parseFloat(document.getElementById('cVatRate')?.value||10);
+  const vat=Math.round((sub-disc)*vatPct/100); const total=sub-disc+vat;
+  document.getElementById('prev-sub').textContent=fmt(sub)+' đ';
+  document.getElementById('prev-disc').textContent=disc?'- '+fmt(disc)+' đ':'0 đ';
+  document.getElementById('prev-vat-pct').textContent=vatPct;
+  document.getElementById('prev-vat').textContent=fmt(vat)+' đ';
+  document.getElementById('prev-total').textContent=fmt(total)+' đ';
+}
+function createInvoice() {
+  const num=document.getElementById('c-num').value.trim();
+  const cust=document.getElementById('c-custname').value.trim();
+  if(!num){showToast('Vui lòng nhập số hoá đơn!');cSwitchTabIdx(0);return;}
+  if(!cust){showToast('Vui lòng nhập tên khách hàng!');cSwitchTabIdx(1);return;}
+  function fmtD(r){if(!r)return'—';const[y,m,d]=r.split('-');return`${d}/${m}/${y}`;}
+  const sched=document.querySelector('input[name="c-schedule"]:checked')?.value||'one';
+  INVOICES.unshift({
+    id:num, order:document.getElementById('c-order').value||'—',
+    cust, type:document.getElementById('c-custtype').value,
+    issued:fmtD(document.getElementById('c-issued').value),
+    due:fmtD(document.getElementById('c-due').value),
+    method:document.getElementById('c-method').value,
+    schedule:sched, total:getCTotal(),
+    status:document.getElementById('c-paystatus').value
+  });
+  renderTable(INVOICES);
+  updateStats(INVOICES);
+  closeCreateModal();
+  showToast('✓ Hoá đơn ' + num + ' đã được tạo thành công!');
+}
+
+// ── INIT ──
+renderTable(INVOICES);
+updateStats(INVOICES);
+</script>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+(function(){
+  document.body.style.opacity='0';
+  document.body.style.transition='opacity .2s ease';
+  window.addEventListener('load',function(){
+    document.body.offsetHeight;
+    document.body.style.opacity='1';
+  });
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('a.nav-item');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    document.body.style.opacity='0';
+    setTimeout(function(){ window.location.href=href; },200);
+  });
+})();
+</script>
+</body>
+</html>
