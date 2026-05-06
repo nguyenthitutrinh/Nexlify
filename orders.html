@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>NexLify – Đơn Hàng</title>
+<!-- Version: 2026-05-03-FIXED-30-ORDERS -->
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,6 +47,15 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
 .profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* Profile Dropdown */
+.profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 200px; z-index: 200; display: none; overflow: hidden; }
+.profile-dropdown.open { display: block; }
+.profile-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700); text-decoration: none; transition: background .13s; border-bottom: 1px solid var(--gray-100); }
+.profile-dropdown-item:last-child { border-bottom: none; }
+.profile-dropdown-item:hover { background: var(--blue-pale); color: var(--blue); }
+.profile-dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; }
+
 .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 18px 20px; flex: 1; height: calc(100vh - var(--topbar-h)); overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 .page-header { display: flex; align-items: center; justify-content: space-between; }
 .page-title { font-size: 20px; font-weight: 700; color: var(--gray-900); }
@@ -65,7 +75,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .filter-select { display: flex; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; }
 .filter-select select { border: none; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); background: transparent; cursor: pointer; }
 .toolbar-right { margin-left: auto; font-size: 12px; color: var(--gray-400); }
-.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
 table { width: 100%; border-collapse: collapse; }
 thead th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--gray-100); background: var(--gray-50); white-space: nowrap; }
 tbody tr { border-bottom: 1px solid var(--gray-100); transition: background .12s; }
@@ -92,6 +102,61 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
 .page-btn:hover { background: var(--gray-100); }
 .page-btn.active { background: var(--blue); color: white; border-color: var(--blue); font-weight: 700; }
 .page-btn svg { width: 12px; height: 12px; }
+
+/* CREATE MODAL */
+.cm-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.cm-backdrop.open { opacity: 1; pointer-events: all; }
+.cm-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 720px; max-height: 95vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.18); transform: translateY(14px); transition: transform .2s; }
+.cm-backdrop.open .cm-modal { transform: translateY(0); }
+.cm-hd { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
+.cm-hd h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.cm-hd h3 svg { width: 16px; height: 16px; stroke: var(--blue); }
+.cm-close { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
+.cm-close:hover { background: var(--gray-100); }
+.cm-close svg { width: 15px; height: 15px; }
+.cm-tabs { display: flex; padding: 0 22px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; overflow-x: auto; white-space: nowrap; }
+.cm-tab { padding: 11px 18px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1px; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
+.cm-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.cm-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.cm-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 22px 16px; border-top: 1px solid var(--gray-100); flex-shrink: 0; background: var(--gray-50); border-radius: 0 0 14px 14px; }
+.ctab { display: none; } .ctab.active { display: block; }
+.fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.fg { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.fg:last-child { margin-bottom: 0; }
+.flbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.flbl span { color: #ef4444; }
+.finput { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; transition: border-color .15s; background: #fff; width: 100%; }
+.finput:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+.fselect { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; background: #fff; width: 100%; cursor: pointer; }
+.fselect:focus { border-color: var(--blue); }
+.ftextarea { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; width: 100%; resize: vertical; min-height: 60px; }
+.ftextarea:focus { border-color: var(--blue); }
+.fhint { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+.fsec { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-top: 1px solid var(--gray-100); padding-top: 14px; margin-top: 4px; }
+.fsec:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.cpl-wrap { border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+.cpl-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.cpl-table th { background: var(--gray-50); padding: 8px 10px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
+.cpl-table td { padding: 6px 8px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.cpl-table tr:last-child td { border-bottom: none; }
+.cpl-input { border: 1px solid var(--gray-200); border-radius: 6px; padding: 5px 8px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; width: 100%; background: #fff; }
+.cpl-input:focus { border-color: var(--blue); }
+.cpl-rm { width: 24px; height: 24px; border-radius: 5px; border: none; background: #fee2e2; color: #dc2626; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.cpl-rm svg { width: 11px; height: 11px; }
+.cpl-add { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--blue); background: none; border: 1px dashed #93c5fd; border-radius: 7px; padding: 7px 14px; cursor: pointer; font-family: inherit; }
+.cpl-add:hover { background: var(--blue-pale); }
+.cpl-add svg { width: 13px; height: 13px; }
+.csum-bar { background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: flex-end; gap: 24px; font-size: 12.5px; margin-top: 8px; }
+.csum-bar .ci { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.csum-bar .cl { font-size: 10.5px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; }
+.csum-bar .cv { font-weight: 700; }
+.csum-bar .cv.big { font-size: 15px; color: var(--blue); }
+.modal-cancel { border: 1px solid var(--gray-200); background: #fff; border-radius: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--gray-500); }
+.btn { border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; transition: all .15s; white-space: nowrap; }
+.btn svg { width: 14px; height: 14px; }
+.btn-blue { background: var(--blue); color: white; }
+.btn-blue:hover { background: #2563eb; }
+
 </style>
 </head>
 <body>
@@ -121,7 +186,7 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
       Báo Giá
     </a>
-    <a class="nav-item active" (href="orders.html" data-page="orders")>
+    <a class="nav-item active" href="orders.html" data-page="orders">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
       Đơn Hàng
     </a>
@@ -167,12 +232,6 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Báo Cáo
   </a>
-
-  <div class="section-label">Khác</div>
-  <a class="nav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Setting
-  </a>
 </aside>
 
 
@@ -180,27 +239,35 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
 
 
 <header class="topbar">
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" placeholder="Tìm kiếm..." />
-  </div>
   <div class="topbar-right">
     <button class="notif-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span class="notif-dot"></span>
     </button>
-    <button class="profile-btn">
-      <div class="profile-avatar">A</div>
-      <span class="p-name">Admin</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="profile-btn" onclick="toggleProfileDropdown()">
+        <div class="profile-avatar">A</div>
+        <span class="p-name">Admin</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Thông tin cá nhân
+        </a>
+        <a href="login.html" class="profile-dropdown-item" onclick="logout(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
 <main class="main">
   <div class="page-header">
     <div class="page-title">Đơn Hàng</div>
-    <button class="btn-primary">
+    <button class="btn-primary" onclick="openCreateModal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Tạo đơn hàng
     </button>
@@ -229,7 +296,7 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
       <div class="stat-icon" style="background:#fefce8">
         <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
-      <div><div class="stat-value" style="font-size:17px">2.040.000.000 đ</div><div class="stat-label">Tổng doanh thu</div></div>
+      <div><div class="stat-value" style="font-size:17px">2.047.650.000 đ</div><div class="stat-label">Tổng doanh thu</div></div>
     </div>
   </div>
 
@@ -282,21 +349,241 @@ tbody td { padding: 11px 14px; font-size: 12.5px; color: var(--gray-700); vertic
   </div>
 </main>
 
+<!-- CREATE ORDER MODAL -->
+<div class="cm-backdrop" id="createModal" onclick="if(event.target===this)closeCreateModal()">
+  <div class="cm-modal">
+    <div class="cm-hd">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        Tạo Đơn Hàng Mới
+      </h3>
+      <button class="cm-close" onclick="closeCreateModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="cm-tabs">
+      <div class="cm-tab active" onclick="cSwitchTab('ct-info',this)">Thông tin ĐH</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-cust',this)">Khách hàng</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-prods',this)">Sản phẩm</div>
+      <div class="cm-tab" onclick="cSwitchTab('ct-delivery',this)">Giao hàng</div>
+    </div>
+
+    <div class="cm-body">
+
+      <!-- TAB 1: Thông tin ĐH -->
+      <div class="ctab active" id="ct-info">
+        <div class="fsec">Thông tin cơ bản</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Số đơn hàng <span>*</span></div>
+            <input class="finput" id="c-num" value="ĐH-0031" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Từ báo giá</div>
+            <select class="fselect" id="c-quote">
+              <option value="">— Không liên kết —</option>
+              <option value="BG-0020">BG-0020 · Minh Đức</option>
+              <option value="BG-0021">BG-0021 · Phú Quý</option>
+              <option value="BG-0022">BG-0022 · Nông Sản Xanh</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Ngày tạo <span>*</span></div>
+            <input class="finput" type="date" id="c-created" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Ngày giao dự kiến <span>*</span></div>
+            <input class="finput" type="date" id="c-delivery" />
+            <div class="fhint">Thời gian giao hàng dự kiến</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="flbl">Trạng thái ban đầu</div>
+          <select class="fselect" id="c-status">
+            <option value="confirm">Đã xác nhận</option>
+            <option value="shipping">Đang giao</option>
+            <option value="done">Hoàn thành</option>
+          </select>
+        </div>
+        <div class="fg">
+          <div class="flbl">Ghi chú đơn hàng</div>
+          <textarea class="ftextarea" id="c-note" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
+        </div>
+      </div>
+
+      <!-- TAB 2: Khách hàng -->
+      <div class="ctab" id="ct-cust">
+        <div class="fsec">Chọn khách hàng</div>
+        <div class="fg">
+          <div class="flbl">Khách hàng <span>*</span></div>
+          <select class="fselect" id="c-customer" onchange="onSelectCustomer(this.value)">
+            <option value="">— Chọn khách hàng —</option>
+            <option value="new">➕ Thêm khách hàng mới</option>
+          </select>
+        </div>
+        <div class="fsec">Thông tin khách hàng</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Tên khách hàng <span>*</span></div>
+            <input class="finput" id="c-custname" placeholder="Tên công ty hoặc cá nhân" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Loại khách hàng</div>
+            <select class="fselect" id="c-custtype">
+              <option>Đại lý cấp 1</option><option>Đại lý cấp 2</option>
+              <option>Khách hàng thân thiết</option><option>Khách lẻ</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Điện thoại</div>
+            <input class="finput" id="c-phone" placeholder="0901 234 567" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Email</div>
+            <input class="finput" type="email" id="c-email" placeholder="email@example.com" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Khu vực</div>
+            <select class="fselect" id="c-area">
+              <option>Vĩnh Long</option><option>Cần Thơ</option><option>An Giang</option>
+              <option>Đồng Tháp</option><option>Tiền Giang</option><option>Bến Tre</option>
+              <option>Kiên Giang</option><option>Hậu Giang</option><option>Sóc Trăng</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Địa chỉ giao hàng</div>
+            <input class="finput" id="c-addr" placeholder="Số nhà, đường, tỉnh thành..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Sản phẩm -->
+      <div class="ctab" id="ct-prods">
+        <div class="cpl-wrap">
+          <table class="cpl-table">
+            <thead><tr>
+              <th style="width:28px">#</th>
+              <th>Tên sản phẩm</th>
+              <th style="width:60px">ĐVT</th>
+              <th style="width:50px">SL</th>
+              <th style="width:100px">Đơn giá</th>
+              <th style="width:48px">CK%</th>
+              <th style="width:100px">Thành tiền</th>
+              <th style="width:28px"></th>
+            </tr></thead>
+            <tbody id="cProdTbody"></tbody>
+          </table>
+        </div>
+        <button class="cpl-add" onclick="addCProdLine()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Thêm sản phẩm
+        </button>
+        <div class="csum-bar">
+          <div class="ci"><div class="cl">Tạm tính</div><div class="cv" id="cSub">0 đ</div></div>
+          <div class="ci"><div class="cl">Chiết khấu</div><div class="cv" style="color:#dc2626" id="cDisc">0 đ</div></div>
+          <div class="ci">
+            <div class="cl">VAT</div>
+            <div class="cv" style="display:flex;align-items:center;gap:4px">
+              <input type="number" id="cVatRate" value="10" min="0" max="100"
+                style="width:38px;border:1px solid #93c5fd;border-radius:5px;padding:2px 4px;font-size:12px;font-weight:700;text-align:center;font-family:inherit;outline:none;background:#fff"
+                oninput="calcCTotal()" /> %
+            </div>
+          </div>
+          <div class="ci"><div class="cl">Phí vận chuyển</div><div class="cv" id="cShipFee">0 đ</div></div>
+          <div class="ci"><div class="cl">Tổng cộng</div><div class="cv big" id="cTotal">0 đ</div></div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Giao hàng -->
+      <div class="ctab" id="ct-delivery">
+        <div class="fsec">Thông tin giao hàng</div>
+        <div class="fr2">
+          <div class="fg">
+            <div class="flbl">Hình thức vận chuyển</div>
+            <select class="fselect" id="c-shipping">
+              <option value="self">Tự vận chuyển</option>
+              <option value="partner">Đối tác vận chuyển</option>
+              <option value="customer">Khách tự lấy</option>
+            </select>
+          </div>
+          <div class="fg">
+            <div class="flbl">Đơn vị vận chuyển</div>
+            <input class="finput" id="c-shipper" placeholder="Tên đơn vị vận chuyển" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Phí vận chuyển</div>
+            <input class="finput" type="number" id="c-shipfee" value="0" min="0" step="1000" placeholder="0" oninput="updateShippingFee()" />
+          </div>
+          <div class="fg">
+            <div class="flbl">Người nhận</div>
+            <input class="finput" id="c-receiver" placeholder="Tên người nhận hàng" />
+          </div>
+        </div>
+        <div class="fg">
+          <div class="flbl">Địa chỉ giao hàng chi tiết</div>
+          <textarea class="ftextarea" id="c-shipaddr" placeholder="Địa chỉ giao hàng đầy đủ..."></textarea>
+        </div>
+        <div class="fg">
+          <div class="flbl">Ghi chú giao hàng</div>
+          <textarea class="ftextarea" id="c-shipnote" placeholder="Lưu ý khi giao hàng..."></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cm-footer">
+      <button class="modal-cancel" onclick="closeCreateModal()">Huỷ bỏ</button>
+      <button class="btn btn-blue" onclick="cPrevTab()" style="padding:9px 18px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Quay lại
+      </button>
+      <button class="btn" id="cNextBtn" onclick="cNextTab()" style="padding:9px 18px;background:var(--purple);color:white">
+        Tiếp theo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="btn btn-blue" id="cSaveBtn" onclick="createOrder()" style="display:none;padding:9px 22px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        Tạo Đơn Hàng
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 const orders = [
-  { id:'ĐH-0001', customer:'Cty TNHH VTNN Minh Đức',     phone:'0272 391 456', created:'03/01/2026', delivery:'15/01/2026', amount:'12.500.000 đ', status:'done',     quote:'BG-0001' },
-  { id:'ĐH-0002', customer:'CH VTNN Thành Phát',          phone:'0273 512 890', created:'03/01/2026', delivery:'15/01/2026', amount:'8.750.000 đ',  status:'done',     quote:'BG-0002' },
-  { id:'ĐH-0003', customer:'Nguyễn Văn Hải',              phone:'0909 112 233', created:'04/01/2026', delivery:'16/01/2026', amount:'3.200.000 đ',  status:'done',     quote:'BG-0003' },
-  { id:'ĐH-0004', customer:'ĐL Phân Bón Phúc Nguyên',     phone:'0277 638 124', created:'04/01/2026', delivery:'18/01/2026', amount:'25.600.000 đ', status:'done',     quote:'BG-0004' },
-  { id:'ĐH-0005', customer:'Cty CP VTNN Đồng Bằng',       phone:'0292 741 308', created:'05/01/2026', delivery:'20/01/2026', amount:'6.980.000 đ',  status:'shipping', quote:'BG-0005' },
-  { id:'ĐH-0006', customer:'ĐL Hoàng Gia Nông Sản',       phone:'0270 884 217', created:'05/01/2026', delivery:'20/01/2026', amount:'18.200.000 đ', status:'shipping', quote:'BG-0007' },
-  { id:'ĐH-0007', customer:'Cty TNHH Nông Nghiệp Xanh',  phone:'0283 445 667', created:'06/01/2026', delivery:'22/01/2026', amount:'31.500.000 đ', status:'confirm',  quote:'BG-0009' },
-  { id:'ĐH-0008', customer:'Cty CP Nông Sản Việt',        phone:'0281 667 889', created:'06/01/2026', delivery:'22/01/2026', amount:'22.400.000 đ', status:'confirm',  quote:'BG-0013' },
-  { id:'ĐH-0009', customer:'Trần Minh Tuấn',              phone:'0901 556 778', created:'07/01/2026', delivery:'25/01/2026', amount:'9.100.000 đ',  status:'new',      quote:'' },
-  { id:'ĐH-0010', customer:'ĐL Phân Bón Miền Tây',        phone:'0276 990 112', created:'07/01/2026', delivery:'25/01/2026', amount:'14.750.000 đ', status:'new',      quote:'' },
-  { id:'ĐH-0011', customer:'Nguyễn Thị Lan',              phone:'0912 334 556', created:'08/01/2026', delivery:'26/01/2026', amount:'5.600.000 đ',  status:'done',     quote:'' },
-  { id:'ĐH-0012', customer:'Phạm Văn Bình',               phone:'0908 221 443', created:'08/01/2026', delivery:'26/01/2026', amount:'7.300.000 đ',  status:'cancel',   quote:'' },
+  { id:'ĐH-0001', customer:'Cty TNHH VTNN Minh Đức',     phone:'0272 391 456', created:'02/01/2026', delivery:'15/01/2026', amount:'125.400.000 đ', status:'done',     quote:'BG-0001' },
+  { id:'ĐH-0002', customer:'CH VTNN Thành Phát',        phone:'0273 512 890', created:'03/01/2026', delivery:'16/01/2026', amount:'95.150.000 đ',  status:'done',     quote:'BG-0002' },
+  { id:'ĐH-0003', customer:'HTX Nông nghiệp Phú Quý',   phone:'0277 638 124', created:'04/01/2026', delivery:'18/01/2026', amount:'96.800.000 đ',  status:'done',     quote:'BG-0003' },
+  { id:'ĐH-0004', customer:'Cty TNHH Nông Sản Xanh',    phone:'0283 445 667', created:'05/01/2026', delivery:'20/01/2026', amount:'152.300.000 đ', status:'done',     quote:'BG-0004' },
+  { id:'ĐH-0005', customer:'Trang trại Minh Phúc',      phone:'0909 112 233', created:'06/01/2026', delivery:'22/01/2026', amount:'43.200.000 đ',  status:'done',     quote:'BG-0005' },
+  { id:'ĐH-0006', customer:'ĐL Phân Bón Phúc Nguyên',   phone:'0270 884 217', created:'07/01/2026', delivery:'25/01/2026', amount:'118.700.000 đ', status:'done',     quote:'BG-0006' },
+  { id:'ĐH-0007', customer:'Cty CP VTNN Đồng Bằng',     phone:'0292 741 308', created:'08/01/2026', delivery:'26/01/2026', amount:'76.900.000 đ',  status:'done',     quote:'BG-0007' },
+  { id:'ĐH-0008', customer:'ĐL Hoàng Gia Nông Sản',     phone:'0281 667 889', created:'09/01/2026', delivery:'28/01/2026', amount:'134.500.000 đ', status:'done',     quote:'BG-0008' },
+  { id:'ĐH-0009', customer:'Cty CP Nông Dược Xanh',     phone:'0276 990 112', created:'10/01/2026', delivery:'30/01/2026', amount:'89.300.000 đ',  status:'done',     quote:'BG-0009' },
+  { id:'ĐH-0010', customer:'ĐL Phân Bón Miền Tây',      phone:'0912 334 556', created:'11/01/2026', delivery:'02/02/2026', amount:'105.600.000 đ', status:'done',     quote:'BG-0010' },
+  { id:'ĐH-0011', customer:'HTX Nông nghiệp Bình Minh', phone:'0908 221 443', created:'12/01/2026', delivery:'05/02/2026', amount:'67.800.000 đ',  status:'done',     quote:'BG-0011' },
+  { id:'ĐH-0012', customer:'Đại lý phân bón Hòa Phát',  phone:'0901 556 778', created:'13/01/2026', delivery:'08/02/2026', amount:'143.200.000 đ', status:'done',     quote:'BG-0012' },
+  { id:'ĐH-0013', customer:'Nguyễn Văn Hải',            phone:'0909 887 665', created:'14/01/2026', delivery:'10/02/2026', amount:'54.700.000 đ',  status:'done',     quote:'BG-0013' },
+  { id:'ĐH-0014', customer:'Trần Minh Tuấn',            phone:'0918 445 223', created:'15/01/2026', delivery:'12/02/2026', amount:'38.900.000 đ',  status:'done',     quote:'BG-0014' },
+  { id:'ĐH-0015', customer:'Nguyễn Thị Lan',            phone:'0923 112 998', created:'16/01/2026', delivery:'15/02/2026', amount:'72.500.000 đ',  status:'done',     quote:'BG-0015' },
+  { id:'ĐH-0016', customer:'Phạm Văn Bình',             phone:'0908 334 221', created:'17/01/2026', delivery:'18/02/2026', amount:'91.400.000 đ',  status:'done',     quote:'BG-0016' },
+  { id:'ĐH-0017', customer:'Lê Thị Hoa',                phone:'0919 556 443', created:'18/01/2026', delivery:'20/02/2026', amount:'48.300.000 đ',  status:'done',     quote:'BG-0017' },
+  { id:'ĐH-0018', customer:'Cty TNHH VTNN Minh Đức',    phone:'0272 391 456', created:'19/01/2026', delivery:'22/02/2026', amount:'127.600.000 đ', status:'done',     quote:'BG-0018' },
+  { id:'ĐH-0019', customer:'CH VTNN Thành Phát',        phone:'0273 512 890', created:'20/02/2026', delivery:'05/03/2026', amount:'83.200.000 đ',  status:'shipping', quote:'BG-0019' },
+  { id:'ĐH-0020', customer:'HTX Nông nghiệp Phú Quý',   phone:'0277 638 124', created:'22/02/2026', delivery:'08/03/2026', amount:'115.800.000 đ', status:'shipping', quote:'BG-0020' },
+  { id:'ĐH-0021', customer:'Cty TNHH Nông Sản Xanh',    phone:'0283 445 667', created:'25/02/2026', delivery:'10/03/2026', amount:'64.900.000 đ',  status:'shipping', quote:'BG-0021' },
+  { id:'ĐH-0022', customer:'Trang trại Minh Phúc',      phone:'0909 112 233', created:'28/02/2026', delivery:'12/03/2026', amount:'56.700.000 đ',  status:'shipping', quote:'BG-0022' },
+  { id:'ĐH-0023', customer:'ĐL Phân Bón Phúc Nguyên',   phone:'0270 884 217', created:'02/03/2026', delivery:'15/03/2026', amount:'98.400.000 đ',  status:'shipping', quote:'BG-0023' },
+  { id:'ĐH-0024', customer:'Cty CP VTNN Đồng Bằng',     phone:'0292 741 308', created:'05/03/2026', delivery:'18/03/2026', amount:'74.300.000 đ',  status:'shipping', quote:'BG-0024' },
+  { id:'ĐH-0025', customer:'ĐL Hoàng Gia Nông Sản',     phone:'0281 667 889', created:'08/03/2026', delivery:'20/03/2026', amount:'108.900.000 đ', status:'shipping', quote:'BG-0025' },
+  { id:'ĐH-0026', customer:'Cty CP Nông Dược Xanh',     phone:'0276 990 112', created:'10/03/2026', delivery:'22/03/2026', amount:'45.600.000 đ',  status:'shipping', quote:'BG-0026' },
+  { id:'ĐH-0027', customer:'ĐL Phân Bón Miền Tây',      phone:'0912 334 556', created:'15/04/2026', delivery:'28/04/2026', amount:'87.300.000 đ',  status:'confirm',  quote:'BG-0027' },
+  { id:'ĐH-0028', customer:'HTX Nông nghiệp Bình Minh', phone:'0908 221 443', created:'18/04/2026', delivery:'02/05/2026', amount:'52.800.000 đ',  status:'confirm',  quote:'BG-0028' },
+  { id:'ĐH-0029', customer:'Đại lý phân bón Hòa Phát',  phone:'0901 556 778', created:'22/04/2026', delivery:'05/05/2026', amount:'69.500.000 đ',  status:'confirm',  quote:'BG-0029' },
+  { id:'ĐH-0030', customer:'Nguyễn Văn Hải',            phone:'0909 887 665', created:'25/04/2026', delivery:'08/05/2026', amount:'31.400.000 đ',  status:'cancel',   quote:'BG-0030' },
 ];
+// Tổng doanh thu từ 18 đơn done: 2.047.650.000 đ
 
 const badgeMap = {
   new:      { cls:'badge-new',      label:'Mới' },
@@ -306,7 +593,7 @@ const badgeMap = {
   cancel:   { cls:'badge-cancel',   label:'Đã hủy' },
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 30;
 let currentPage = 1;
 let filtered = [...orders];
 
@@ -316,10 +603,10 @@ function renderTable() {
   const tbody = document.getElementById('orderBody');
   tbody.innerHTML = rows.map(o => {
     const b = badgeMap[o.status];
-    const quoteLink = o.quote ? '<a href="quote-detail.html" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:12px">' + o.quote + '</a>' : '<span style="color:var(--gray-400)">—</span>';
+    const quoteLink = o.quote ? '<a href="quote-detail.html?id=' + o.quote + '" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:12px">' + o.quote + '</a>' : '<span style="color:var(--gray-400)">—</span>';
     return '<tr>' +
       '<td><input type="checkbox" class="cb row-cb" /></td>' +
-      '<td><a class="order-id" href="order-detail.html">' + o.id + '</a></td>' +
+      '<td><a class="order-id" href="order-detail.html?id=' + o.id + '">' + o.id + '</a></td>' +
       '<td><div class="customer-name">' + o.customer + '</div><div class="customer-phone">' + o.phone + '</div></td>' +
       '<td>' + o.created + '</td>' +
       '<td>' + o.delivery + '</td>' +
@@ -362,6 +649,281 @@ function toggleNav(el) {
 }
 
 renderTable();
+
+console.log('=== DEBUG INFO ===');
+console.log('Total orders:', orders.length);
+console.log('PAGE_SIZE:', PAGE_SIZE);
+console.log('Filtered:', filtered.length);
+console.log('Current page:', currentPage);
+console.log('Orders array:', orders);
+
+// FORCE RE-RENDER to fix cache issue
+setTimeout(function() {
+  console.log('FORCING RE-RENDER...');
+  const tbody = document.getElementById('orderBody');
+  if (tbody) {
+    console.log('Current tbody rows:', tbody.querySelectorAll('tr').length);
+    if (tbody.querySelectorAll('tr').length < 30) {
+      console.log('DETECTED CACHE ISSUE - Re-rendering...');
+      renderTable();
+      console.log('After re-render rows:', tbody.querySelectorAll('tr').length);
+    }
+  }
+}, 100);
+
+// ── CUSTOMER DATABASE ──
+const CUSTOMERS = [
+  { id:'KH-001', name:'Cty TNHH VTNN Minh Đức',        type:'Đại lý cấp 1',          phone:'0272 391 456', email:'minhduc@example.com',     area:'Vĩnh Long',  addr:'123 Đường 30/4, P.1, TP.Vĩnh Long' },
+  { id:'KH-002', name:'CH VTNN Thành Phát',            type:'Đại lý cấp 2',          phone:'0273 512 890', email:'thanhphat@example.com',   area:'Cần Thơ',    addr:'456 Đường Mậu Thân, Q.Ninh Kiều, TP.Cần Thơ' },
+  { id:'KH-003', name:'HTX Nông nghiệp Phú Quý',       type:'Đại lý cấp 2',          phone:'0277 638 124', email:'phuquy@example.com',      area:'An Giang',   addr:'789 Quốc lộ 91, TX.Châu Đốc, An Giang' },
+  { id:'KH-004', name:'Cty TNHH Nông Sản Xanh',        type:'Khách hàng thân thiết', phone:'0283 445 667', email:'nongsanxanh@example.com', area:'Đồng Tháp',  addr:'321 Đường Nguyễn Huệ, TP.Cao Lãnh, Đồng Tháp' },
+  { id:'KH-005', name:'Trang trại Minh Phúc',          type:'Khách lẻ',              phone:'0909 112 233', email:'minhphuc@example.com',    area:'Tiền Giang', addr:'654 Ấp Tân Thành, X.Tân Phước, H.Cai Lậy, Tiền Giang' },
+  { id:'KH-006', name:'ĐL Phân Bón Phúc Nguyên',       type:'Đại lý cấp 1',          phone:'0270 884 217', email:'phucnguyen@example.com',  area:'Bến Tre',    addr:'147 Đường Đồng Khởi, P.8, TP.Bến Tre' },
+  { id:'KH-007', name:'Cty CP VTNN Đồng Bằng',         type:'Đại lý cấp 1',          phone:'0292 741 308', email:'dongbang@example.com',    area:'Kiên Giang', addr:'258 Đường Nguyễn Trung Trực, TP.Rạch Giá, Kiên Giang' },
+  { id:'KH-008', name:'ĐL Hoàng Gia Nông Sản',         type:'Đại lý cấp 2',          phone:'0281 667 889', email:'hoanggia@example.com',    area:'Hậu Giang', addr:'369 Đường Trần Hưng Đạo, TP.Vị Thanh, Hậu Giang' },
+  { id:'KH-009', name:'Cty CP Nông Dược Xanh',         type:'Khách hàng thân thiết', phone:'0276 990 112', email:'nongduoc@example.com',    area:'Sóc Trăng', addr:'741 Đường Lê Duẩn, TP.Sóc Trăng' },
+  { id:'KH-010', name:'ĐL Phân Bón Miền Tây',          type:'Đại lý cấp 1',          phone:'0912 334 556', email:'mientay@example.com',     area:'Cần Thơ',    addr:'852 Đường Trần Phú, Q.Cái Răng, TP.Cần Thơ' },
+  { id:'KH-011', name:'HTX Nông nghiệp Bình Minh',     type:'Đại lý cấp 2',          phone:'0908 221 443', email:'binhminh@example.com',    area:'Vĩnh Long',  addr:'963 Đường Phạm Thái Bường, H.Bình Minh, Vĩnh Long' },
+  { id:'KH-012', name:'Đại lý phân bón Hòa Phát',      type:'Đại lý cấp 1',          phone:'0901 556 778', email:'hoaphat@example.com',     area:'An Giang',   addr:'159 Đường Lê Lợi, TP.Long Xuyên, An Giang' },
+  { id:'KH-013', name:'Nguyễn Văn Hải',                type:'Khách lẻ',              phone:'0909 887 665', email:'nvhai@example.com',       area:'Đồng Tháp',  addr:'753 Ấp Mỹ Hòa, X.Mỹ An, H.Tháp Mười, Đồng Tháp' },
+  { id:'KH-014', name:'Trần Minh Tuấn',                type:'Khách lẻ',              phone:'0918 445 223', email:'tmtuan@example.com',      area:'Tiền Giang', addr:'357 Ấp Bình Hòa, X.Bình Đức, H.Châu Thành, Tiền Giang' },
+  { id:'KH-015', name:'Nguyễn Thị Lan',                type:'Khách lẻ',              phone:'0923 112 998', email:'ntlan@example.com',       area:'Bến Tre',    addr:'951 Ấp Tân Lợi, X.Phú Lễ, H.Châu Thành, Bến Tre' },
+];
+
+// ── PRODUCT CATALOG ──
+const CATALOG = [
+  { code:'dx-npk1',  name:'NPK 16-16-16',                      unit:'bao', price:380000 },
+  { code:'dx-npk2',  name:'NPK 17-16-8',                        unit:'bao', price:420000 },
+  { code:'dx-huco1', name:'Hữu cơ Vi sinh cao cấp',             unit:'bao', price:295000 },
+  { code:'dx-huco2', name:'Khoáng cao cấp 20-20-15+Bo+TE',      unit:'bao', price:350000 },
+  { code:'dx-lan1',  name:'Lân Canxi Đất Xanh',                 unit:'bao', price:195000 },
+  { code:'dx-lan2',  name:'Vôi Lân Đất Xanh',                   unit:'bao', price:210000 },
+  { code:'dx-chu1',  name:'Chuyên Lúa 1',                       unit:'bao', price:430000 },
+  { code:'dx-chu2',  name:'Chuyên Lúa 2',                       unit:'bao', price:430000 },
+  { code:'dx-chu3',  name:'Chuyên dùng cho Chuối',              unit:'bao', price:460000 },
+  { code:'dx-vil1',  name:'Đất Xanh Trung Vi Lượng',            unit:'bao', price:380000 },
+  { code:'sm-npk1',  name:'NPK 18-8-18+Bo+TE (Song Mã)',        unit:'bao', price:410000 },
+  { code:'sm-npk2',  name:'NPK Mùa Khô 21-5-2',                unit:'bao', price:390000 },
+  { code:'sm-huco1', name:'Hữu cơ khoáng 16-16-8+Bo+TE',       unit:'bao', price:320000 },
+  { code:'sm-huco2', name:'Hữu cơ Vi sinh Song Mã',             unit:'bao', price:280000 },
+  { code:'sm-lan1',  name:'Lân Canxi Song Mã',                  unit:'bao', price:200000 },
+  { code:'sm-lan2',  name:'Vôi Lân Song Mã',                    unit:'bao', price:215000 },
+  { code:'sm-chu1',  name:'Chuyên Cà phê – Tiêu',               unit:'bao', price:450000 },
+  { code:'sm-chu2',  name:'Chuyên Cao su (Song Mã)',             unit:'bao', price:440000 },
+  { code:'sm-chu3',  name:'Chuyên Cây ăn trái & Rau màu',       unit:'bao', price:455000 },
+  { code:'sm-vil1',  name:'Trung vi lượng – Humic',             unit:'bao', price:345000 },
+  { code:'dn-npk1',  name:'Cao cấp NPK 16-16-16+Bo+TE',         unit:'bao', price:480000 },
+  { code:'dn-npk2',  name:'NPK 18-8-18 (Đầu Ngựa)',             unit:'bao', price:460000 },
+  { code:'dn-huco1', name:'Hữu cơ khoáng 20-22-15+Bo+TE',      unit:'bao', price:395000 },
+  { code:'dn-huco2', name:'Khoáng hữu cơ 17-7-17+Bo+TE',       unit:'bao', price:370000 },
+  { code:'dn-lan1',  name:'Lân Canxi Đầu Ngựa',                 unit:'bao', price:230000 },
+  { code:'dn-lan2',  name:'Vôi Lân Đầu Ngựa',                  unit:'bao', price:225000 },
+  { code:'dn-chu1',  name:'Chuyên Cà phê & Hồ tiêu',           unit:'bao', price:475000 },
+  { code:'dn-chu2',  name:'Chuyên Cao su Đầu Ngựa',             unit:'bao', price:465000 },
+  { code:'dn-chu3',  name:'Chuyên Cây ăn trái (Lớn trái)',      unit:'bao', price:490000 },
+  { code:'dn-vil1',  name:'Khoáng hữu cơ 20-10-20+Bo+TE',      unit:'bao', price:420000 },
+];
+
+// ── CREATE MODAL ──
+const TABS = ['ct-info','ct-cust','ct-prods','ct-delivery'];
+let cTabIdx = 0;
+let cProds = [];
+
+function fmt(n) { return Math.round(n).toLocaleString('vi-VN'); }
+
+function openCreateModal() {
+  cTabIdx = 0; cProds = [];
+  cSwitchTabIdx(0);
+  const today = new Date();
+  document.getElementById('c-created').value = today.toISOString().split('T')[0];
+  const delivery = new Date(today); delivery.setDate(delivery.getDate() + 7);
+  document.getElementById('c-delivery').value = delivery.toISOString().split('T')[0];
+  const nextNum = String(orders.length + 1).padStart(4,'0');
+  document.getElementById('c-num').value = 'ĐH-' + nextNum;
+  ['c-custname','c-phone','c-email','c-addr','c-note','c-shipper','c-receiver','c-shipaddr','c-shipnote'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('c-status').value = 'confirm';
+  document.getElementById('c-shipfee').value = '0';
+  
+  // Load customer list
+  const custSelect = document.getElementById('c-customer');
+  custSelect.innerHTML = '<option value="">— Chọn khách hàng —</option><option value="new">➕ Thêm khách hàng mới</option>' +
+    CUSTOMERS.map(c => `<option value="${c.id}">${c.name} (${c.phone})</option>`).join('');
+  
+  renderCProds();
+  document.getElementById('createModal').classList.add('open');
+}
+function closeCreateModal() { document.getElementById('createModal').classList.remove('open'); }
+
+function onSelectCustomer(custId) {
+  if (custId === 'new') {
+    // Redirect to customers page to create new customer
+    if (confirm('Bạn muốn chuyển sang trang Khách Hàng để tạo khách hàng mới?')) {
+      window.location.href = 'customers.html';
+    } else {
+      // Reset dropdown if user cancels
+      document.getElementById('c-customer').value = '';
+    }
+    return;
+  }
+  
+  if (custId === '') {
+    // Clear all fields for new customer
+    document.getElementById('c-custname').value = '';
+    document.getElementById('c-phone').value = '';
+    document.getElementById('c-email').value = '';
+    document.getElementById('c-addr').value = '';
+    document.getElementById('c-custtype').value = 'Khách lẻ';
+    document.getElementById('c-area').value = 'Vĩnh Long';
+    return;
+  }
+  
+  // Fill customer data
+  const cust = CUSTOMERS.find(c => c.id === custId);
+  if (cust) {
+    document.getElementById('c-custname').value = cust.name;
+    document.getElementById('c-phone').value = cust.phone;
+    document.getElementById('c-email').value = cust.email;
+    document.getElementById('c-addr').value = cust.addr;
+    document.getElementById('c-custtype').value = cust.type;
+    document.getElementById('c-area').value = cust.area;
+  }
+}
+
+function cSwitchTab(id, el) { cTabIdx = TABS.indexOf(id); cSwitchTabIdx(cTabIdx); }
+function cSwitchTabIdx(idx) {
+  TABS.forEach((t,i) => document.getElementById(t).classList.toggle('active', i===idx));
+  document.querySelectorAll('.cm-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.getElementById('cNextBtn').style.display = idx < TABS.length-1 ? 'flex' : 'none';
+  document.getElementById('cSaveBtn').style.display = idx === TABS.length-1 ? 'flex' : 'none';
+}
+function cNextTab() { if(cTabIdx < TABS.length-1) cSwitchTabIdx(++cTabIdx); }
+function cPrevTab() { if(cTabIdx > 0) cSwitchTabIdx(--cTabIdx); }
+
+function prodSelectHtml(i, selectedCode) {
+  const opts = CATALOG.map(c =>
+    `<option value="${c.code}" ${c.code===selectedCode?'selected':''}>${c.name}</option>`
+  ).join('');
+  return `<select class="cpl-input" style="min-width:160px" onchange="onSelectProd(${i},this)">
+    <option value="">— Chọn sản phẩm —</option>
+    ${opts}
+  </select>`;
+}
+
+function onSelectProd(i, sel) {
+  const prod = CATALOG.find(c => c.code === sel.value);
+  if (!prod) return;
+  cProds[i].code  = prod.code;
+  cProds[i].name  = prod.name;
+  cProds[i].unit  = prod.unit;
+  cProds[i].price = prod.price;
+  const row = sel.closest('tr');
+  row.querySelector('.unit-inp').value  = prod.unit;
+  row.querySelector('.price-inp').value = prod.price;
+  recalcRow(i, row);
+  calcCTotal();
+}
+
+function recalcRow(i, row) {
+  const p = cProds[i];
+  const tot = (p.price - Math.round(p.price * p.disc / 100)) * p.qty;
+  const el = document.getElementById('cptot-' + i);
+  if (el) el.textContent = fmt(tot) + ' đ';
+}
+
+function renderCProds() {
+  document.getElementById('cProdTbody').innerHTML = cProds.map((p,i) => {
+    const tot = (p.price - Math.round(p.price*p.disc/100)) * p.qty;
+    return `<tr>
+      <td style="color:var(--gray-400);font-size:11px;text-align:center">${i+1}</td>
+      <td>${prodSelectHtml(i, p.code||'')}</td>
+      <td><input class="cpl-input unit-inp" value="${p.unit}" oninput="updateCProd(${i},'unit',this.value)" style="width:52px"/></td>
+      <td><input class="cpl-input" type="number" value="${p.qty}" min="1" oninput="updateCProd(${i},'qty',+this.value)" style="width:44px;text-align:right"/></td>
+      <td><input class="cpl-input price-inp" type="number" value="${p.price}" min="0" oninput="updateCProd(${i},'price',+this.value)" style="width:86px;text-align:right"/></td>
+      <td><input class="cpl-input" type="number" value="${p.disc}" min="0" max="100" oninput="updateCProd(${i},'disc',+this.value)" style="width:42px;text-align:right"/></td>
+      <td style="text-align:right;font-weight:700;color:var(--blue);font-size:12.5px" id="cptot-${i}">${fmt(tot)} đ</td>
+      <td><button class="cpl-rm" onclick="removeCProd(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
+    </tr>`;
+  }).join('');
+  calcCTotal();
+}
+function updateCProd(i,f,v) {
+  cProds[i][f]=v; const p=cProds[i];
+  const tot=(p.price-Math.round(p.price*p.disc/100))*p.qty;
+  const el=document.getElementById('cptot-'+i); if(el) el.textContent=fmt(tot)+' đ';
+  calcCTotal();
+}
+function removeCProd(i) { cProds.splice(i,1); renderCProds(); }
+function addCProdLine() {
+  cProds.push({code:'',name:'',unit:'bao',qty:1,price:0,disc:0});
+  renderCProds();
+  const rows = document.getElementById('cProdTbody').querySelectorAll('tr');
+  const lastRow = rows[rows.length-1];
+  if(lastRow) lastRow.querySelector('select')?.focus();
+}
+function calcCTotal() {
+  let sub=0,disc=0;
+  cProds.forEach(p=>{const d=Math.round(p.price*p.disc/100);sub+=p.price*p.qty;disc+=d*p.qty;});
+  const vat=Math.round((sub-disc)*(parseFloat(document.getElementById('cVatRate')?.value||10)/100));
+  const shipFee=parseFloat(document.getElementById('c-shipfee')?.value||0);
+  document.getElementById('cSub').textContent  = fmt(sub)+' đ';
+  document.getElementById('cDisc').textContent = disc ? '- '+fmt(disc)+' đ' : '0 đ';
+  document.getElementById('cShipFee').textContent = fmt(shipFee)+' đ';
+  document.getElementById('cTotal').textContent = fmt(sub-disc+vat+shipFee)+' đ';
+}
+
+function updateShippingFee() {
+  calcCTotal();
+}
+
+function createOrder() {
+  const num=document.getElementById('c-num').value.trim();
+  const cust=document.getElementById('c-custname').value.trim();
+  if(!num){alert('Vui lòng nhập số đơn hàng!');cSwitchTabIdx(0);return;}
+  if(!cust){alert('Vui lòng nhập tên khách hàng!');cSwitchTabIdx(1);return;}
+  function fmtD(r){if(!r)return'—';const[y,m,d]=r.split('-');return`${d}/${m}/${y}`;}
+  let sub=0,disc=0;
+  cProds.forEach(p=>{const d=Math.round(p.price*p.disc/100);sub+=p.price*p.qty;disc+=d*p.qty;});
+  const vat=Math.round((sub-disc)*(parseFloat(document.getElementById('cVatRate')?.value||10)/100));
+  const total=sub-disc+vat;
+  orders.unshift({
+    id:num, 
+    customer:cust, 
+    phone:document.getElementById('c-phone').value||'—',
+    created:fmtD(document.getElementById('c-created').value),
+    delivery:fmtD(document.getElementById('c-delivery').value),
+    amount:fmt(total)+' đ',
+    status:document.getElementById('c-status').value,
+    quote:document.getElementById('c-quote').value||''
+  });
+  filtered = [...orders];
+  renderTable();
+  closeCreateModal();
+  alert('✓ Đơn hàng ' + num + ' đã được tạo thành công!');
+}
+
+// ── PROFILE DROPDOWN ──
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('open');
+}
+
+function logout(event) {
+  event.preventDefault();
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = event.target.closest('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  if (!profileBtn && dropdown && !dropdown.contains(event.target)) {
+    dropdown.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>

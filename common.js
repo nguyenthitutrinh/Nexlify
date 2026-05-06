@@ -43,6 +43,34 @@ function toggleNav(el) {
   el.nextElementSibling.classList.toggle('open');
 }
 
+// Toggle profile dropdown
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('open');
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = document.querySelector('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  
+  if (dropdown && profileBtn) {
+    if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+      dropdown.classList.remove('open');
+    }
+  }
+});
+
+// Logout function
+function logout() {
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    // Redirect to login page
+    window.location.href = 'login.html';
+  }
+}
+
 // Page transitions
 (function(){
   document.body.style.opacity='0';

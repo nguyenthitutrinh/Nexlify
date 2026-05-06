@@ -27,8 +27,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
 .section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
 .nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
-.nav-item:hover { background: var(--purple-pale); color: var(--purple); }
-.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item:hover { background: var(--blue-pale); color: var(--blue); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
 .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
 .nav-parent { display: flex; align-items: center; justify-content: space-between; }
 .nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
@@ -42,9 +42,19 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 90; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
-.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#a78bfa,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
 .profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* Profile Dropdown */
+.profile-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 200px; z-index: 200; overflow: hidden; }
+.profile-dropdown.open { display: block; }
+.profile-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700); cursor: pointer; transition: background .13s; border-bottom: 1px solid var(--gray-100); text-decoration: none; }
+.profile-dropdown-item:last-child { border-bottom: none; }
+.profile-dropdown-item:hover { background: var(--blue-pale); color: var(--blue); }
+.profile-dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.profile-dropdown-item.danger:hover { background: #fee2e2; color: #dc2626; }
+
 .notif-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--gray-200); background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; color: var(--gray-500); }
 .notif-btn svg { width: 15px; height: 15px; }
 .notif-dot { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: #ef4444; border: 1.5px solid white; }
@@ -58,14 +68,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 /* PAGE HEADER */
 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .page-title { font-size: 18px; font-weight: 800; color: var(--gray-900); display: flex; align-items: center; gap: 10px; }
-.page-title-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--amber-bg); display: flex; align-items: center; justify-content: center; }
-.page-title-icon svg { width: 18px; height: 18px; stroke: var(--amber); }
+.page-title-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--blue-pale); display: flex; align-items: center; justify-content: center; }
+.page-title-icon svg { width: 18px; height: 18px; stroke: var(--blue); }
 .btn { border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; transition: all .15s; white-space: nowrap; }
 .btn svg { width: 14px; height: 14px; }
-.btn-primary { background: var(--purple); color: white; }
-.btn-primary:hover { background: #6d28d9; }
-.btn-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid #fde68a; }
-.btn-amber:hover { background: #fde68a; }
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: #2563eb; }
+.btn-amber { background: var(--blue-pale); color: var(--blue); border: 1px solid #93c5fd; }
+.btn-amber:hover { background: #93c5fd; }
 .modal-cancel { border: 1px solid var(--gray-200); background: #fff; border-radius: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--gray-500); }
 
 /* STAT CARDS */
@@ -81,22 +91,22 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .search-fw { position: relative; flex: 1; min-width: 200px; }
 .search-fw svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--gray-400); }
 .search-input { width: 100%; border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 12px 7px 32px; font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s; }
-.search-input:focus { border-color: var(--purple); }
+.search-input:focus { border-color: var(--blue); }
 .filter-select { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none; background: white; cursor: pointer; color: var(--gray-700); }
-.filter-select:focus { border-color: var(--purple); }
+.filter-select:focus { border-color: var(--blue); }
 
 /* TABLE */
 .table-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
 .table-hd { padding: 12px 18px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
 .table-hd-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.table-hd-title svg { width: 14px; height: 14px; stroke: var(--amber); }
+.table-hd-title svg { width: 14px; height: 14px; stroke: var(--blue); }
 .data-table { width: 100%; border-collapse: collapse; }
 .data-table th { padding: 10px 16px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-400); background: var(--gray-50); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
 .data-table th.r { text-align: right; }
 .data-table td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: var(--purple-pale); }
-.inv-num { font-weight: 700; color: var(--amber); cursor: pointer; }
+.data-table tr:hover td { background: var(--blue-pale); }
+.inv-num { font-weight: 700; color: var(--blue); cursor: pointer; }
 .inv-num:hover { text-decoration: underline; }
 .ref-link { color: var(--blue); font-weight: 600; font-size: 12px; text-decoration: none; }
 .ref-link:hover { text-decoration: underline; }
@@ -106,7 +116,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .date-cell { font-size: 12.5px; color: var(--gray-500); }
 .date-overdue { color: var(--danger); font-weight: 600; }
 .action-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--gray-400); transition: all .15s; margin-right: 4px; }
-.action-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-pale); }
+.action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
 .action-btn svg { width: 13px; height: 13px; }
 
 /* STATUS BADGE */
@@ -118,12 +128,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .sq-overdue { background: #fee2e2; color: #dc2626; }
 .sq-cancel  { background: #f1f5f9; color: #64748b; }
 
+/* Payment badge */
+.payment-badge { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.badge-one { background: #dbeafe; color: #1d4ed8; }
+.badge-install { background: #bfdbfe; color: #1e40af; }
+
 /* PAGINATION */
 .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid var(--gray-100); font-size: 12.5px; color: var(--gray-500); }
 .page-btns { display: flex; gap: 4px; }
 .page-btn { width: 30px; height: 30px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: inherit; display: flex; align-items: center; justify-content: center; color: var(--gray-500); transition: all .15s; }
-.page-btn:hover { border-color: var(--purple); color: var(--purple); }
-.page-btn.active { background: var(--purple); border-color: var(--purple); color: white; }
+.page-btn:hover { border-color: var(--blue); color: var(--blue); }
+.page-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
 
 /* TOAST */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--gray-900); color: white; border-radius: 9px; padding: 10px 20px; font-size: 13px; font-weight: 500; z-index: 999; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,.2); opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; }
@@ -136,13 +151,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .cm-backdrop.open .cm-modal { transform: translateY(0); }
 .cm-hd { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px 14px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; }
 .cm-hd h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.cm-hd h3 svg { width: 16px; height: 16px; stroke: var(--amber); }
+.cm-hd h3 svg { width: 16px; height: 16px; stroke: var(--blue); }
 .cm-close { width: 28px; height: 28px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
 .cm-close:hover { background: var(--gray-100); }
 .cm-close svg { width: 15px; height: 15px; }
 .cm-tabs { display: flex; padding: 0 22px; border-bottom: 1px solid var(--gray-100); flex-shrink: 0; overflow-x: auto; white-space: nowrap; }
 .cm-tab { padding: 11px 18px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1px; transition: all .15s; white-space: nowrap; flex-shrink: 0; }
-.cm-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+.cm-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
 .cm-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
 .cm-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 22px 16px; border-top: 1px solid var(--gray-100); flex-shrink: 0; background: var(--gray-50); border-radius: 0 0 14px 14px; }
 .ctab { display: none; } .ctab.active { display: block; }
@@ -152,19 +167,19 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .flbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .flbl span { color: var(--danger); }
 .finput { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; transition: border-color .15s; background: #fff; width: 100%; }
-.finput:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,.1); }
+.finput:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
 .fselect { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; background: #fff; width: 100%; cursor: pointer; }
-.fselect:focus { border-color: var(--amber); }
+.fselect:focus { border-color: var(--blue); }
 .ftextarea { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; color: var(--gray-900); outline: none; width: 100%; resize: vertical; min-height: 60px; }
-.ftextarea:focus { border-color: var(--amber); }
+.ftextarea:focus { border-color: var(--blue); }
 .fhint { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
 .fsec { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--gray-400); margin-bottom: 10px; padding-bottom: 6px; border-top: 1px solid var(--gray-100); padding-top: 14px; margin-top: 4px; }
 .fsec:first-child { border-top: none; padding-top: 0; margin-top: 0; }
 .prd-group { display: flex; gap: 10px; margin-bottom: 12px; }
 .prd-lbl { flex: 1; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--gray-200); background: #fff; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
-.prd-lbl.sel { border-color: var(--amber); background: #fffbeb; }
+.prd-lbl.sel { border-color: var(--blue); background: var(--blue-pale); }
 .prd-lbl .pt { font-size: 13px; font-weight: 700; color: var(--gray-700); }
-.prd-lbl.sel .pt { color: var(--amber); }
+.prd-lbl.sel .pt { color: var(--blue); }
 .prd-lbl .ps { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
 .cpl-wrap { border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
 .cpl-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
@@ -172,17 +187,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .cpl-table td { padding: 6px 8px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
 .cpl-table tr:last-child td { border-bottom: none; }
 .cpl-input { border: 1px solid var(--gray-200); border-radius: 6px; padding: 5px 8px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; width: 100%; background: #fff; }
-.cpl-input:focus { border-color: var(--amber); }
+.cpl-input:focus { border-color: var(--blue); }
 .cpl-rm { width: 24px; height: 24px; border-radius: 5px; border: none; background: #fee2e2; color: var(--danger); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .cpl-rm svg { width: 11px; height: 11px; }
-.cpl-add { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--amber); background: none; border: 1px dashed #fcd34d; border-radius: 7px; padding: 7px 14px; cursor: pointer; font-family: inherit; }
-.cpl-add:hover { background: var(--warn-bg); }
+.cpl-add { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--blue); background: none; border: 1px dashed #93c5fd; border-radius: 7px; padding: 7px 14px; cursor: pointer; font-family: inherit; }
+.cpl-add:hover { background: var(--blue-pale); }
 .cpl-add svg { width: 13px; height: 13px; }
 .csum-bar { background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: flex-end; gap: 24px; font-size: 12.5px; margin-top: 8px; }
 .csum-bar .ci { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
 .csum-bar .cl { font-size: 10.5px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; }
 .csum-bar .cv { font-weight: 700; }
-.csum-bar .cv.big { font-size: 15px; color: var(--amber); }
+.csum-bar .cv.big { font-size: 15px; color: var(--blue); }
 .inst-box { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
 .inst-box table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .inst-box th { padding: 7px 10px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: var(--gray-400); border-bottom: 1px solid var(--gray-200); background: #fff; text-align: left; }
@@ -194,7 +209,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .inv-preview-row .k { color: var(--gray-500); }
 .inv-preview-row .v { font-weight: 600; }
 .inv-preview-row.grand { font-weight: 800; font-size: 14px; background: #fff; border-top: 2px solid var(--gray-200); }
-.inv-preview-row.grand .v { color: var(--amber); }
+.inv-preview-row.grand .v { color: var(--blue); }
 </style>
 </head>
 <body>
@@ -263,19 +278,13 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       Khuyến Mãi
     </a>
   </div>
-  <a class="nav-item active" (href="invoices.html" data-page="invoices")>
+  <a class="nav-item active" href="invoices.html" data-page="invoices">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Hóa Đơn
   </a>
   <a class="nav-item" href="reports.html" data-page="reports">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Báo Cáo
-  </a>
-
-  <div class="section-label">Khác</div>
-  <a class="nav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Setting
   </a>
 </aside>
 
@@ -290,11 +299,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span class="notif-dot"></span>
     </button>
-    <button class="profile-btn">
-      <div class="profile-avatar">A</div>
-      <span class="p-name">Admin</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="profile-btn" onclick="toggleProfileDropdown()">
+        <div class="profile-avatar">A</div>
+        <span class="p-name">Admin</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Thông tin cá nhân
+        </a>
+        <a href="#" class="profile-dropdown-item danger" onclick="logout(); return false;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -309,7 +330,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       </div>
       Danh Sách Hoá Đơn
     </div>
-    <button class="btn btn-primary" onclick="openCreateModal()">
+    <button class="btn btn-primary" onclick="console.log('Button clicked!'); openCreateModal();">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Tạo Hoá Đơn
     </button>
@@ -318,11 +339,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   <!-- STAT CARDS -->
   <div class="stat-grid">
     <div class="stat-card">
-      <div class="stat-icon" style="background:#ede9fe">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div class="stat-icon" style="background:#eff6ff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       </div>
       <div>
-        <div class="stat-val" style="color:#7c3aed" id="s-total">0</div>
+        <div class="stat-val" style="color:#3b82f6" id="s-total">0</div>
         <div class="stat-lbl">Tổng hoá đơn</div>
       </div>
     </div>
@@ -454,7 +475,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           </div>
           <div class="fg">
             <div class="flbl">Từ đơn hàng</div>
-            <select class="fselect" id="c-order">
+            <select class="fselect" id="c-order" onchange="loadOrderData(this.value)">
               <option value="">— Không liên kết —</option>
               <option value="DH-0042">ĐH-0042 · Minh Đức</option>
               <option value="DH-0043">ĐH-0043 · Phú Quý</option>
@@ -558,11 +579,11 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         <div class="fsec">Phương thức trả tiền</div>
         <div class="prd-group">
           <label class="prd-lbl sel" id="cRdOne">
-            <input type="radio" name="c-schedule" value="one" checked onchange="toggleCInstall('one')" style="accent-color:var(--amber);width:15px;height:15px;flex-shrink:0" />
+            <input type="radio" name="c-schedule" value="one" checked onchange="toggleCInstall('one')" style="accent-color:var(--blue);width:15px;height:15px;flex-shrink:0" />
             <div><div class="pt">Trả hết 1 lần</div><div class="ps">Thanh toán toàn bộ 1 lần</div></div>
           </label>
           <label class="prd-lbl" id="cRdInstall">
-            <input type="radio" name="c-schedule" value="install" onchange="toggleCInstall('install')" style="accent-color:var(--amber);width:15px;height:15px;flex-shrink:0" />
+            <input type="radio" name="c-schedule" value="install" onchange="toggleCInstall('install')" style="accent-color:var(--blue);width:15px;height:15px;flex-shrink:0" />
             <div><div class="pt">Trả nhiều lần</div><div class="ps">Chia nhỏ theo từng đợt</div></div>
           </label>
         </div>
@@ -585,7 +606,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
             </table>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;font-size:12.5px">
               <span style="color:var(--gray-500);font-weight:600">Tổng phân kỳ</span>
-              <span style="font-weight:800;color:var(--amber)" id="cInstallSum">0 đ</span>
+              <span style="font-weight:800;color:var(--blue)" id="cInstallSum">0 đ</span>
             </div>
           </div>
         </div>
@@ -630,7 +651,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       <!-- TAB 5: Xem trước -->
       <div class="ctab" id="ct-preview">
         <div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:16px;margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--amber)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--blue)">
             <div style="font-size:18px;font-weight:800;font-family:'Orbitron',sans-serif;background:linear-gradient(135deg,#e879f9,#818cf8,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">NexLify</div>
             <div style="text-align:right">
               <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-400);font-weight:600">Hoá đơn</div>
@@ -670,7 +691,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Quay lại
       </button>
-      <button class="btn" id="cNextBtn" onclick="cNextTab()" style="padding:9px 18px;background:var(--purple);color:white">
+      <button class="btn" id="cNextBtn" onclick="cNextTab()" style="padding:9px 18px;background:var(--blue);color:white">
         Tiếp theo
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
@@ -684,29 +705,45 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
+<script src="order-data.js"></script>
 <script>
 const TABS = ['ct-info','ct-cust','ct-pay','ct-prods','ct-preview'];
 let cTabIdx = 0;
 
 const INVOICES = [
-  { id:'HĐ-0001', order:'ĐH-0042', cust:'Cty TNHH VTNN Minh Đức',    type:'Đại lý cấp 1',           issued:'28/04/2026', due:'12/05/2026', method:'bank', schedule:'one',     total:737413,  status:'unpaid'  },
-  { id:'HĐ-0002', order:'ĐH-0038', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'25/04/2026', due:'09/05/2026', method:'cash', schedule:'one',     total:312000,  status:'paid'    },
-  { id:'HĐ-0003', order:'ĐH-0035', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'20/04/2026', due:'04/05/2026', method:'bank', schedule:'install', total:1520000, status:'partial' },
-  { id:'HĐ-0004', order:'ĐH-0031', cust:'Trang trại Minh Phúc',       type:'Khách lẻ',               issued:'15/04/2026', due:'29/04/2026', method:'cod',  schedule:'one',     total:88500,   status:'overdue' },
-  { id:'HĐ-0005', order:'ĐH-0029', cust:'Cty TNHH VTNN Minh Đức',     type:'Đại lý cấp 1',           issued:'10/04/2026', due:'24/04/2026', method:'bank', schedule:'install', total:945000,  status:'paid'    },
-  { id:'HĐ-0006', order:'ĐH-0027', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'05/04/2026', due:'19/04/2026', method:'bank', schedule:'one',     total:421750,  status:'paid'    },
-  { id:'HĐ-0007', order:'ĐH-0024', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'01/04/2026', due:'15/04/2026', method:'cash', schedule:'one',     total:670000,  status:'paid'    },
-  { id:'HĐ-0008', order:'ĐH-0020', cust:'Vựa Phân Bón Tân Tiến',      type:'Đại lý cấp 1',           issued:'28/03/2026', due:'25/04/2026', method:'bank', schedule:'install', total:2100000, status:'unpaid'  },
-  { id:'HĐ-0009', order:'ĐH-0018', cust:'Cty CP Nông Dược Xanh',      type:'Khách hàng thân thiết',  issued:'22/03/2026', due:'05/04/2026', method:'bank', schedule:'one',     total:540000,  status:'paid'    },
-  { id:'HĐ-0010', order:'ĐH-0015', cust:'Trang trại Minh Phúc',       type:'Khách lẻ',               issued:'18/03/2026', due:'01/04/2026', method:'cash', schedule:'one',     total:126000,  status:'overdue' },
-  { id:'HĐ-0011', order:'ĐH-0013', cust:'Cty TNHH VTNN Minh Đức',     type:'Đại lý cấp 1',           issued:'14/03/2026', due:'28/03/2026', method:'bank', schedule:'install', total:1830000, status:'paid'    },
-  { id:'HĐ-0012', order:'ĐH-0011', cust:'HTX Nông nghiệp Bình Minh',  type:'Đại lý cấp 2',           issued:'10/03/2026', due:'24/03/2026', method:'cod',  schedule:'one',     total:297500,  status:'paid'    },
-  { id:'HĐ-0013', order:'ĐH-0009', cust:'Cty TNHH Nông Sản Xanh',     type:'Khách hàng thân thiết',  issued:'05/03/2026', due:'19/03/2026', method:'bank', schedule:'one',     total:863000,  status:'unpaid'  },
-  { id:'HĐ-0014', order:'ĐH-0007', cust:'Đại lý phân bón Hòa Phát',   type:'Đại lý cấp 1',           issued:'28/02/2026', due:'14/03/2026', method:'bank', schedule:'install', total:1245000, status:'paid'    },
-  { id:'HĐ-0015', order:'ĐH-0005', cust:'HTX Nông nghiệp Phú Quý',    type:'Đại lý cấp 2',           issued:'20/02/2026', due:'06/03/2026', method:'cash', schedule:'one',     total:384500,  status:'paid'    },
+  { id:'HĐ-0001', order:'ĐH-0001', cust:'Cty TNHH VTNN Minh Đức',        type:'Đại lý cấp 1',           issued:'02/01/2026', due:'16/01/2026', method:'bank', schedule:'one',     total:125400000, status:'paid'    },
+  { id:'HĐ-0002', order:'ĐH-0002', cust:'CH VTNN Thành Phát',            type:'Đại lý cấp 2',           issued:'03/01/2026', due:'17/01/2026', method:'bank', schedule:'one',     total:95150000,  status:'paid'    },
+  { id:'HĐ-0003', order:'ĐH-0003', cust:'HTX Nông nghiệp Phú Quý',       type:'Đại lý cấp 2',           issued:'04/01/2026', due:'18/01/2026', method:'bank', schedule:'install', total:96800000,  status:'paid'    },
+  { id:'HĐ-0004', order:'ĐH-0004', cust:'Cty TNHH Nông Sản Xanh',        type:'Khách hàng thân thiết',  issued:'05/01/2026', due:'19/01/2026', method:'bank', schedule:'install', total:152300000, status:'paid'    },
+  { id:'HĐ-0005', order:'ĐH-0005', cust:'Trang trại Minh Phúc',          type:'Khách lẻ',               issued:'06/01/2026', due:'20/01/2026', method:'cash', schedule:'one',     total:43200000,  status:'paid'    },
+  { id:'HĐ-0006', order:'ĐH-0006', cust:'ĐL Phân Bón Phúc Nguyên',       type:'Đại lý cấp 1',           issued:'07/01/2026', due:'21/01/2026', method:'bank', schedule:'install', total:118700000, status:'paid'    },
+  { id:'HĐ-0007', order:'ĐH-0007', cust:'Cty CP VTNN Đồng Bằng',         type:'Đại lý cấp 1',           issued:'08/01/2026', due:'22/01/2026', method:'bank', schedule:'one',     total:76900000,  status:'paid'    },
+  { id:'HĐ-0008', order:'ĐH-0008', cust:'ĐL Hoàng Gia Nông Sản',         type:'Đại lý cấp 2',           issued:'09/01/2026', due:'23/01/2026', method:'bank', schedule:'install', total:134500000, status:'paid'    },
+  { id:'HĐ-0009', order:'ĐH-0009', cust:'Cty CP Nông Dược Xanh',         type:'Khách hàng thân thiết',  issued:'10/01/2026', due:'24/01/2026', method:'cash', schedule:'one',     total:89300000,  status:'paid'    },
+  { id:'HĐ-0010', order:'ĐH-0010', cust:'ĐL Phân Bón Miền Tây',          type:'Đại lý cấp 1',           issued:'11/01/2026', due:'25/01/2026', method:'bank', schedule:'install', total:105600000, status:'paid'    },
+  { id:'HĐ-0011', order:'ĐH-0011', cust:'HTX Nông nghiệp Bình Minh',     type:'Đại lý cấp 2',           issued:'12/01/2026', due:'26/01/2026', method:'bank', schedule:'one',     total:67800000,  status:'paid'    },
+  { id:'HĐ-0012', order:'ĐH-0012', cust:'Đại lý phân bón Hòa Phát',      type:'Đại lý cấp 1',           issued:'13/01/2026', due:'27/01/2026', method:'bank', schedule:'install', total:143200000, status:'paid'    },
+  { id:'HĐ-0013', order:'ĐH-0013', cust:'Nguyễn Văn Hải',                type:'Khách lẻ',               issued:'14/01/2026', due:'28/01/2026', method:'cash', schedule:'one',     total:54700000,  status:'paid'    },
+  { id:'HĐ-0014', order:'ĐH-0014', cust:'Trần Minh Tuấn',                type:'Khách lẻ',               issued:'15/01/2026', due:'29/01/2026', method:'cod',  schedule:'one',     total:38900000,  status:'paid'    },
+  { id:'HĐ-0015', order:'ĐH-0015', cust:'Nguyễn Thị Lan',                type:'Khách lẻ',               issued:'16/01/2026', due:'30/01/2026', method:'cash', schedule:'one',     total:72500000,  status:'paid'    },
+  { id:'HĐ-0016', order:'ĐH-0016', cust:'Phạm Văn Bình',                 type:'Khách lẻ',               issued:'17/01/2026', due:'31/01/2026', method:'bank', schedule:'one',     total:91400000,  status:'paid'    },
+  { id:'HĐ-0017', order:'ĐH-0017', cust:'Lê Thị Hoa',                    type:'Khách lẻ',               issued:'18/01/2026', due:'01/02/2026', method:'cash', schedule:'one',     total:48300000,  status:'paid'    },
+  { id:'HĐ-0018', order:'ĐH-0018', cust:'Cty TNHH VTNN Minh Đức',        type:'Đại lý cấp 1',           issued:'19/01/2026', due:'02/02/2026', method:'bank', schedule:'install', total:127600000, status:'paid'    },
+  { id:'HĐ-0019', order:'ĐH-0019', cust:'CH VTNN Thành Phát',            type:'Đại lý cấp 2',           issued:'20/02/2026', due:'06/03/2026', method:'bank', schedule:'one',     total:83200000,  status:'partial' },
+  { id:'HĐ-0020', order:'ĐH-0020', cust:'HTX Nông nghiệp Phú Quý',       type:'Đại lý cấp 2',           issued:'22/02/2026', due:'08/03/2026', method:'bank', schedule:'install', total:115800000, status:'partial' },
+  { id:'HĐ-0021', order:'ĐH-0021', cust:'Cty TNHH Nông Sản Xanh',        type:'Khách hàng thân thiết',  issued:'25/02/2026', due:'11/03/2026', method:'bank', schedule:'one',     total:64900000,  status:'unpaid'  },
+  { id:'HĐ-0022', order:'ĐH-0022', cust:'Trang trại Minh Phúc',          type:'Khách lẻ',               issued:'28/02/2026', due:'14/03/2026', method:'cod',  schedule:'one',     total:56700000,  status:'unpaid'  },
+  { id:'HĐ-0023', order:'ĐH-0023', cust:'ĐL Phân Bón Phúc Nguyên',       type:'Đại lý cấp 1',           issued:'02/03/2026', due:'16/03/2026', method:'bank', schedule:'install', total:98400000,  status:'unpaid'  },
+  { id:'HĐ-0024', order:'ĐH-0024', cust:'Cty CP VTNN Đồng Bằng',         type:'Đại lý cấp 1',           issued:'05/03/2026', due:'19/03/2026', method:'bank', schedule:'one',     total:74300000,  status:'unpaid'  },
+  { id:'HĐ-0025', order:'ĐH-0025', cust:'ĐL Hoàng Gia Nông Sản',         type:'Đại lý cấp 2',           issued:'08/03/2026', due:'22/03/2026', method:'bank', schedule:'install', total:108900000, status:'unpaid'  },
+  { id:'HĐ-0026', order:'ĐH-0026', cust:'Cty CP Nông Dược Xanh',         type:'Khách hàng thân thiết',  issued:'10/03/2026', due:'24/03/2026', method:'cash', schedule:'one',     total:45600000,  status:'unpaid'  },
+  { id:'HĐ-0027', order:'ĐH-0027', cust:'ĐL Phân Bón Miền Tây',          type:'Đại lý cấp 1',           issued:'15/04/2026', due:'29/04/2026', method:'bank', schedule:'install', total:87300000,  status:'unpaid'  },
+  { id:'HĐ-0028', order:'ĐH-0028', cust:'HTX Nông nghiệp Bình Minh',     type:'Đại lý cấp 2',           issued:'18/04/2026', due:'02/05/2026', method:'bank', schedule:'one',     total:52800000,  status:'unpaid'  },
+  { id:'HĐ-0029', order:'ĐH-0029', cust:'Đại lý phân bón Hòa Phát',      type:'Đại lý cấp 1',           issued:'22/04/2026', due:'06/05/2026', method:'bank', schedule:'install', total:69500000,  status:'unpaid'  },
+  { id:'HĐ-0030', order:'ĐH-0030', cust:'Nguyễn Văn Hải',                type:'Khách lẻ',               issued:'25/04/2026', due:'09/05/2026', method:'cash', schedule:'one',     total:31400000,  status:'cancel'  },
 ];
 
-const STATUS_MAP   = { unpaid:{cls:'sq-unpaid',txt:'Chờ thanh toán'}, partial:{cls:'sq-partial',txt:'Thanh toán một phần'}, paid:{cls:'sq-paid',txt:'Đã thanh toán'}, overdue:{cls:'sq-overdue',txt:'Quá hạn'} };
+const STATUS_MAP   = { unpaid:{cls:'sq-unpaid',txt:'Chờ thanh toán'}, partial:{cls:'sq-partial',txt:'Thanh toán một phần'}, paid:{cls:'sq-paid',txt:'Đã thanh toán'}, overdue:{cls:'sq-overdue',txt:'Quá hạn'}, cancel:{cls:'sq-cancel',txt:'Đã hủy'} };
 const METHOD_MAP   = { bank:'Chuyển khoản', cash:'Tiền mặt', cod:'COD' };
 const SCHEDULE_MAP = { one:'Trả 1 lần', install:'Trả nhiều lần' };
 
@@ -723,7 +760,7 @@ function renderTable(data) {
       <td class="date-cell">${inv.issued}</td>
       <td class="date-cell ${inv.status==='overdue'?'date-overdue':''}">${inv.due}${inv.status==='overdue'?' ⚠':''}</td>
       <td style="font-size:12.5px;color:var(--gray-500)">${METHOD_MAP[inv.method]||''}</td>
-      <td><span style="font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:${inv.schedule==='install'?'#ede9fe':'#dbeafe'};color:${inv.schedule==='install'?'#7c3aed':'#1d4ed8'}">${SCHEDULE_MAP[inv.schedule]||''}</span></td>
+      <td><span class="payment-badge ${inv.schedule==='install'?'badge-install':'badge-one'}">${SCHEDULE_MAP[inv.schedule]||''}</span></td>
       <td class="amount">${fmt(inv.total)} đ</td>
       <td><span class="sq ${st.cls}">${st.txt}</span></td>
       <td onclick="event.stopPropagation()">
@@ -737,7 +774,7 @@ function renderTable(data) {
 
 function handleRowClick(e, id) {
   if (e.target.closest('button')) return;
-  showToast('Chi tiết hoá đơn ' + id);
+  window.location.href = 'invoice-detail.html?id=' + encodeURIComponent(id);
 }
 
 function updateStats(data) {
@@ -806,6 +843,84 @@ const CATALOG = [
 // ── CREATE MODAL ──
 let cProds = [];
 
+function populateOrderDropdown() {
+  const select = document.getElementById('c-order');
+  if (!select) return;
+  
+  // Clear existing options except the first one
+  select.innerHTML = '<option value="">— Không liên kết —</option>';
+  
+  // Check if ORDER_DATABASE exists
+  if (typeof ORDER_DATABASE === 'undefined') {
+    console.warn('ORDER_DATABASE not found');
+    return;
+  }
+  
+  // Add orders from ORDER_DATABASE
+  Object.values(ORDER_DATABASE).forEach(order => {
+    const option = document.createElement('option');
+    option.value = order.id;
+    option.textContent = `${order.id} · ${order.customer}`;
+    select.appendChild(option);
+  });
+}
+
+function loadOrderData(orderId) {
+  if (!orderId || typeof ORDER_DATABASE === 'undefined') {
+    return;
+  }
+  
+  const order = ORDER_DATABASE[orderId];
+  if (!order) {
+    console.warn('Order not found:', orderId);
+    return;
+  }
+  
+  // Fill customer information
+  document.getElementById('c-custname').value = order.customer || '';
+  document.getElementById('c-phone').value = order.phone || '';
+  document.getElementById('c-email').value = order.email || '';
+  document.getElementById('c-addr').value = order.address || '';
+  
+  // Set customer type if exists
+  const custTypeSelect = document.getElementById('c-custtype');
+  if (custTypeSelect && order.customerType) {
+    // Try to match customer type
+    const options = Array.from(custTypeSelect.options);
+    const matchingOption = options.find(opt => 
+      opt.text.includes(order.customerType) || order.customerType.includes(opt.text)
+    );
+    if (matchingOption) {
+      custTypeSelect.value = matchingOption.value;
+    }
+  }
+  
+  // Set area if exists
+  const areaSelect = document.getElementById('c-area');
+  if (areaSelect && order.area) {
+    const options = Array.from(areaSelect.options);
+    const matchingOption = options.find(opt => opt.text === order.area);
+    if (matchingOption) {
+      areaSelect.value = matchingOption.value;
+    }
+  }
+  
+  // Load products
+  if (order.products && order.products.length > 0) {
+    cProds = order.products.map(p => ({
+      code: p.id || '',
+      name: p.name + (p.brand ? ' ' + p.brand : ''),
+      unit: p.unit || 'bao',
+      qty: p.qty || 1,
+      price: p.price || 0,
+      disc: p.disc || 0
+    }));
+    renderCProds();
+  }
+  
+  showToast('✓ Đã tải thông tin từ đơn hàng ' + orderId);
+}
+
 function openCreateModal() {
   cTabIdx = 0; cProds = [];
   cSwitchTabIdx(0);
@@ -823,6 +938,10 @@ function openCreateModal() {
   document.getElementById('cRdOne').classList.add('sel');
   document.getElementById('cRdInstall').classList.remove('sel');
   document.querySelector('input[name="c-schedule"][value="one"]').checked = true;
+  
+  // Populate order dropdown
+  populateOrderDropdown();
+  
   renderCProds();
   document.getElementById('createModal').classList.add('open');
 }
@@ -933,11 +1052,12 @@ function renderCProds() {
       <td><input class="cpl-input" type="number" value="${p.qty}" min="1" oninput="updateCProd(${i},'qty',+this.value)" style="width:44px;text-align:right"/></td>
       <td><input class="cpl-input price-inp" type="number" value="${p.price}" min="0" oninput="updateCProd(${i},'price',+this.value)" style="width:86px;text-align:right"/></td>
       <td><input class="cpl-input" type="number" value="${p.disc}" min="0" max="100" oninput="updateCProd(${i},'disc',+this.value)" style="width:42px;text-align:right"/></td>
-      <td style="text-align:right;font-weight:700;color:var(--amber);font-size:12.5px" id="cptot-${i}">${fmt(tot)} đ</td>
+      <td style="text-align:right;font-weight:700;color:var(--blue);font-size:12.5px" id="cptot-${i}">${fmt(tot)} đ</td>
       <td><button class="cpl-rm" onclick="removeCProd(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>
     </tr>`;
   }).join('');
-  document.getElementById('cProdCount').textContent = cProds.length;
+  const cProdCountEl = document.getElementById('cProdCount');
+  if (cProdCountEl) cProdCountEl.textContent = cProds.length;
   calcCTotal();
 }
 function updateCProd(i,f,v) {
@@ -978,7 +1098,7 @@ function buildCPreview() {
   let sub=0,disc=0;
   const prodHTML=cProds.map((p,i)=>{const d=Math.round(p.price*p.disc/100);const tot=(p.price-d)*p.qty;sub+=p.price*p.qty;disc+=d*p.qty;
     return`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gray-100);font-size:12px">
-      <span>${i+1}. ${p.name} (${p.qty} ${p.unit})</span><span style="font-weight:600;color:var(--amber)">${fmt(tot)} đ</span></div>`;}).join('');
+      <span>${i+1}. ${p.name} (${p.qty} ${p.unit})</span><span style="font-weight:600;color:var(--blue)">${fmt(tot)} đ</span></div>`;}).join('');
   document.getElementById('prevProdList').innerHTML=prodHTML||'<div style="color:var(--gray-400);font-size:12px;text-align:center;padding:10px">Chưa có sản phẩm nào</div>';
   const vatPct=parseFloat(document.getElementById('cVatRate')?.value||10);
   const vat=Math.round((sub-disc)*vatPct/100); const total=sub-disc+vat;
@@ -1013,6 +1133,31 @@ function createInvoice() {
 // ── INIT ──
 renderTable(INVOICES);
 updateStats(INVOICES);
+
+// Toggle profile dropdown
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('open');
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = event.target.closest('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  
+  if (dropdown && !profileBtn && !dropdown.contains(event.target)) {
+    dropdown.classList.remove('open');
+  }
+});
+
+// Logout function
+function logout() {
+  if (confirm('Bạn có chắc muốn đăng xuất?')) {
+    window.location.href = 'login.html';
+  }
+}
 </script>
 
 <script>

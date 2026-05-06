@@ -10,6 +10,7 @@
 :root {
   --sidebar-w: 210px; --topbar-h: 52px;
   --purple: #7c3aed; --purple-light: #ede9fe; --purple-pale: #f5f3ff;
+  --blue: #3b82f6; --blue-light: #dbeafe; --blue-pale: #eff6ff;
   --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
   --gray-400: #94a3b8; --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
   --white: #ffffff;
@@ -23,8 +24,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .logo-info small { font-size: 10px; color: var(--gray-400); font-weight: 400; }
 .section-label { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: .8px; text-transform: uppercase; padding: 10px 8px 4px; }
 .nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 7px; color: var(--gray-500); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all .15s; text-decoration: none; margin-bottom: 2px; }
-.nav-item:hover { background: var(--purple-pale); color: var(--purple); }
-.nav-item.active { background: var(--purple-light); color: var(--purple); font-weight: 600; }
+.nav-item:hover { background: var(--blue-pale); color: var(--blue); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
 .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
 .nav-parent { display: flex; align-items: center; justify-content: space-between; }
 .nav-parent .nav-left { display: flex; align-items: center; gap: 9px; }
@@ -40,9 +41,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .notif-btn { width: 30px; height: 30px; border: none; background: transparent; border-radius: 7px; cursor: pointer; color: var(--gray-400); display: flex; align-items: center; justify-content: center; }
 .notif-btn svg { width: 15px; height: 15px; }
 .profile-btn { display: flex; align-items: center; gap: 6px; background: var(--gray-100); border-radius: 20px; padding: 3px 10px 3px 3px; cursor: pointer; border: none; font-family: inherit; }
-.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg,#a78bfa,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
+.profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
 .profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* Profile Dropdown */
+.profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 200px; z-index: 200; display: none; overflow: hidden; }
+.profile-dropdown.open { display: block; }
+.profile-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700); text-decoration: none; transition: background .13s; border-bottom: 1px solid var(--gray-100); }
+.profile-dropdown-item:last-child { border-bottom: none; }
+.profile-dropdown-item:hover { background: var(--blue-pale); color: var(--blue); }
+.profile-dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; }
 
 /* ── MAIN ── */
 .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; }
@@ -50,8 +59,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 /* ── TABS ── */
 .tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); margin-bottom: 20px; }
 .tab-btn { display: flex; align-items: center; gap: 7px; padding: 10px 18px; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all .15s; }
-.tab-btn:hover { color: var(--purple); }
-.tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+.tab-btn:hover { color: var(--blue); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
 .tab-btn svg { width: 15px; height: 15px; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
@@ -59,14 +68,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 /* ── FILTER BAR ── */
 .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
 .search-wrap { display: flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; min-width: 220px; transition: border-color .15s; }
-.search-wrap:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.search-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
 .search-wrap svg { width: 13px; height: 13px; color: var(--gray-400); flex-shrink: 0; }
 .search-wrap input { border: none; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: var(--gray-700); width: 100%; }
 .search-wrap input::placeholder { color: var(--gray-400); }
 .filter-sel { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 7px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-700); cursor: pointer; outline: none; }
 .filter-count { margin-left: auto; font-size: 12px; color: var(--gray-500); font-weight: 500; }
-.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--purple); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .15s; }
-.btn-primary:hover { background: #6d28d9; }
+.btn-primary { display: flex; align-items: center; gap: 6px; background: var(--blue); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-primary:hover { background: #2563eb; }
 .btn-primary svg { width: 14px; height: 14px; }
 
 /* ── PRICE TABLE CARDS ── */
@@ -97,7 +106,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .pt-row-val { font-weight: 600; color: var(--gray-700); text-align: right; }
 .pt-row-val.discount { color: #dc2626; font-size: 13px; }
 .pt-row-val.no-discount { color: var(--gray-400); font-weight: 500; }
-.pt-row-val.items { color: var(--purple); }
+.pt-row-val.items { color: var(--blue); }
 .pt-row-val.date { font-size: 11px; color: var(--gray-500); }
 
 .type-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
@@ -108,10 +117,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 
 .pt-card-actions { display: flex; gap: 6px; margin-top: auto; }
 .pt-btn-edit, .pt-btn-toggle { flex: 1; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--gray-200); background: white; font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--gray-600); cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 4px; }
-.pt-btn-edit:hover { border-color: var(--purple); color: var(--purple); }
+.pt-btn-edit:hover { border-color: var(--blue); color: var(--blue); }
 .pt-btn-toggle:hover { border-color: #d97706; color: #d97706; }
-.pt-btn-view { flex: 1.3; padding: 6px 10px; border-radius: 7px; border: none; background: var(--purple); font-family: inherit; font-size: 11.5px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; white-space: nowrap; }
-.pt-btn-view:hover { background: #6d28d9; }
+.pt-btn-view { flex: 1.3; padding: 6px 10px; border-radius: 7px; border: none; background: var(--blue); font-family: inherit; font-size: 11.5px; font-weight: 600; color: white; cursor: pointer; transition: background .15s; white-space: nowrap; }
+.pt-btn-view:hover { background: #2563eb; }
 
 /* ── DETAIL TABLE ── */
 .detail-table-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
@@ -128,14 +137,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .brd-dx { background: #dcfce7; color: #15803d; }
 .brd-sm { background: #dbeafe; color: #1d4ed8; }
 .brd-dn { background: #fff7ed; color: #c2410c; }
-.table-badge { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2.5px 9px; border-radius: 99px; background: var(--purple-light); color: var(--purple); }
+.table-badge { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 2.5px 9px; border-radius: 99px; background: var(--blue-light); color: var(--blue); }
 .price-orig { font-size: 12.5px; color: var(--gray-700); }
-.price-special { font-size: 13px; font-weight: 700; color: var(--purple); }
+.price-special { font-size: 13px; font-weight: 700; color: var(--blue); }
 .discount-pill { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #fef3c7; color: #b45309; }
 .date-cell { font-size: 12px; color: var(--gray-500); }
 
 .act-btn { width: 28px; height: 28px; border: 1px solid var(--gray-200); background: white; border-radius: 6px; cursor: pointer; color: var(--gray-500); display: inline-flex; align-items: center; justify-content: center; transition: all .15s; }
-.act-btn:hover { border-color: var(--purple); color: var(--purple); }
+.act-btn:hover { border-color: var(--blue); color: var(--blue); }
 .act-btn.del:hover { border-color: #ef4444; color: #ef4444; }
 .act-btn svg { width: 13px; height: 13px; }
 
@@ -158,7 +167,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .form-lbl { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .form-lbl em { color: #ef4444; font-style: normal; margin-left: 2px; }
 .form-input, .form-sel { border: 1.5px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 12.5px; color: var(--gray-900); outline: none; background: white; transition: border-color .15s; width: 100%; }
-.form-input:focus, .form-sel:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.form-input:focus, .form-sel:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
 .form-input.err { border-color: #ef4444; }
 .form-row-status { display: flex; align-items: center; justify-content: space-between; }
 .toggle-wrap { display: flex; align-items: center; gap: 8px; }
@@ -168,16 +177,16 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .toggle input { opacity: 0; width: 0; height: 0; }
 .toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; cursor: pointer; transition: .2s; }
 .toggle-slider:before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: .2s; }
-.toggle input:checked + .toggle-slider { background: var(--purple); }
+.toggle input:checked + .toggle-slider { background: var(--blue); }
 .toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
 .modal-ftr { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--gray-100); flex-shrink: 0; }
 .btn-cancel-m { padding: 8px 18px; border: 1.5px solid var(--gray-200); border-radius: 8px; background: white; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; }
 .btn-cancel-m:hover { border-color: var(--gray-400); color: var(--gray-700); }
-.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
-.btn-save-m:hover { background: #6d28d9; }
+.btn-save-m { padding: 8px 20px; border: none; border-radius: 8px; background: var(--blue); font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
+.btn-save-m:hover { background: #2563eb; }
 
 /* ── TIER INFO BOX ── */
-.tier-info { background: var(--purple-pale); border: 1px solid var(--purple-light); border-radius: 8px; padding: 10px 13px; font-size: 11.5px; color: var(--purple); line-height: 1.6; }
+.tier-info { background: var(--blue-pale); border: 1px solid var(--blue-light); border-radius: 8px; padding: 10px 13px; font-size: 11.5px; color: var(--blue); line-height: 1.6; }
 .tier-info strong { font-weight: 700; }
 
 /* ── TOAST ── */
@@ -259,12 +268,6 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Báo Cáo
   </a>
-
-  <div class="section-label">Khác</div>
-  <a class="nav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Setting
-  </a>
 </aside>
 
 
@@ -275,11 +278,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 <header class="topbar">
   <div class="topbar-right">
     <button class="notif-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-    <button class="profile-btn">
-      <div class="profile-avatar">A</div>
-      <span class="p-name">Admin</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="profile-btn" onclick="toggleProfileDropdown()">
+        <div class="profile-avatar">A</div>
+        <span class="p-name">Admin</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Thông tin cá nhân
+        </a>
+        <a href="login.html" class="profile-dropdown-item" onclick="logout(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -902,6 +917,28 @@ renderDetail();
     setTimeout(function(){ window.location.href=href; },200);
   });
 })();
+
+// ── PROFILE DROPDOWN ──
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('open');
+}
+
+function logout(event) {
+  event.preventDefault();
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = event.target.closest('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  if (!profileBtn && dropdown && !dropdown.contains(event.target)) {
+    dropdown.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>

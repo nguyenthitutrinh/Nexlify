@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NexLify – Chi tiết Báo Giá BG-0001</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>NexLify – Chi tiết Báo Giá</title>
+<!-- Quote data will be embedded in the script section below -->
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,6 +52,14 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .profile-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #60a5fa, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; }
 .profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
+
+/* Profile Dropdown */
+.profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 200px; z-index: 200; display: none; overflow: hidden; }
+.profile-dropdown.open { display: block; }
+.profile-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700); text-decoration: none; transition: background .13s; border-bottom: 1px solid var(--gray-100); }
+.profile-dropdown-item:last-child { border-bottom: none; }
+.profile-dropdown-item:hover { background: var(--blue-pale); color: var(--blue); }
+.profile-dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; }
 
 /* ── MAIN ── */
 .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; min-width: 0; }
@@ -369,6 +381,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   .sidebar, .topbar, .action-bar, .activity-list, .note-input-row,
   .breadcrumb, .order-banner, #confirmModal, #editModal, .toast,
   .no-print { display: none !important; }
+  .print-only { display: inline !important; }
   .main { margin: 0 !important; padding: 0 !important; }
   .detail-layout { grid-template-columns: 1fr !important; }
   .right-panel-print { display: none !important; }
@@ -380,6 +393,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   .action-bar { display: none !important; }
 }
 
+.print-only { display: none; }
 .print-header { display: none; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid #3b82f6; }
 .print-company { font-size: 18px; font-weight: 800; color: #1e3a5f; }
 .print-company small { font-size: 11px; font-weight: 400; color: #64748b; display: block; margin-top: 2px; }
@@ -461,12 +475,6 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Báo Cáo
   </a>
-
-  <div class="section-label">Khác</div>
-  <a class="nav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Setting
-  </a>
 </aside>
 
 
@@ -478,18 +486,30 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   <div class="breadcrumb" style="margin:0">
     <a href="quotes.html">Báo Giá</a>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    <span>BG-0001</span>
+    <span id="topbarBreadcrumb">Loading...</span>
   </div>
   <div class="topbar-right">
     <button class="notif-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <div class="notif-dot"></div>
     </button>
-    <button class="profile-btn">
-      <div class="profile-avatar">A</div>
-      <span class="p-name">Admin</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="profile-btn" onclick="toggleProfileDropdown()">
+        <div class="profile-avatar">A</div>
+        <span class="p-name">Admin</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Thông tin cá nhân
+        </a>
+        <a href="login.html" class="profile-dropdown-item" onclick="logout(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -500,7 +520,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   <div class="breadcrumb no-print">
     <a href="quotes.html">Báo Giá</a>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-    <span>BG-0001</span>
+    <span id="mainBreadcrumb">Loading...</span>
   </div>
 
   <!-- PRINT HEADER (chỉ hiện khi in) -->
@@ -508,11 +528,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <div>
       <div class="print-company">NexLify<br><small>Hệ thống quản lý bán hàng</small></div>
     </div>
-    <div class="print-doc-info">
-      <strong>BÁO GIÁ BG-0001</strong>
-      Ngày tạo: 28/04/2026<br>
-      Khách hàng: Cty TNHH VTNN Minh Đức<br>
-      Hiệu lực: 28/05/2026
+    <div class="print-doc-info" id="printDocInfo">
+      <strong id="printTitle">BÁO GIÁ</strong>
+      <span id="printDetails">Loading...</span>
     </div>
   </div>
 
@@ -532,16 +550,16 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
   </div>
 
   <!-- DOC HEADER -->
-  <div class="doc-header">
+  <div class="doc-header no-print">
     <div class="doc-header-top">
       <div class="doc-left">
         <div class="doc-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <div>
-          <div class="doc-num">
-            BG-0001
-            <span class="sq sq-sent" id="headerStatus">Đã gửi</span>
+          <div class="doc-num" id="docNumHeader">
+            <span id="docNumText">Loading...</span>
+            <span class="sq sq-sent no-print" id="headerStatus">Đã gửi</span>
           </div>
           <div class="doc-meta">
             <span>
@@ -556,7 +574,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               Quản trị viên
             </span>
-            <span id="orderRefSpan" style="display:none;color:#059669;font-weight:700">
+            <span id="orderRefSpan" class="no-print" style="display:none;color:#059669;font-weight:700">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
               → Đơn hàng ĐH-0042
             </span>
@@ -566,7 +584,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     </div>
 
     <!-- STEPPER -->
-    <div class="stepper">
+    <div class="stepper no-print">
       <div class="step done" id="step1">
         <div class="step-circle">✓</div>
         <div class="step-label">Tạo nháp</div>
@@ -657,7 +675,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         <div class="info-grid">
           <div class="info-item">
             <div class="info-lbl">Số báo giá</div>
-            <div class="info-val blue">BG-0001</div>
+            <div class="info-val blue" id="info-quote-id">BG-0001</div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Bảng giá áp dụng</div>
@@ -665,7 +683,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           </div>
           <div class="info-item">
             <div class="info-lbl">Ngày tạo</div>
-            <div class="info-val">28/04/2026</div>
+            <div class="info-val" id="info-created">28/04/2026</div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Hiệu lực đến</div>
@@ -729,15 +747,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
               <div class="sum-row">
                 <span class="sum-lbl" style="display:flex;align-items:center;gap:6px">
                   Thuế VAT
-                  <span style="display:inline-flex;align-items:center;gap:3px;background:var(--gray-100);border-radius:6px;padding:2px 6px">
+                  <span class="no-print" style="display:inline-flex;align-items:center;gap:3px;background:var(--gray-100);border-radius:6px;padding:2px 6px">
                     <input id="vatRate" type="number" min="0" max="100" value="10"
                       style="width:36px;border:none;background:transparent;font-size:12.5px;font-weight:700;color:var(--gray-900);outline:none;text-align:center"
                       oninput="recalcAll()" />
                     <span style="font-size:12px;color:var(--gray-500);font-weight:600">%</span>
                   </span>
+                  <span class="print-only" style="display:none">10%</span>
                 </span>
                 <span class="sum-val" id="sVat">—</span>
               </div>
+              <div class="sum-row"><span class="sum-lbl">Phí vận chuyển</span><span class="sum-val" id="sShipFee">0 đ</span></div>
               <div class="sum-total-row">
                 <span class="sum-total-lbl">Tổng cộng</span>
                 <span class="sum-total-val" id="sTotal">—</span>
@@ -866,8 +886,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
               <label class="form-label">Chuyên viên phụ trách</label>
               <select class="form-select" id="edit-staff">
                 <option value="Quản trị viên" selected>Quản trị viên</option>
-                <option value="Nguyễn Văn A">Nguyễn Văn A</option>
-                <option value="Trần Thị B">Trần Thị B</option>
+                <option value="Nguyễn Văn Minh">Nguyễn Văn Minh</option>
+                <option value="Trần Thị Hương">Trần Thị Hương</option>
+                <option value="Lê Văn Tùng">Lê Văn Tùng</option>
+                <option value="Phạm Thị Lan">Phạm Thị Lan</option>
               </select>
             </div>
           </div>
@@ -980,6 +1002,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <div class="s-item"><div class="s-lbl">Tạm tính</div><div class="s-val" id="es-sub">—</div></div>
           <div class="s-item"><div class="s-lbl">Chiết khấu</div><div class="s-val" style="color:var(--danger)" id="es-disc">—</div></div>
           <div class="s-item"><div class="s-lbl">VAT <span id="es-vat-lbl">10</span>%</div><div class="s-val" id="es-vat">—</div></div>
+          <div class="s-item"><div class="s-lbl">Phí vận chuyển</div><div class="s-val" id="es-shipfee">0 đ</div></div>
           <div class="s-item"><div class="s-lbl">Tổng cộng</div><div class="s-val big" id="es-total">—</div></div>
         </div>
       </div>
@@ -1000,6 +1023,322 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
 <script>
+// ── QUOTE DATABASE - 30 QUOTES ──
+const QUOTE_DATABASE = {
+  'BG-0001': {
+    id: 'BG-0001', customer: 'Cty TNHH VTNN Minh Đức', phone: '0272 391 456', email: 'minhduc@vtnn.vn',
+    customerType: 'Công ty', area: 'Đồng Tháp', address: '123 Đường Nguyễn Văn Linh, TP. Cao Lãnh, Đồng Tháp',
+    created: '01/01/2026', expected: '15/01/2026', expire: '15/01/2026', status: 'order', orderId: 'ĐH-0001',
+    staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Giao hàng trong giờ hành chính',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:250, price:250000, disc:0 },
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:200, price:196000, disc:0 },
+      { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:150, price:174000, disc:0 }
+    ]
+  },
+  'BG-0002': {
+    id: 'BG-0002', customer: 'CH VTNN Thành Phát', phone: '0273 512 890', email: 'thanhphat@vtnn.vn',
+    customerType: 'Cửa hàng', area: 'An Giang', address: '456 Đường Trần Hưng Đạo, TP. Long Xuyên, An Giang',
+    created: '02/01/2026', expected: '16/01/2026', expire: '16/01/2026', delivery: '16/01/2026', status: 'order', orderId: 'ĐH-0002',
+    staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Khách hàng VIP',
+    products: [
+      { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:200, price:210000, disc:0 },
+      { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:250, price:178000, disc:0 }
+    ]
+  },
+  'BG-0003': {
+    id: 'BG-0003', customer: 'HTX Nông nghiệp Phú Quý', phone: '0277 638 124', email: 'phuquy@htx.vn',
+    customerType: 'Hợp tác xã', area: 'Tiền Giang', address: '789 Đường Quốc lộ 1A, TP. Mỹ Tho, Tiền Giang',
+    created: '03/01/2026', expected: '18/01/2026', expire: '17/01/2026', status: 'order', orderId: 'ĐH-0003',
+    staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Giao hàng buổi sáng',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:180, price:250000, disc:0 },
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:220, price:196000, disc:0 }
+    ]
+  },
+  'BG-0004': {
+    id: 'BG-0004', customer: 'Cty TNHH Nông Sản Xanh', phone: '0283 445 667', email: 'nongsanxanh@company.vn',
+    customerType: 'Công ty', area: 'Bến Tre', address: '321 Đường Hùng Vương, TP. Bến Tre',
+    created: '04/01/2026', expected: '20/01/2026', expire: '19/01/2026', status: 'order', orderId: 'ĐH-0004',
+    staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Xuất hóa đơn VAT',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:300, price:250000, disc:0 },
+      { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:250, price:210000, disc:0 },
+      { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:180, price:174000, disc:0 }
+    ]
+  },
+  'BG-0005': {
+    id: 'BG-0005', customer: 'Trang trại Minh Phúc', phone: '0909 112 233', email: 'minhphuc@farm.vn',
+    customerType: 'Trang trại', area: 'Long An', address: '654 Đường Tỉnh lộ 10, Huyện Đức Hòa',
+    created: '05/01/2026', expected: '22/01/2026', expire: '21/01/2026', status: 'order', orderId: 'ĐH-0005',
+    staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao hàng tận nơi',
+    products: [
+      { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:120, price:178000, disc:0 },
+      { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:100, price:174000, disc:0 }
+    ]
+  },
+  'BG-0006': {
+    id: 'BG-0006', customer: 'ĐL Phân Bón Phúc Nguyên', phone: '0270 884 217', email: 'phucnguyen@daily.vn',
+    customerType: 'Đại lý', area: 'Vĩnh Long', address: '987 Đường 2/9, TP. Vĩnh Long',
+    created: '06/01/2026', expected: '25/01/2026', expire: '24/01/2026', status: 'order', orderId: 'ĐH-0006',
+    staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Đại lý lâu năm',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:220, price:250000, disc:0 },
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:180, price:196000, disc:0 },
+      { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:140, price:210000, disc:0 }
+    ]
+  },
+  'BG-0007': {
+    id: 'BG-0007', customer: 'Cty CP VTNN Đồng Bằng', phone: '0292 741 308', email: 'dongbang@vtnn.vn',
+    customerType: 'Công ty', area: 'Cần Thơ', address: '147 Đường 3/2, Q. Ninh Kiều',
+    created: '07/01/2026', expected: '26/01/2026', expire: '25/01/2026', status: 'order', orderId: 'ĐH-0007',
+    staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Giao 2 lần',
+    products: [
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:200, price:196000, disc:0 },
+      { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:180, price:178000, disc:0 }
+    ]
+  },
+  'BG-0008': {
+    id: 'BG-0008', customer: 'ĐL Hoàng Gia Nông Sản', phone: '0281 667 889', email: 'hoanggia@daily.vn',
+    customerType: 'Đại lý', area: 'Sóc Trăng', address: '258 Đường Trần Hưng Đạo, TP. Sóc Trăng',
+    created: '08/01/2026', expected: '28/01/2026', expire: '27/01/2026', status: 'order', orderId: 'ĐH-0008',
+    staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao cuối tuần',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:260, price:250000, disc:0 },
+      { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:220, price:210000, disc:0 },
+      { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:160, price:174000, disc:0 }
+    ]
+  },
+  'BG-0009': {
+    id: 'BG-0009', customer: 'Cty CP Nông Dược Xanh', phone: '0276 990 112', email: 'nongduocxanh@company.vn',
+    customerType: 'Công ty', area: 'Hậu Giang', address: '369 Đường Nguyễn Trãi, TP. Vị Thanh',
+    created: '09/01/2026', expected: '30/01/2026', expire: '29/01/2026', status: 'order', orderId: 'ĐH-0009',
+    staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Khách hàng mới',
+    products: [
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:230, price:196000, disc:0 },
+      { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:200, price:178000, disc:0 }
+    ]
+  },
+  'BG-0010': {
+    id: 'BG-0010', customer: 'ĐL Phân Bón Miền Tây', phone: '0912 334 556', email: 'mientay@daily.vn',
+    customerType: 'Đại lý', area: 'Kiên Giang', address: '741 Đường Nguyễn Văn Cừ, TP. Rạch Giá',
+    created: '10/01/2026', expected: '02/02/2026', expire: '01/02/2026', status: 'order', orderId: 'ĐH-0010',
+    staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Đại lý chiến lược',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:200, price:250000, disc:0 },
+      { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:180, price:210000, disc:0 },
+      { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:120, price:174000, disc:0 }
+    ]
+  },
+  'BG-0011': { id: 'BG-0011', customer: 'HTX Nông nghiệp Bình Minh', phone: '0908 221 443', email: 'binhminh@htx.vn', customerType: 'Hợp tác xã', area: 'Trà Vinh', address: '852 Đường Phạm Hùng, TP. Trà Vinh', created: '11/01/2026', expected: '05/02/2026', expire: '04/02/2026', status: 'order', orderId: 'ĐH-0011', staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao buổi chiều', products: [{ id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:170, price:196000, disc:0 }, { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:150, price:178000, disc:0 }] },
+  'BG-0012': { id: 'BG-0012', customer: 'Đại lý phân bón Hòa Phát', phone: '0901 556 778', email: 'hoaphat@daily.vn', customerType: 'Đại lý', area: 'Đồng Tháp', address: '159 Đường Lý Thường Kiệt, TP. Cao Lãnh', created: '12/01/2026', expected: '08/02/2026', expire: '07/02/2026', status: 'order', orderId: 'ĐH-0012', staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Ưu tiên giao hàng', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:280, price:250000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:240, price:210000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:170, price:174000, disc:0 }] },
+  'BG-0013': { id: 'BG-0013', customer: 'Nguyễn Văn Hải', phone: '0909 887 665', email: 'nvhai@gmail.com', customerType: 'Cá nhân', area: 'An Giang', address: '234 Đường Tôn Đức Thắng, TP. Long Xuyên', created: '13/01/2026', expected: '10/02/2026', expire: '09/02/2026', status: 'order', orderId: 'ĐH-0013', staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao tận nhà', products: [{ id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:140, price:196000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:100, price:174000, disc:0 }] },
+  'BG-0014': { id: 'BG-0014', customer: 'Trần Minh Tuấn', phone: '0918 445 223', email: 'tmtuan@gmail.com', customerType: 'Cá nhân', area: 'Tiền Giang', address: '567 Đường Ấp Bắc, TP. Mỹ Tho', created: '14/01/2026', expected: '12/02/2026', expire: '11/02/2026', status: 'order', orderId: 'ĐH-0014', staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Gọi trước khi giao', products: [{ id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:110, price:178000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:80, price:174000, disc:0 }] },
+  'BG-0015': { id: 'BG-0015', customer: 'Nguyễn Thị Lan', phone: '0923 112 998', email: 'ntlan@gmail.com', customerType: 'Cá nhân', area: 'Bến Tre', address: '890 Đường Hùng Vương, TP. Bến Tre', created: '15/01/2026', expected: '15/02/2026', expire: '14/02/2026', status: 'order', orderId: 'ĐH-0015', staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao buổi sáng', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:150, price:250000, disc:0 }, { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:120, price:196000, disc:0 }] },
+  'BG-0016': { id: 'BG-0016', customer: 'Phạm Văn Bình', phone: '0908 334 221', email: 'pvbinh@gmail.com', customerType: 'Cá nhân', area: 'Long An', address: '123 Đường Hùng Vương, Huyện Đức Hòa', created: '16/01/2026', expected: '18/02/2026', expire: '17/02/2026', status: 'order', orderId: 'ĐH-0016', staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Giao tận vườn', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:180, price:250000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:150, price:210000, disc:0 }] },
+  'BG-0017': { id: 'BG-0017', customer: 'Lê Thị Hoa', phone: '0919 556 443', email: 'lthoa@gmail.com', customerType: 'Cá nhân', area: 'Vĩnh Long', address: '456 Đường 2/9, TP. Vĩnh Long', created: '17/01/2026', expected: '20/02/2026', expire: '19/02/2026', status: 'order', orderId: 'ĐH-0017', staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Tiền mặt', note: 'Giao buổi chiều', products: [{ id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:130, price:178000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:90, price:174000, disc:0 }] },
+  'BG-0018': { id: 'BG-0018', customer: 'Cty TNHH VTNN Minh Đức', phone: '0272 391 456', email: 'minhduc@vtnn.vn', customerType: 'Công ty', area: 'Đồng Tháp', address: '123 Đường Nguyễn Văn Linh, TP. Cao Lãnh', created: '18/01/2026', expected: '22/02/2026', expire: '21/02/2026', status: 'order', orderId: 'ĐH-0018', staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 1/2026', paymentType: 'Chuyển khoản', note: 'Đơn hàng lớn', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:260, price:250000, disc:0 }, { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:210, price:196000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:160, price:210000, disc:0 }] },
+  'BG-0019': { id: 'BG-0019', customer: 'CH VTNN Thành Phát', phone: '0273 512 890', email: 'thanhphat@vtnn.vn', customerType: 'Cửa hàng', area: 'An Giang', address: '456 Đường Trần Hưng Đạo, TP. Long Xuyên', created: '19/02/2026', expected: '05/03/2026', expire: '04/03/2026', status: 'order', orderId: 'ĐH-0019', staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 2/2026', paymentType: 'Chuyển khoản', note: 'Đang vận chuyển', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:170, price:250000, disc:0 }, { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:140, price:196000, disc:0 }] },
+  'BG-0020': { id: 'BG-0020', customer: 'HTX Nông nghiệp Phú Quý', phone: '0277 638 124', email: 'phuquy@htx.vn', customerType: 'Hợp tác xã', area: 'Tiền Giang', address: '789 Đường Quốc lộ 1A, TP. Mỹ Tho', created: '21/02/2026', expected: '08/03/2026', expire: '07/03/2026', status: 'order', orderId: 'ĐH-0020', staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 2/2026', paymentType: 'Chuyển khoản', note: 'Đã thanh toán 50%', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:230, price:250000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:190, price:210000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:130, price:174000, disc:0 }] },
+  'BG-0021': { id: 'BG-0021', customer: 'Cty TNHH Nông Sản Xanh', phone: '0283 445 667', email: 'nongsanxanh@company.vn', customerType: 'Công ty', area: 'Bến Tre', address: '321 Đường Hùng Vương, TP. Bến Tre', created: '24/02/2026', expected: '10/03/2026', expire: '09/03/2026', status: 'order', orderId: 'ĐH-0021', staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 2/2026', paymentType: 'Tiền mặt', note: 'Đang trên đường giao', products: [{ id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:160, price:196000, disc:0 }, { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:140, price:178000, disc:0 }] },
+  'BG-0022': { id: 'BG-0022', customer: 'Trang trại Minh Phúc', phone: '0909 112 233', email: 'minhphuc@farm.vn', customerType: 'Trang trại', area: 'Long An', address: '654 Đường Tỉnh lộ 10, Huyện Đức Hòa', created: '27/02/2026', expected: '12/03/2026', expire: '11/03/2026', status: 'order', orderId: 'ĐH-0022', staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 2/2026', paymentType: 'Chuyển khoản', note: 'Đã thanh toán 30%', products: [{ id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:150, price:178000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:110, price:174000, disc:0 }] },
+  'BG-0023': { id: 'BG-0023', customer: 'ĐL Phân Bón Phúc Nguyên', phone: '0270 884 217', email: 'phucnguyen@daily.vn', customerType: 'Đại lý', area: 'Vĩnh Long', address: '987 Đường 2/9, TP. Vĩnh Long', created: '01/03/2026', expected: '15/03/2026', expire: '14/03/2026', status: 'order', orderId: 'ĐH-0023', staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 3/2026', paymentType: 'Chuyển khoản', note: 'Giao trong 3 ngày', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:190, price:250000, disc:0 }, { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:160, price:196000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:130, price:210000, disc:0 }] },
+  'BG-0024': { id: 'BG-0024', customer: 'Cty CP VTNN Đồng Bằng', phone: '0292 741 308', email: 'dongbang@vtnn.vn', customerType: 'Công ty', area: 'Cần Thơ', address: '147 Đường 3/2, Q. Ninh Kiều', created: '04/03/2026', expected: '18/03/2026', expire: '17/03/2026', status: 'order', orderId: 'ĐH-0024', staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 3/2026', paymentType: 'Tiền mặt', note: 'Đã thanh toán 40%', products: [{ id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:180, price:196000, disc:0 }, { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:150, price:178000, disc:0 }] },
+  'BG-0025': { id: 'BG-0025', customer: 'ĐL Hoàng Gia Nông Sản', phone: '0281 667 889', email: 'hoanggia@daily.vn', customerType: 'Đại lý', area: 'Sóc Trăng', address: '258 Đường Trần Hưng Đạo, TP. Sóc Trăng', created: '07/03/2026', expected: '20/03/2026', expire: '19/03/2026', status: 'order', orderId: 'ĐH-0025', staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 3/2026', paymentType: 'Chuyển khoản', note: 'Đang vận chuyển', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:210, price:250000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:170, price:210000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:120, price:174000, disc:0 }] },
+  'BG-0026': { id: 'BG-0026', customer: 'Cty CP Nông Dược Xanh', phone: '0276 990 112', email: 'nongduocxanh@company.vn', customerType: 'Công ty', area: 'Hậu Giang', address: '369 Đường Nguyễn Trãi, TP. Vị Thanh', created: '09/03/2026', expected: '22/03/2026', expire: '21/03/2026', status: 'order', orderId: 'ĐH-0026', staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 3/2026', paymentType: 'Chuyển khoản', note: 'Đã thanh toán 60%', products: [{ id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:120, price:178000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:90, price:174000, disc:0 }] },
+  'BG-0027': { id: 'BG-0027', customer: 'ĐL Phân Bón Miền Tây', phone: '0912 334 556', email: 'mientay@daily.vn', customerType: 'Đại lý', area: 'Kiên Giang', address: '741 Đường Nguyễn Văn Cừ, TP. Rạch Giá', created: '14/04/2026', expected: '28/04/2026', expire: '27/04/2026', status: 'sent', orderId: null, staff: 'Phạm Thị Lan', pricelist: 'Bảng giá Tháng 4/2026', paymentType: 'Chuyển khoản', note: 'Chờ xác nhận', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:170, price:250000, disc:0 }, { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:150, price:196000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:120, price:210000, disc:0 }] },
+  'BG-0028': { id: 'BG-0028', customer: 'HTX Nông nghiệp Bình Minh', phone: '0908 221 443', email: 'binhminh@htx.vn', customerType: 'Hợp tác xã', area: 'Trà Vinh', address: '852 Đường Phạm Hùng, TP. Trà Vinh', created: '17/04/2026', expected: '02/05/2026', expire: '01/05/2026', status: 'sent', orderId: null, staff: 'Nguyễn Văn Minh', pricelist: 'Bảng giá Tháng 4/2026', paymentType: 'Tiền mặt', note: 'Đã gửi báo giá', products: [{ id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:130, price:196000, disc:0 }, { id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:110, price:178000, disc:0 }] },
+  'BG-0029': { id: 'BG-0029', customer: 'Đại lý phân bón Hòa Phát', phone: '0901 556 778', email: 'hoaphat@daily.vn', customerType: 'Đại lý', area: 'Đồng Tháp', address: '159 Đường Lý Thường Kiệt, TP. Cao Lãnh', created: '21/04/2026', expected: '05/05/2026', expire: '04/05/2026', status: 'pending', orderId: null, staff: 'Trần Thị Hương', pricelist: 'Bảng giá Tháng 4/2026', paymentType: 'Chuyển khoản', note: 'Chờ phản hồi', products: [{ id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:140, price:250000, disc:0 }, { id:'SP-0003', name:'DAP 18-46-0', brand:'Bình Điền', unit:'Bao', qty:120, price:210000, disc:0 }] },
+  'BG-0030': { id: 'BG-0030', customer: 'Nguyễn Văn Hải', phone: '0909 887 665', email: 'nvhai@gmail.com', customerType: 'Cá nhân', area: 'An Giang', address: '234 Đường Tôn Đức Thắng, TP. Long Xuyên', created: '24/04/2026', expected: '08/05/2026', expire: '07/05/2026', status: 'cancel', orderId: null, staff: 'Lê Văn Tùng', pricelist: 'Bảng giá Tháng 4/2026', paymentType: 'Tiền mặt', note: 'Khách hàng hủy', products: [{ id:'SP-0004', name:'SA 21%', brand:'Bình Điền', unit:'Bao', qty:90, price:178000, disc:0 }, { id:'SP-0005', name:'Lân Canxi', brand:'Đất Xanh', unit:'Bao', qty:70, price:174000, disc:0 }] }
+};
+
+// Helper function
+function getQuoteById(quoteId) {
+  return QUOTE_DATABASE[quoteId] || null;
+}
+
+// ── LOAD QUOTE DATA DYNAMICALLY ──
+// Get quote ID from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const quoteId = urlParams.get('id') || 'BG-0001'; // Default to BG-0001 if no ID provided
+
+// Load quote data
+let currentQuote = getQuoteById(quoteId);
+let PROD_DATA = [];
+let isOrdered = false;
+
+// Debug: Log để kiểm tra
+console.log('Quote ID from URL:', quoteId);
+console.log('Loaded quote data:', currentQuote);
+
+// Fallback data if quote not found
+if (!currentQuote) {
+  console.warn('Quote not found in database, using fallback');
+  currentQuote = {
+    id: quoteId,
+    customer: 'Cty TNHH VTNN Minh Đức',
+    phone: '0272 391 456',
+    email: 'minhduc@vtnn.vn',
+    customerType: 'Công ty',
+    area: 'Đồng Tháp',
+    address: '123 Đường Nguyễn Văn Linh, TP. Cao Lãnh, Đồng Tháp',
+    created: '01/01/2026',
+    expected: '15/01/2026',
+    expire: '15/01/2026',
+    delivery: '15/01/2026',
+    status: 'sent',
+    orderId: null,
+    staff: 'Trần Thị Hương',
+    pricelist: 'Bảng giá Tháng 1/2026',
+    paymentType: 'Chuyển khoản',
+    note: 'Giao hàng trong giờ hành chính',
+    products: [
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:250, price:250000, disc:0 }
+    ]
+  };
+}
+
+// Set product data
+PROD_DATA = currentQuote.products || [];
+isOrdered = currentQuote.status === 'order';
+
+// Update page title
+document.title = `NexLify – Chi tiết Báo Giá ${quoteId}`;
+
+// Function to update all dynamic content on page load
+function initializePage() {
+  // Update all quote ID references
+  document.querySelectorAll('.quote-id-display').forEach(el => {
+    el.textContent = currentQuote.id;
+  });
+  
+  // Update breadcrumbs
+  const topbarBreadcrumb = document.getElementById('topbarBreadcrumb');
+  if (topbarBreadcrumb) topbarBreadcrumb.textContent = currentQuote.id;
+  
+  const mainBreadcrumb = document.getElementById('mainBreadcrumb');
+  if (mainBreadcrumb) mainBreadcrumb.textContent = currentQuote.id;
+  
+  // Update header doc number
+  const docNumText = document.getElementById('docNumText');
+  if (docNumText) docNumText.textContent = currentQuote.id;
+  
+  // Update status badge
+  const statusMap = {
+    'sent': { cls: 'sq-sent', label: 'Đã gửi' },
+    'order': { cls: 'sq-order', label: 'Thành đơn' },
+    'pending': { cls: 'sq-pending', label: 'Chờ phản hồi' },
+    'cancel': { cls: 'sq-cancel', label: 'Đã hủy' },
+    'draft': { cls: 'sq-draft', label: 'Nháp' }
+  };
+  
+  const statusInfo = statusMap[currentQuote.status] || statusMap['sent'];
+  ['headerStatus', 'sideStatus'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.className = 'sq ' + statusInfo.cls;
+      el.textContent = statusInfo.label;
+    }
+  });
+  
+  // Update customer information
+  if (document.getElementById('disp-custname')) {
+    document.getElementById('disp-custname').textContent = currentQuote.customer;
+  }
+  if (document.getElementById('disp-custsub')) {
+    document.getElementById('disp-custsub').textContent = currentQuote.customerType + ' · ' + currentQuote.area;
+  }
+  if (document.getElementById('disp-phone')) {
+    document.getElementById('disp-phone').textContent = currentQuote.phone;
+  }
+  if (document.getElementById('disp-email')) {
+    document.getElementById('disp-email').textContent = currentQuote.email;
+  }
+  if (document.getElementById('disp-area')) {
+    document.getElementById('disp-area').textContent = currentQuote.area;
+  }
+  if (document.getElementById('disp-addr')) {
+    document.getElementById('disp-addr').textContent = currentQuote.address;
+  }
+  
+  // Update quote info
+  const infoFields = {
+    'info-quote-id': currentQuote.id,
+    'info-created': currentQuote.created,
+    'disp-delivery': currentQuote.delivery,
+    'disp-expiry': currentQuote.expire,
+    'disp-staff': currentQuote.staff,
+    'disp-pricelist': currentQuote.pricelist,
+    'disp-payment': currentQuote.paymentType + '. Giá trên chưa bao gồm phí vận chuyển.'
+  };
+  
+  Object.keys(infoFields).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = infoFields[id];
+  });
+  
+  // Show order banner if converted
+  if (isOrdered && currentQuote.orderId) {
+    const banner = document.getElementById('orderBanner');
+    if (banner) {
+      banner.classList.add('show');
+      const orderLink = banner.querySelector('.order-banner-link');
+      if (orderLink) {
+        orderLink.href = `order-detail.html?id=${currentQuote.orderId}`;
+        orderLink.textContent = `Xem đơn hàng ${currentQuote.orderId}`;
+      }
+      const orderText = banner.querySelector('.order-banner-text strong');
+      if (orderText) {
+        orderText.textContent = `✅ Báo giá đã được xác nhận – Đơn hàng ${currentQuote.orderId} đã tạo thành công!`;
+      }
+    }
+    
+    // Update stepper to show all done
+    ['step1','step2','step3','step4'].forEach(id => {
+      const s = document.getElementById(id);
+      if (s) {
+        s.classList.remove('active');
+        s.classList.add('done');
+        const circle = s.querySelector('.step-circle');
+        if (circle) circle.textContent = '✓';
+      }
+    });
+    ['conn1','conn2','conn3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('done');
+    });
+    
+    // Show order reference
+    const orderRefSpan = document.getElementById('orderRefSpan');
+    if (orderRefSpan) orderRefSpan.style.display = 'flex';
+    const orderRefRow = document.getElementById('orderRefRow');
+    if (orderRefRow) orderRefRow.style.display = '';
+    
+    // Disable confirm button
+    const btnConfirm = document.getElementById('btnConfirmOrder');
+    if (btnConfirm) btnConfirm.disabled = true;
+  }
+  
+  // Update print header
+  const printTitle = document.getElementById('printTitle');
+  if (printTitle) printTitle.textContent = `BÁO GIÁ ${currentQuote.id}`;
+  
+  const printDetails = document.getElementById('printDetails');
+  if (printDetails) {
+    printDetails.innerHTML = `Ngày tạo: ${currentQuote.created}<br>Khách hàng: ${currentQuote.customer}<br>Hiệu lực: ${currentQuote.expire}`;
+  }
+  
+  // Render products
+  renderProducts();
+}
+
+// Call initialization when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePage);
+} else {
+  initializePage();
+}
+
 // ── DATA ──
 const BRANDS = {
   'Đất Xanh': { bg:'#dcfce7', fg:'#16a34a' },
@@ -1008,14 +1347,8 @@ const BRANDS = {
   'Bình Điền': { bg:'#dbeafe', fg:'#1d4ed8' },
 };
 
-let PROD_DATA = [
-  { id:'SP-0001', name:'NPK 16-16-16',         brand:'Đất Xanh', unit:'Kg',  qty:20, price:12500, disc:0  },
-  { id:'SP-0005', name:'Lân Canxi Đất Xanh',   brand:'Đất Xanh', unit:'Bao', qty:10, price:8700,  disc:0  },
-  { id:'SP-0011', name:'NPK 18-8-18+Bo+TE',    brand:'Song Mã',  unit:'Kg',  qty:15, price:14300, disc:5  },
-  { id:'SP-0017', name:'Chuyên Cà phê – Tiêu', brand:'Song Mã',  unit:'Bao', qty:8,  price:16200, disc:0  },
-];
-
-let isOrdered = false;
+// PROD_DATA and isOrdered are already declared above after loading from currentQuote
+// DO NOT redeclare them here!
 
 function fmt(n) { return Math.round(n).toLocaleString('vi-VN'); }
 
@@ -1056,10 +1389,12 @@ function renderProducts() {
   const after = subtotal - discTotal;
   const vatPct = (parseFloat(document.getElementById('vatRate')?.value) || 0) / 100;
   const vat   = Math.round(after * vatPct);
-  const total = after + vat;
+  const shipFee = 0; // Default shipping fee for quote detail view
+  const total = after + vat + shipFee;
   document.getElementById('sSubtotal').textContent = fmt(subtotal) + ' đ';
   document.getElementById('sDisc').textContent     = discTotal ? '- ' + fmt(discTotal) + ' đ' : '- 0 đ';
   document.getElementById('sVat').textContent      = fmt(vat) + ' đ';
+  document.getElementById('sShipFee').textContent  = fmt(shipFee) + ' đ';
   document.getElementById('sTotal').textContent    = fmt(total) + ' đ';
 }
 renderProducts();
@@ -1077,7 +1412,7 @@ function confirmAction(type) {
     icon.style.background = '#dcfce7';
     icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
     title.textContent = 'Xác nhận báo giá';
-    desc.innerHTML    = 'Báo giá <b>BG-0001</b> sẽ được xác nhận và tự động tạo đơn hàng mới <b>ĐH-0042</b>. Bạn có chắc chắn không?';
+    desc.innerHTML    = `Báo giá <b>${currentQuote.id}</b> sẽ được xác nhận và tự động tạo đơn hàng mới. Bạn có chắc chắn không?`;
     btn.textContent   = 'Xác nhận & Tạo đơn';
     btn.style.background = '#16a34a';
     confirmCb = () => {
@@ -1088,7 +1423,7 @@ function confirmAction(type) {
     icon.style.background = '#fee2e2';
     icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
     title.textContent = 'Huỷ báo giá';
-    desc.textContent  = 'Bạn có chắc muốn huỷ báo giá BG-0001? Hành động này không thể hoàn tác.';
+    desc.textContent  = `Bạn có chắc muốn huỷ báo giá ${currentQuote.id}? Hành động này không thể hoàn tác.`;
     btn.textContent   = 'Xác nhận huỷ';
     btn.style.background = '#dc2626';
     confirmCb = () => {
@@ -1096,7 +1431,7 @@ function confirmAction(type) {
       setStatus('sq-cancel', 'Đã huỷ');
       // disable action buttons
       document.getElementById('btnConfirmOrder').disabled = true;
-      toast('🗑️ Báo giá BG-0001 đã bị huỷ.');
+      toast(`🗑️ Báo giá ${currentQuote.id} đã bị huỷ.`);
     };
   }
   btn.onclick = confirmCb;
@@ -1139,7 +1474,7 @@ function convertToOrder() {
 
   // Add activity
 
-  toast('✅ Đã xác nhận! Đơn hàng ĐH-0042 đã được tạo.');
+  toast(`✅ Đã xác nhận! Đơn hàng ${currentQuote.orderId || 'mới'} đã được tạo.`);
 }
 
 function setStatus(cls, label) {
@@ -1245,10 +1580,12 @@ function updateEditSum() {
   const after = sub - disc;
   const vatPct = (parseFloat(document.getElementById('vatRate')?.value) || 0) / 100;
   const vat   = Math.round(after * vatPct);
-  const total = after + vat;
+  const shipFee = 0; // Default shipping fee for edit modal
+  const total = after + vat + shipFee;
   document.getElementById('es-sub').textContent  = fmt(sub) + ' đ';
   document.getElementById('es-disc').textContent = disc ? '- ' + fmt(disc) + ' đ' : '0 đ';
   document.getElementById('es-vat').textContent  = fmt(vat) + ' đ';
+  document.getElementById('es-shipfee').textContent = fmt(shipFee) + ' đ';
   const lbl = document.getElementById('es-vat-lbl');
   if (lbl) lbl.textContent = document.getElementById('vatRate')?.value || '0';
   document.getElementById('es-total').textContent= fmt(total) + ' đ';
@@ -1307,6 +1644,28 @@ function saveEdit() {
 
 // ── NAV ──
 function toggleNav(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
+
+// ── PROFILE DROPDOWN ──
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('open');
+}
+
+function logout(event) {
+  event.preventDefault();
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = event.target.closest('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  if (!profileBtn && dropdown && !dropdown.contains(event.target)) {
+    dropdown.classList.remove('open');
+  }
+});
 
 // ── TOAST ──
 function toast(msg) {

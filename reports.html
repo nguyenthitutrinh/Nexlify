@@ -47,15 +47,20 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .profile-btn .p-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
 .profile-btn svg { width: 10px; height: 10px; color: var(--gray-400); }
 
+/* Profile Dropdown */
+.profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 200px; z-index: 200; display: none; overflow: hidden; }
+.profile-dropdown.open { display: block; }
+.profile-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700); text-decoration: none; transition: background .13s; border-bottom: 1px solid var(--gray-100); }
+.profile-dropdown-item:last-child { border-bottom: none; }
+.profile-dropdown-item:hover { background: var(--blue-pale); color: var(--blue); }
+.profile-dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; }
+
 /* MAIN */
 .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 20px 24px; flex: 1; height: calc(100vh - var(--topbar-h)); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 
 /* PAGE HEADER */
 .page-hdr { display: flex; align-items: center; justify-content: space-between; }
 .page-hdr h1 { font-size: 20px; font-weight: 700; color: var(--gray-900); }
-.period-tabs { display: flex; gap: 4px; background: var(--gray-100); border-radius: 8px; padding: 3px; }
-.period-tab { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--gray-500); cursor: pointer; border: none; background: transparent; font-family: inherit; transition: all .15s; }
-.period-tab.active { background: var(--white); color: var(--gray-900); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 
 /* REPORT TABS */
 .report-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); }
@@ -92,9 +97,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .table-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
 .table-card-hdr { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--gray-100); }
 .table-card-title { font-size: 13px; font-weight: 700; color: var(--gray-900); }
-.table-card table { width: 100%; border-collapse: collapse; }
-.table-card th { padding: 9px 18px; text-align: left; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .4px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); }
-.table-card td { padding: 11px 18px; font-size: 12.5px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); }
+.table-card table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.table-card th { padding: 9px 18px; text-align: center; font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .4px; background: var(--gray-50); border-bottom: 1px solid var(--gray-100); white-space: nowrap; }
+.table-card td { padding: 11px 18px; font-size: 12.5px; color: var(--gray-700); border-bottom: 1px solid var(--gray-100); vertical-align: middle; text-align: center; }
 .table-card tr:last-child td { border-bottom: none; }
 .table-card tr:hover td { background: var(--gray-50); }
 .rank { font-weight: 700; color: var(--gray-400); }
@@ -104,6 +109,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .bar-fill { height: 100%; border-radius: 99px; background: var(--blue); }
 .text-right { text-align: right; }
 .text-bold { font-weight: 700; color: var(--gray-900); }
+.text-center { text-align: center; }
 .badge-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
 .badge-status::before { content:''; width:6px; height:6px; border-radius:50%; }
 .bs-done   { background:#dcfce7; color:#16a34a; } .bs-done::before   { background:#16a34a; }
@@ -185,12 +191,6 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Báo Cáo
   </a>
-
-  <div class="section-label">Khác</div>
-  <a class="nav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Setting
-  </a>
 </aside>
 
 
@@ -204,11 +204,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span class="notif-dot"></span>
     </button>
-    <button class="profile-btn">
-      <div class="profile-avatar">A</div>
-      <span class="p-name">Admin</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="profile-btn" onclick="toggleProfileDropdown()">
+        <div class="profile-avatar">A</div>
+        <span class="p-name">Admin</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Thông tin cá nhân
+        </a>
+        <a href="login.html" class="profile-dropdown-item" onclick="logout(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Đăng xuất
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -216,11 +228,6 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 <main class="main">
   <div class="page-hdr">
     <h1>Báo Cáo</h1>
-    <div class="period-tabs">
-      <button class="period-tab" onclick="setPeriod('week')">Tuần</button>
-      <button class="period-tab" onclick="setPeriod('month')">Tháng</button>
-      <button class="period-tab active" onclick="setPeriod('year')">Năm</button>
-    </div>
   </div>
 
   <div class="report-tabs">
@@ -320,17 +327,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 
     <div class="table-card">
       <div class="table-card-hdr">
-        <div class="table-card-title">Top 10 khách hàng theo doanh thu</div>
+        <div class="table-card-title">Tổng hợp khách hàng</div>
+        <select id="revenueMonthFilter" onchange="filterRevenueByMonth()" style="padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--gray-700); background: var(--white); cursor: pointer;">
+          <option value="all">Tất cả tháng</option>
+          <option value="1">Tháng 1/2026</option>
+          <option value="2">Tháng 2/2026</option>
+          <option value="3">Tháng 3/2026</option>
+          <option value="4">Tháng 4/2026</option>
+        </select>
       </div>
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Khách hàng</th>
-            <th>Khu vực</th>
-            <th class="text-right">Doanh thu</th>
-            <th class="text-right">Đơn hàng</th>
-            <th>Tỷ lệ</th>
+            <th style="width: 5%">#</th>
+            <th style="width: 35%">Khách hàng</th>
+            <th style="width: 20%">Khu vực</th>
+            <th style="width: 20%">Doanh thu</th>
+            <th style="width: 20%">Đơn hàng</th>
           </tr>
         </thead>
         <tbody id="topCustomersTable"></tbody>
@@ -346,9 +359,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <div class="kpi-icon" style="background:#eff6ff">
             <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
-          <span class="kpi-badge up">+2</span>
+          <span class="kpi-badge up">+1</span>
         </div>
-        <div class="kpi-val">12</div>
+        <div class="kpi-val">4</div>
         <div class="kpi-lbl">Tổng nhân viên</div>
       </div>
       <div class="kpi-card">
@@ -358,7 +371,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           </div>
           <span class="kpi-badge up">+18%</span>
         </div>
-        <div class="kpi-val">170M</div>
+        <div class="kpi-val">1,05 tỷ</div>
         <div class="kpi-lbl">Doanh thu/nhân viên</div>
       </div>
       <div class="kpi-card">
@@ -368,7 +381,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           </div>
           <span class="kpi-badge up">+5%</span>
         </div>
-        <div class="kpi-val">2.5</div>
+        <div class="kpi-val">8.7</div>
         <div class="kpi-lbl">Đơn hàng/nhân viên</div>
       </div>
       <div class="kpi-card">
@@ -378,7 +391,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           </div>
           <span class="kpi-badge up">+12%</span>
         </div>
-        <div class="kpi-val">95%</div>
+        <div class="kpi-val">100%</div>
         <div class="kpi-lbl">Tỷ lệ hoàn thành</div>
       </div>
     </div>
@@ -396,16 +409,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <div class="table-card">
       <div class="table-card-hdr">
         <div class="table-card-title">Bảng xếp hạng nhân viên</div>
+        <select id="staffMonthFilter" onchange="filterStaffByMonth()" style="padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--gray-700); background: var(--white); cursor: pointer;">
+          <option value="all">Tất cả tháng</option>
+          <option value="1">Tháng 1/2026</option>
+          <option value="2">Tháng 2/2026</option>
+          <option value="3">Tháng 3/2026</option>
+          <option value="4">Tháng 4/2026</option>
+        </select>
       </div>
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Nhân viên</th>
-            <th>Phòng ban</th>
-            <th class="text-right">Doanh thu</th>
-            <th class="text-right">Đơn hàng</th>
-            <th class="text-right">Tỷ lệ hoàn thành</th>
+            <th style="width: 5%">#</th>
+            <th style="width: 25%">Nhân viên</th>
+            <th style="width: 20%">Phòng ban</th>
+            <th style="width: 20%">Doanh thu</th>
+            <th style="width: 15%">Đơn hàng</th>
+            <th style="width: 15%">Tỷ lệ hoàn thành</th>
           </tr>
         </thead>
         <tbody id="staffRankTable"></tbody>
@@ -470,17 +490,23 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 
     <div class="table-card">
       <div class="table-card-hdr">
-        <div class="table-card-title">Top 10 sản phẩm bán chạy</div>
+        <div class="table-card-title">Tổng hợp sản phẩm bán chạy</div>
+        <select id="productMonthFilter" onchange="filterProductsByMonth()" style="padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--gray-700); background: var(--white); cursor: pointer;">
+          <option value="all">Tất cả tháng</option>
+          <option value="1">Tháng 1/2026</option>
+          <option value="2">Tháng 2/2026</option>
+          <option value="3">Tháng 3/2026</option>
+          <option value="4">Tháng 4/2026</option>
+        </select>
       </div>
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Sản phẩm</th>
-            <th>Nhóm</th>
-            <th class="text-right">Số lượng</th>
-            <th class="text-right">Doanh thu</th>
-            <th>Tỷ lệ</th>
+            <th style="width: 5%">#</th>
+            <th style="width: 30%">Sản phẩm</th>
+            <th style="width: 20%">Nhóm</th>
+            <th style="width: 25%">Số lượng</th>
+            <th style="width: 20%">Doanh thu</th>
           </tr>
         </thead>
         <tbody id="topProductsTable"></tbody>
@@ -523,8 +549,8 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       </div>
       <div class="kpi-card">
         <div class="kpi-top">
-          <div class="kpi-icon" style="background:#fff7ed">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <div class="kpi-icon" style="background:#fee2e2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
           </div>
           <span class="kpi-badge down">-1</span>
         </div>
@@ -543,40 +569,36 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
       <div class="canvas-wrap"><canvas id="chartOrderMonth"></canvas></div>
     </div>
 
-    <div class="chart-2col">
-      <div class="chart-card">
-        <div class="chart-hdr">
-          <div>
-            <div class="chart-title">Trạng thái đơn hàng</div>
-            <div class="chart-sub">Năm 2026</div>
-          </div>
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Đơn hàng theo khu vực</div>
+          <div class="chart-sub">Năm 2026</div>
         </div>
-        <div class="canvas-wrap"><canvas id="chartOrderStatus"></canvas></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-hdr">
-          <div>
-            <div class="chart-title">Đơn hàng theo khu vực</div>
-            <div class="chart-sub">Năm 2026</div>
-          </div>
-        </div>
-        <div class="canvas-wrap"><canvas id="chartOrderRegion"></canvas></div>
-      </div>
+      <div class="canvas-wrap"><canvas id="chartOrderRegion"></canvas></div>
     </div>
 
     <div class="table-card">
       <div class="table-card-hdr">
-        <div class="table-card-title">Danh sách đơn hàng gần đây</div>
+        <div class="table-card-title">Danh sách đơn hàng</div>
+        <select id="orderMonthFilter" onchange="filterOrdersByMonth()" style="padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 12px; font-family: inherit; color: var(--gray-700); background: var(--white); cursor: pointer;">
+          <option value="all">Tất cả tháng</option>
+          <option value="1">Tháng 1/2026</option>
+          <option value="2">Tháng 2/2026</option>
+          <option value="3">Tháng 3/2026</option>
+          <option value="4">Tháng 4/2026</option>
+        </select>
       </div>
       <table>
         <thead>
           <tr>
-            <th>Mã đơn</th>
-            <th>Khách hàng</th>
-            <th>Ngày tạo</th>
-            <th class="text-right">Giá trị</th>
-            <th>Trạng thái</th>
-            <th>Nhân viên</th>
+            <th style="width: 12%">Mã đơn</th>
+            <th style="width: 28%">Khách hàng</th>
+            <th style="width: 12%">Ngày tạo</th>
+            <th style="width: 12%">Giá trị</th>
+            <th style="width: 16%">Trạng thái</th>
+            <th style="width: 20%">Nhân viên</th>
           </tr>
         </thead>
         <tbody id="recentOrdersTable"></tbody>
@@ -598,12 +620,6 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   event.target.closest('.report-tab').classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-}
-
-// PERIOD SWITCHING
-function setPeriod(period) {
-  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
 }
 
 // SIDEBAR TOGGLE
@@ -684,31 +700,71 @@ new Chart(document.getElementById('chartRevCategory'), {
   }
 });
 
-// Table: Top khách hàng
-const topCustomers = [
-  { name: 'Công ty TNHH Nông Sản Xanh', region: 'Miền Nam', revenue: 280, orders: 8 },
-  { name: 'HTX Nông Nghiệp Phát Đạt', region: 'Miền Nam', revenue: 245, orders: 7 },
-  { name: 'Công ty CP Phân Bón Việt', region: 'Miền Bắc', revenue: 220, orders: 6 },
-  { name: 'HTX Lúa Gạo Đồng Tháp', region: 'Miền Nam', revenue: 195, orders: 5 },
-  { name: 'Công ty TNHH Cà Phê Tây Nguyên', region: 'Miền Trung', revenue: 180, orders: 5 },
-  { name: 'HTX Cao Su Bình Phước', region: 'Miền Nam', revenue: 165, orders: 4 },
-  { name: 'Công ty CP Nông Sản Sạch', region: 'Miền Bắc', revenue: 150, orders: 4 },
-  { name: 'HTX Rau Củ An Giang', region: 'Miền Nam', revenue: 135, orders: 4 },
-  { name: 'Công ty TNHH Cây Ăn Trái', region: 'Miền Nam', revenue: 120, orders: 3 },
-  { name: 'HTX Hồ Tiêu Gia Lai', region: 'Miền Trung', revenue: 110, orders: 3 }
+// Table: Tổng hợp khách hàng (tất cả 26 khách hàng từ 26 đơn hàng)
+const allCustomers = [
+  { name: 'Cty TNHH VTNN Minh Đức', region: 'Đồng Tháp', revenue: 90, orders: 1, month: 1 },
+  { name: 'CH VTNN Thành Phát', region: 'An Giang', revenue: 85, orders: 1, month: 1 },
+  { name: 'HTX Nông nghiệp Phú Quý', region: 'Tiền Giang', revenue: 80, orders: 1, month: 1 },
+  { name: 'Cty TNHH Nông Sản Xanh', region: 'Bến Tre', revenue: 75, orders: 1, month: 1 },
+  { name: 'Trang trại Minh Phúc', region: 'Long An', revenue: 45, orders: 1, month: 1 },
+  { name: 'ĐL Phân Bón Phúc Nguyên', region: 'Vĩnh Long', revenue: 70, orders: 1, month: 1 },
+  { name: 'Cty CP VTNN Đồng Bằng', region: 'Cần Thơ', revenue: 65, orders: 1, month: 1 },
+  { name: 'ĐL Hoàng Gia Nông Sản', region: 'Kiên Giang', revenue: 78, orders: 1, month: 1 },
+  { name: 'Cty CP Nông Dược Xanh', region: 'Hậu Giang', revenue: 60, orders: 1, month: 1 },
+  { name: 'ĐL Phân Bón Miền Tây', region: 'Sóc Trăng', revenue: 85, orders: 1, month: 1 },
+  { name: 'HTX Nông nghiệp Bình Minh', region: 'Vĩnh Long', revenue: 65, orders: 1, month: 1 },
+  { name: 'Đại lý phân bón Hòa Phát', region: 'Đồng Tháp', revenue: 125, orders: 1, month: 1 },
+  { name: 'Nguyễn Văn Hải', region: 'An Giang', revenue: 55, orders: 1, month: 1 },
+  { name: 'Trần Minh Tuấn', region: 'Tiền Giang', revenue: 45, orders: 1, month: 1 },
+  { name: 'Nguyễn Thị Lan', region: 'Bến Tre', revenue: 68, orders: 1, month: 1 },
+  { name: 'Phạm Văn Bình', region: 'Long An', revenue: 70, orders: 1, month: 1 },
+  { name: 'Lê Thị Hoa', region: 'Cần Thơ', revenue: 48, orders: 1, month: 1 },
+  { name: 'Cty TNHH VTNN Minh Đức', region: 'Đồng Tháp', revenue: 90, orders: 1, month: 2 },
+  { name: 'CH VTNN Thành Phát', region: 'An Giang', revenue: 75, orders: 1, month: 2 },
+  { name: 'HTX Nông nghiệp Phú Quý', region: 'Tiền Giang', revenue: 70, orders: 1, month: 2 },
+  { name: 'Cty TNHH Nông Sản Xanh', region: 'Bến Tre', revenue: 65, orders: 1, month: 2 },
+  { name: 'Trang trại Minh Phúc', region: 'Long An', revenue: 50, orders: 1, month: 2 },
+  { name: 'ĐL Phân Bón Phúc Nguyên', region: 'Vĩnh Long', revenue: 60, orders: 1, month: 3 },
+  { name: 'Cty CP VTNN Đồng Bằng', region: 'Cần Thơ', revenue: 55, orders: 1, month: 3 },
+  { name: 'ĐL Hoàng Gia Nông Sản', region: 'Kiên Giang', revenue: 67, orders: 1, month: 3 },
+  { name: 'Cty CP Nông Dược Xanh', region: 'Hậu Giang', revenue: 50, orders: 1, month: 3 }
 ];
-const totalRev = topCustomers.reduce((s, c) => s + c.revenue, 0);
-document.getElementById('topCustomersTable').innerHTML = topCustomers.map((c, i) => {
-  const pct = Math.round((c.revenue / totalRev) * 100);
-  return `<tr>
-    <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
-    <td class="text-bold">${c.name}</td>
-    <td>${c.region}</td>
-    <td class="text-right text-bold">${c.revenue}M</td>
-    <td class="text-right">${c.orders}</td>
-    <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div></td>
-  </tr>`;
-}).join('');
+
+function renderCustomersTable(data) {
+  document.getElementById('topCustomersTable').innerHTML = data.map((c, i) => {
+    return `<tr>
+      <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+      <td class="text-bold">${c.name}</td>
+      <td>${c.region}</td>
+      <td class="text-bold">${c.revenue}M</td>
+      <td>${c.orders}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterRevenueByMonth() {
+  const selectedMonth = document.getElementById('revenueMonthFilter').value;
+  if (selectedMonth === 'all') {
+    // Aggregate all data by customer
+    const aggregated = {};
+    allCustomers.forEach(c => {
+      if (!aggregated[c.name]) {
+        aggregated[c.name] = { name: c.name, region: c.region, revenue: 0, orders: 0 };
+      }
+      aggregated[c.name].revenue += c.revenue;
+      aggregated[c.name].orders += c.orders;
+    });
+    const result = Object.values(aggregated).sort((a, b) => b.revenue - a.revenue);
+    renderCustomersTable(result);
+  } else {
+    const filtered = allCustomers.filter(c => c.month === parseInt(selectedMonth));
+    const sorted = filtered.sort((a, b) => b.revenue - a.revenue);
+    renderCustomersTable(sorted);
+  }
+}
+
+// Initial render
+filterRevenueByMonth();
 
 // ========== NHÂN VIÊN TAB ==========
 // Chart: Hiệu suất nhân viên
@@ -741,26 +797,55 @@ new Chart(document.getElementById('chartStaffPerf'), {
 });
 
 // Table: Bảng xếp hạng nhân viên
-const staffRank = [
-  { name: 'Nguyễn Văn A', dept: 'Kinh doanh', revenue: 320, orders: 9, rate: 98 },
-  { name: 'Trần Thị B', dept: 'Kinh doanh', revenue: 285, orders: 8, rate: 96 },
-  { name: 'Lê Văn C', dept: 'Kinh doanh', revenue: 260, orders: 7, rate: 95 },
-  { name: 'Phạm Thị D', dept: 'Kinh doanh', revenue: 240, orders: 7, rate: 94 },
-  { name: 'Hoàng Văn E', dept: 'Kinh doanh', revenue: 220, orders: 6, rate: 92 },
-  { name: 'Võ Thị F', dept: 'Kinh doanh', revenue: 195, orders: 5, rate: 90 },
-  { name: 'Đặng Văn G', dept: 'Kinh doanh', revenue: 180, orders: 5, rate: 88 },
-  { name: 'Bùi Thị H', dept: 'Kinh doanh', revenue: 165, orders: 4, rate: 87 },
-  { name: 'Dương Văn I', dept: 'Kinh doanh', revenue: 150, orders: 4, rate: 85 },
-  { name: 'Mai Thị K', dept: 'Kinh doanh', revenue: 135, orders: 3, rate: 83 }
+const allStaff = [
+  { name: 'Phạm Thị Lan', dept: 'Kinh doanh', revenue: 620, orders: 6, rate: 100, month: 1 },
+  { name: 'Trần Thị Hương', dept: 'Kinh doanh', revenue: 580, orders: 6, rate: 100, month: 1 },
+  { name: 'Lê Văn Tùng', dept: 'Kinh doanh', revenue: 460, orders: 6, rate: 100, month: 1 },
+  { name: 'Nguyễn Văn Minh', dept: 'Kinh doanh', revenue: 380, orders: 6, rate: 100, month: 1 },
+  { name: 'Phạm Thị Lan', dept: 'Kinh doanh', revenue: 380, orders: 3, rate: 100, month: 2 },
+  { name: 'Trần Thị Hương', dept: 'Kinh doanh', revenue: 320, orders: 3, rate: 100, month: 2 },
+  { name: 'Lê Văn Tùng', dept: 'Kinh doanh', revenue: 280, orders: 3, rate: 100, month: 2 },
+  { name: 'Nguyễn Văn Minh', dept: 'Kinh doanh', revenue: 200, orders: 2, rate: 100, month: 2 },
+  { name: 'Phạm Thị Lan', dept: 'Kinh doanh', revenue: 250, orders: 2, rate: 100, month: 3 },
+  { name: 'Trần Thị Hương', dept: 'Kinh doanh', revenue: 210, orders: 2, rate: 100, month: 3 },
+  { name: 'Lê Văn Tùng', dept: 'Kinh doanh', revenue: 180, orders: 2, rate: 100, month: 3 },
+  { name: 'Nguyễn Văn Minh', dept: 'Kinh doanh', revenue: 150, orders: 1, rate: 100, month: 3 }
 ];
-document.getElementById('staffRankTable').innerHTML = staffRank.map((s, i) => `<tr>
-  <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
-  <td class="text-bold">${s.name}</td>
-  <td>${s.dept}</td>
-  <td class="text-right text-bold">${s.revenue}M</td>
-  <td class="text-right">${s.orders}</td>
-  <td class="text-right">${s.rate}%</td>
-</tr>`).join('');
+
+function renderStaffTable(data) {
+  document.getElementById('staffRankTable').innerHTML = data.map((s, i) => `<tr>
+    <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+    <td class="text-bold">${s.name}</td>
+    <td>${s.dept}</td>
+    <td class="text-bold">${s.revenue}M</td>
+    <td>${s.orders}</td>
+    <td>${s.rate}%</td>
+  </tr>`).join('');
+}
+
+function filterStaffByMonth() {
+  const selectedMonth = document.getElementById('staffMonthFilter').value;
+  if (selectedMonth === 'all') {
+    // Aggregate all data by staff
+    const aggregated = {};
+    allStaff.forEach(s => {
+      if (!aggregated[s.name]) {
+        aggregated[s.name] = { name: s.name, dept: s.dept, revenue: 0, orders: 0, rate: s.rate };
+      }
+      aggregated[s.name].revenue += s.revenue;
+      aggregated[s.name].orders += s.orders;
+    });
+    const result = Object.values(aggregated).sort((a, b) => b.revenue - a.revenue);
+    renderStaffTable(result);
+  } else {
+    const filtered = allStaff.filter(s => s.month === parseInt(selectedMonth));
+    const sorted = filtered.sort((a, b) => b.revenue - a.revenue);
+    renderStaffTable(sorted);
+  }
+}
+
+// Initial render
+filterStaffByMonth();
 
 // ========== SẢN PHẨM TAB ==========
 // Chart: Doanh thu theo nhóm sản phẩm
@@ -790,34 +875,83 @@ new Chart(document.getElementById('chartProdCategory'), {
   }
 });
 
-// Table: Top sản phẩm
-const topProducts = [
-  { name: 'NPK 16-16-16 Đất Xanh', group: 'Đất Xanh', qty: 1200, revenue: 180 },
-  { name: 'NPK 17-16-8 Đất Xanh', group: 'Đất Xanh', qty: 980, revenue: 147 },
-  { name: 'Hữu cơ Vi sinh cao cấp Đất Xanh', group: 'Đất Xanh', qty: 850, revenue: 128 },
-  { name: 'NPK 18-8-18+Bo+TE Song Mã', group: 'Song Mã', qty: 780, revenue: 117 },
-  { name: 'Hữu cơ khoáng 16-16-8 Song Mã', group: 'Song Mã', qty: 720, revenue: 108 },
-  { name: 'Cao cấp NPK 16-16-16+Bo+TE Đầu Ngựa', group: 'Đầu Ngựa', qty: 650, revenue: 98 },
-  { name: 'Chuyên Lúa 1 Đất Xanh', group: 'Đất Xanh', qty: 580, revenue: 87 },
-  { name: 'Lân Canxi Đất Xanh', group: 'Đất Xanh', qty: 520, revenue: 78 },
-  { name: 'Chuyên Cà phê – Tiêu Song Mã', group: 'Song Mã', qty: 480, revenue: 72 },
-  { name: 'Khoáng hữu cơ 17-7-17+Bo+TE Đầu Ngựa', group: 'Đầu Ngựa', qty: 420, revenue: 63 }
+// Table: Tổng hợp sản phẩm (tất cả sản phẩm từ 30 đơn hàng)
+const allProducts = [
+  // Tháng 1
+  { name: 'NPK 16-16-16', group: 'Đất Xanh', month: 1, qty: 500, revenue: 125 },
+  { name: 'Urê 46%', group: 'Bình Điền', month: 1, qty: 400, revenue: 78 },
+  { name: 'DAP 18-46-0', group: 'Bình Điền', month: 1, qty: 300, revenue: 63 },
+  { name: 'SA 21%', group: 'Bình Điền', month: 1, qty: 350, revenue: 62 },
+  { name: 'Lân Canxi', group: 'Đất Xanh', month: 1, qty: 200, revenue: 35 },
+  { name: 'NPK 20-20-15', group: 'Song Mã', month: 1, qty: 450, revenue: 118 },
+  { name: 'Kali Clorua', group: 'Đầu Ngựa', month: 1, qty: 280, revenue: 58 },
+  { name: 'NPK 16-16-8', group: 'Đất Xanh', month: 1, qty: 380, revenue: 91 },
+  { name: 'Phân hữu cơ vi sinh', group: 'Song Mã', month: 1, qty: 320, revenue: 96 },
+  { name: 'Urê 46%', group: 'Bình Điền', month: 1, qty: 350, revenue: 68 },
+  { name: 'DAP 18-46-0', group: 'Bình Điền', month: 1, qty: 250, revenue: 52 },
+  { name: 'NPK 16-16-16', group: 'Đất Xanh', month: 1, qty: 420, revenue: 105 },
+  { name: 'SA 21%', group: 'Bình Điền', month: 1, qty: 300, revenue: 53 },
+  { name: 'Lân Canxi', group: 'Đất Xanh', month: 1, qty: 180, revenue: 31 },
+  { name: 'NPK 20-20-15', group: 'Song Mã', month: 1, qty: 400, revenue: 105 },
+  { name: 'Kali Clorua', group: 'Đầu Ngựa', month: 1, qty: 220, revenue: 46 },
+  { name: 'NPK 16-16-8', group: 'Đất Xanh', month: 1, qty: 340, revenue: 81 },
+  { name: 'Phân hữu cơ vi sinh', group: 'Song Mã', month: 1, qty: 280, revenue: 84 },
+  // Tháng 2
+  { name: 'NPK 16-16-16', group: 'Đất Xanh', month: 2, qty: 200, revenue: 50 },
+  { name: 'Urê 46%', group: 'Bình Điền', month: 2, qty: 180, revenue: 35 },
+  { name: 'DAP 18-46-0', group: 'Bình Điền', month: 2, qty: 150, revenue: 31 },
+  { name: 'SA 21%', group: 'Bình Điền', month: 2, qty: 160, revenue: 28 },
+  // Tháng 3
+  { name: 'NPK 16-16-16', group: 'Đất Xanh', month: 3, qty: 350, revenue: 87 },
+  { name: 'Urê 46%', group: 'Bình Điền', month: 3, qty: 280, revenue: 55 },
+  { name: 'DAP 18-46-0', group: 'Bình Điền', month: 3, qty: 220, revenue: 46 },
+  { name: 'SA 21%', group: 'Bình Điền', month: 3, qty: 250, revenue: 44 },
+  { name: 'Lân Canxi', group: 'Đất Xanh', month: 3, qty: 140, revenue: 24 },
+  { name: 'NPK 20-20-15', group: 'Song Mã', month: 3, qty: 300, revenue: 79 },
+  { name: 'Kali Clorua', group: 'Đầu Ngựa', month: 3, qty: 180, revenue: 37 },
+  // Tháng 4
+  { name: 'NPK 16-16-16', group: 'Đất Xanh', month: 4, qty: 500, revenue: 125 }
 ];
-const totalProdRev = topProducts.reduce((s, p) => s + p.revenue, 0);
-document.getElementById('topProductsTable').innerHTML = topProducts.map((p, i) => {
-  const pct = Math.round((p.revenue / totalProdRev) * 100);
-  return `<tr>
-    <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
-    <td class="text-bold">${p.name}</td>
-    <td>${p.group}</td>
-    <td class="text-right">${p.qty} bao</td>
-    <td class="text-right text-bold">${p.revenue}M</td>
-    <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span>${pct}%</span></div></td>
-  </tr>`;
-}).join('');
+
+function renderProductsTable(products) {
+  // Group by product name and sum quantities and revenue
+  const grouped = {};
+  products.forEach(p => {
+    if (!grouped[p.name]) {
+      grouped[p.name] = { name: p.name, group: p.group, qty: 0, revenue: 0 };
+    }
+    grouped[p.name].qty += p.qty;
+    grouped[p.name].revenue += p.revenue;
+  });
+  
+  const sortedProducts = Object.values(grouped).sort((a, b) => b.revenue - a.revenue);
+  
+  document.getElementById('topProductsTable').innerHTML = sortedProducts.map((p, i) => {
+    return `<tr>
+      <td><span class="rank ${i < 3 ? 'top' : ''}">${i + 1}</span></td>
+      <td class="text-bold">${p.name}</td>
+      <td>${p.group}</td>
+      <td>${p.qty} bao</td>
+      <td class="text-bold">${p.revenue}M</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterProductsByMonth() {
+  const selectedMonth = document.getElementById('productMonthFilter').value;
+  if (selectedMonth === 'all') {
+    renderProductsTable(allProducts);
+  } else {
+    const filtered = allProducts.filter(p => p.month === parseInt(selectedMonth));
+    renderProductsTable(filtered);
+  }
+}
+
+// Initial render
+renderProductsTable(allProducts);
 
 // ========== ĐƠN HÀNG TAB ==========
-// Chart: Đơn hàng theo tháng
+// Chart: Đơn hàng theo tháng (30 đơn: T1=18 done, T2-T3=11 processing)
 new Chart(document.getElementById('chartOrderMonth'), {
   type: 'bar',
   data: {
@@ -825,22 +959,15 @@ new Chart(document.getElementById('chartOrderMonth'), {
     datasets: [
       {
         label: 'Hoàn thành',
-        data: [7, 6, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+        data: [18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: '#16a34a',
         borderRadius: 5,
         stack: 'stack1'
       },
       {
         label: 'Đang xử lý',
-        data: [3, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+        data: [0, 0, 8, 3, 0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: '#3b82f6',
-        borderRadius: 5,
-        stack: 'stack1'
-      },
-      {
-        label: 'Đã hủy',
-        data: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        backgroundColor: '#ef4444',
         borderRadius: 5,
         stack: 'stack1'
       }
@@ -855,44 +982,26 @@ new Chart(document.getElementById('chartOrderMonth'), {
     },
     scales: {
       x: { grid: { display: false }, stacked: true },
-      y: { grid: { color: '#f1f5f9' }, stacked: true }
+      y: { 
+        grid: { color: '#f1f5f9' },
+        stacked: true,
+        ticks: { stepSize: 5 }
+      }
     }
   }
 });
 
-// Chart: Trạng thái đơn hàng
-new Chart(document.getElementById('chartOrderStatus'), {
-  type: 'doughnut',
-  data: {
-    labels: ['Hoàn thành', 'Đang xử lý', 'Đã xác nhận', 'Đã hủy'],
-    datasets: [{
-      data: [18, 8, 3, 1],
-      backgroundColor: ['#16a34a', '#3b82f6', '#60a5fa', '#fbbf24'],
-      borderWidth: 2,
-      borderColor: '#fff'
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'bottom' },
-      tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + ' đơn' }}
-    }
-  }
-});
-
-// Chart: Đơn hàng theo khu vực
+// Chart: Đơn hàng theo khu vực (dựa trên 26 đơn thực tế)
 new Chart(document.getElementById('chartOrderRegion'), {
   type: 'bar',
   data: {
-    labels: ['Miền Nam', 'Miền Bắc', 'Miền Trung'],
+    labels: ['Đồng Tháp', 'An Giang', 'Tiền Giang', 'Bến Tre', 'Long An', 'Vĩnh Long', 'Cần Thơ', 'Kiên Giang', 'Hậu Giang', 'Sóc Trăng'],
     datasets: [{
       label: 'Đơn hàng',
-      data: [18, 8, 4],
+      data: [3, 3, 3, 3, 3, 3, 3, 3, 2, 1],
       backgroundColor: '#3b82f6',
       borderRadius: 5,
-      barPercentage: 0.5
+      barPercentage: 0.6
     }]
   },
   options: {
@@ -904,40 +1013,103 @@ new Chart(document.getElementById('chartOrderRegion'), {
     },
     scales: {
       x: { grid: { display: false }},
-      y: { grid: { color: '#f1f5f9' }}
+      y: { 
+        grid: { color: '#f1f5f9' },
+        ticks: { stepSize: 1 },
+        beginAtZero: true
+      }
     }
   }
 });
 
-// Table: Đơn hàng gần đây
-const recentOrders = [
-  { id: 'DH-2026-030', customer: 'Công ty TNHH Nông Sản Xanh', date: '15/04/2026', value: 85, status: 'done', staff: 'Nguyễn Văn A' },
-  { id: 'DH-2026-029', customer: 'HTX Nông Nghiệp Phát Đạt', date: '12/04/2026', value: 72, status: 'proc', staff: 'Trần Thị B' },
-  { id: 'DH-2026-028', customer: 'Công ty CP Phân Bón Việt', date: '10/04/2026', value: 68, status: 'done', staff: 'Lê Văn C' },
-  { id: 'DH-2026-027', customer: 'HTX Lúa Gạo Đồng Tháp', date: '08/04/2026', value: 55, status: 'proc', staff: 'Phạm Thị D' },
-  { id: 'DH-2026-026', customer: 'Công ty TNHH Cà Phê Tây Nguyên', date: '05/04/2026', value: 48, status: 'done', staff: 'Hoàng Văn E' },
-  { id: 'DH-2026-025', customer: 'HTX Cao Su Bình Phước', date: '03/04/2026', value: 42, status: 'proc', staff: 'Võ Thị F' },
-  { id: 'DH-2026-024', customer: 'Công ty CP Nông Sản Sạch', date: '01/04/2026', value: 38, status: 'done', staff: 'Đặng Văn G' },
-  { id: 'DH-2026-023', customer: 'HTX Rau Củ An Giang', date: '28/03/2026', value: 35, status: 'cancel', staff: 'Bùi Thị H' },
-  { id: 'DH-2026-022', customer: 'Công ty TNHH Cây Ăn Trái', date: '25/03/2026', value: 32, status: 'done', staff: 'Dương Văn I' },
-  { id: 'DH-2026-021', customer: 'HTX Hồ Tiêu Gia Lai', date: '22/03/2026', value: 28, status: 'proc', staff: 'Mai Thị K' }
+// Table: Danh sách đơn hàng (tất cả 30 đơn)
+const allOrders = [
+  { id: 'ĐH-0030', customer: 'Đại lý phân bón Hòa Phát', date: '15/04/2026', month: 4, value: 125, status: 'cancel', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0029', customer: 'Nguyễn Văn Hải', date: '12/03/2026', month: 3, value: 55, status: 'proc', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0028', customer: 'Trần Minh Tuấn', date: '10/03/2026', month: 3, value: 45, status: 'proc', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0027', customer: 'Nguyễn Thị Lan', date: '08/03/2026', month: 3, value: 68, status: 'proc', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0026', customer: 'Cty CP Nông Dược Xanh', date: '10/03/2026', month: 3, value: 85, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0025', customer: 'ĐL Hoàng Gia Nông Sản', date: '08/03/2026', month: 3, value: 72, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0024', customer: 'Cty CP VTNN Đồng Bằng', date: '05/03/2026', month: 3, value: 68, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0023', customer: 'ĐL Phân Bón Phúc Nguyên', date: '02/03/2026', month: 3, value: 55, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0022', customer: 'Trang trại Minh Phúc', date: '28/02/2026', month: 2, value: 48, status: 'proc', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0021', customer: 'Cty TNHH Nông Sản Xanh', date: '25/02/2026', month: 2, value: 42, status: 'proc', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0020', customer: 'HTX Nông nghiệp Phú Quý', date: '22/02/2026', month: 2, value: 38, status: 'proc', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0019', customer: 'CH VTNN Thành Phát', date: '20/02/2026', month: 2, value: 35, status: 'proc', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0018', customer: 'Cty TNHH VTNN Minh Đức', date: '19/01/2026', month: 1, value: 32, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0017', customer: 'Lê Thị Hoa', date: '18/01/2026', month: 1, value: 48, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0016', customer: 'Phạm Văn Bình', date: '17/01/2026', month: 1, value: 70, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0015', customer: 'Nguyễn Thị Lan', date: '16/01/2026', month: 1, value: 68, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0014', customer: 'Trần Minh Tuấn', date: '15/01/2026', month: 1, value: 45, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0013', customer: 'Nguyễn Văn Hải', date: '14/01/2026', month: 1, value: 55, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0012', customer: 'HTX Nông nghiệp Bình Minh', date: '13/01/2026', month: 1, value: 65, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0011', customer: 'ĐL Phân Bón Miền Tây', date: '12/01/2026', month: 1, value: 85, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0010', customer: 'Cty CP Nông Dược Xanh', date: '11/01/2026', month: 1, value: 110, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0009', customer: 'ĐL Hoàng Gia Nông Sản', date: '10/01/2026', month: 1, value: 145, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0008', customer: 'Cty CP VTNN Đồng Bằng', date: '09/01/2026', month: 1, value: 120, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0007', customer: 'ĐL Phân Bón Phúc Nguyên', date: '08/01/2026', month: 1, value: 130, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0006', customer: 'Trang trại Minh Phúc', date: '07/01/2026', month: 1, value: 95, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0005', customer: 'Cty TNHH Nông Sản Xanh', date: '06/01/2026', month: 1, value: 140, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0004', customer: 'HTX Nông nghiệp Phú Quý', date: '05/01/2026', month: 1, value: 150, status: 'done', staff: 'Lê Văn Tùng' },
+  { id: 'ĐH-0003', customer: 'CH VTNN Thành Phát', date: '04/01/2026', month: 1, value: 160, status: 'done', staff: 'Phạm Thị Lan' },
+  { id: 'ĐH-0002', customer: 'Cty TNHH VTNN Minh Đức', date: '03/01/2026', month: 1, value: 180, status: 'done', staff: 'Trần Thị Hương' },
+  { id: 'ĐH-0001', customer: 'Cty TNHH VTNN Minh Đức', date: '02/01/2026', month: 1, value: 95, status: 'done', staff: 'Lê Văn Tùng' }
 ];
+
 const statusMap = {
   done: { cls: 'bs-done', label: 'Hoàn thành' },
   proc: { cls: 'bs-proc', label: 'Đang xử lý' },
   cancel: { cls: 'bs-cancel', label: 'Đã hủy' }
 };
-document.getElementById('recentOrdersTable').innerHTML = recentOrders.map(o => {
-  const st = statusMap[o.status];
-  return `<tr>
-    <td class="text-bold">${o.id}</td>
-    <td>${o.customer}</td>
-    <td>${o.date}</td>
-    <td class="text-right text-bold">${o.value}M</td>
-    <td><span class="badge-status ${st.cls}">${st.label}</span></td>
-    <td>${o.staff}</td>
-  </tr>`;
-}).join('');
+
+function renderOrdersTable(orders) {
+  document.getElementById('recentOrdersTable').innerHTML = orders.map(o => {
+    const st = statusMap[o.status];
+    return `<tr>
+      <td class="text-bold">${o.id}</td>
+      <td>${o.customer}</td>
+      <td>${o.date}</td>
+      <td class="text-bold">${o.value}M</td>
+      <td><span class="badge-status ${st.cls}">${st.label}</span></td>
+      <td>${o.staff}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterOrdersByMonth() {
+  const selectedMonth = document.getElementById('orderMonthFilter').value;
+  if (selectedMonth === 'all') {
+    renderOrdersTable(allOrders);
+  } else {
+    const filtered = allOrders.filter(o => o.month === parseInt(selectedMonth));
+    renderOrdersTable(filtered);
+  }
+}
+
+// Initial render
+renderOrdersTable(allOrders);
+
+// ── PROFILE DROPDOWN ──
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('open');
+}
+
+function logout(event) {
+  event.preventDefault();
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = 'login.html';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const profileBtn = event.target.closest('.profile-btn');
+  const dropdown = document.getElementById('profileDropdown');
+  if (!profileBtn && dropdown && !dropdown.contains(event.target)) {
+    dropdown.classList.remove('open');
+  }
+});
 </script>
 
 </body>
