@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>NexLify – Chi tiết Hoá Đơn</title>
-<script src="order-data.js"></script>
+<script src="order-data.js?v=20260507"></script>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,6 +90,10 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 .sq-ship    { background: #ffedd5; color: #ea580c; }
 .sq-done    { background: #dcfce7; color: #16a34a; }
 .sq-cancel  { background: #fee2e2; color: #dc2626; }
+.sq-paid    { background: #dcfce7; color: #16a34a; }
+.sq-partial { background: #ffedd5; color: #ea580c; }
+.sq-unpaid  { background: #fef3c7; color: #92400e; }
+.sq-overdue { background: #fee2e2; color: #dc2626; font-weight: 700; }
 
 /* STEPPER */
 .stepper { display: flex; align-items: center; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--gray-100); }
@@ -174,7 +178,9 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 /* PAYMENT STATUS */
 .pay-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
 .pay-paid { background: #dcfce7; color: #16a34a; }
+.pay-partial { background: #ffedd5; color: #ea580c; }
 .pay-unpaid { background: #fef3c7; color: #92400e; }
+.pay-overdue { background: #fee2e2; color: #dc2626; }
 .pay-partial { background: #ffedd5; color: #c2410c; }
 
 /* PRODUCT TABLE */
@@ -633,22 +639,17 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <div class="stepper no-print">
       <div class="step done" id="step1">
         <div class="step-circle">✓</div>
-        <div class="step-label">Tạo đơn</div>
+        <div class="step-label">Tạo hoá đơn</div>
       </div>
       <div class="step-connector done" id="conn1"></div>
       <div class="step active" id="step2">
         <div class="step-circle">2</div>
-        <div class="step-label">Đang xử lý</div>
+        <div class="step-label">Chờ thanh toán</div>
       </div>
       <div class="step-connector" id="conn2"></div>
       <div class="step" id="step3">
         <div class="step-circle">3</div>
-        <div class="step-label">Đang giao</div>
-      </div>
-      <div class="step-connector" id="conn3"></div>
-      <div class="step" id="step4">
-        <div class="step-circle">4</div>
-        <div class="step-label">Hoàn thành</div>
+        <div class="step-label">Đã thanh toán</div>
       </div>
     </div>
   </div>
@@ -658,7 +659,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <div class="print-wrap">
       <button class="btn btn-primary" onclick="togglePrint(event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        In Đơn Hàng
+        In Hoá Đơn
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="print-dropdown" id="printDropdown">
@@ -672,20 +673,16 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         </div>
       </div>
     </div>
-    <button class="btn btn-teal" onclick="openInvModal()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Tạo Hoá Đơn
+    <button class="btn btn-amber" id="btnPartial" onclick="confirmAction('partial')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Thanh toán 1 phần
     </button>
-    <button class="btn btn-orange" id="btnShip" onclick="confirmAction('ship')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8l5 3-5 3V8z"/><line x1="1" y1="17" x2="16" y2="17"/></svg>
-      Xác nhận giao hàng
-    </button>
-    <button class="btn btn-success" id="btnDone" onclick="confirmAction('done')">
+    <button class="btn btn-success" id="btnPaid" onclick="confirmAction('paid')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      Hoàn thành đơn
+      Xác nhận đã thanh toán
     </button>
     <div class="action-sep"></div>
-    <button class="btn btn-ghost" onclick="toast('📋 Đã nhân bản đơn hàng!')">
+    <button class="btn btn-ghost" onclick="toast('📋 Đã nhân bản hoá đơn!')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       Nhân bản
     </button>
@@ -721,25 +718,25 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           <div class="info-item">
             <div class="info-lbl">Từ báo giá</div>
             <div class="info-val">
-              <a href="quote-detail.html" style="color:var(--blue);text-decoration:none;font-weight:700">BG-0001 ↗</a>
+              <a href="quote-detail.html" id="quote-link" style="color:var(--blue);text-decoration:none;font-weight:700">BG-0001 ↗</a>
             </div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Ngày tạo đơn</div>
-            <div class="info-val">28/04/2026</div>
+            <div class="info-val" id="info-created">28/04/2026</div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Ngày giao dự kiến</div>
-            <div class="info-val warn" id="disp-delivery">05/05/2026</div>
+            <div class="info-val warn" id="info-delivery">05/05/2026</div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Chuyên viên phụ trách</div>
-            <div class="info-val" id="disp-staff">Quản trị viên</div>
+            <div class="info-val" id="info-staff">Quản trị viên</div>
           </div>
           <div class="info-item">
             <div class="info-lbl">Thanh toán</div>
             <div class="info-val">
-              <span class="pay-badge pay-unpaid" id="disp-payment-badge">Chưa thanh toán</span>
+              <span class="pay-badge pay-unpaid" id="main-payment-badge">Chưa thanh toán</span>
             </div>
           </div>
           <div class="info-item" style="grid-column:1/-1">
@@ -836,12 +833,20 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
           Thanh Toán
         </div>
         <div class="ic-body">
-          <div class="ic-row"><span class="ic-lbl">Trạng thái</span><span class="pay-badge pay-unpaid">Chưa thanh toán</span></div>
+          <div class="ic-row"><span class="ic-lbl">Trạng thái</span><span class="pay-badge pay-unpaid" id="side-payment-badge">Chưa thanh toán</span></div>
           <div class="ic-row"><span class="ic-lbl">Hình thức</span><span class="ic-val" id="sidePayMethod">Chuyển khoản · Trả 1 lần</span></div>
           <div class="ic-row"><span class="ic-lbl">Tổng cần TT</span><span class="ic-val" id="payTotal" style="color:var(--blue)">—</span></div>
           <div class="ic-row"><span class="ic-lbl">Đã thanh toán</span><span class="ic-val" style="color:var(--success)" id="sidePaidAmt">0 đ</span></div>
+          <div class="ic-row"><span class="ic-lbl">Còn lại</span><span class="ic-val" style="color:var(--orange); font-weight: 700;" id="sideRemaining">—</span></div>
+          
+          <!-- Payment History -->
+          <div id="paymentHistorySection" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100);">
+            <div style="font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Lịch sử thanh toán</div>
+            <div id="paymentHistoryList"></div>
+          </div>
+          
           <div style="margin-top:10px">
-            <button class="btn btn-success" style="width:100%;justify-content:center" onclick="toast('Mở form xác nhận thanh toán...')">
+            <button class="btn btn-success" style="width:100%;justify-content:center" onclick="openPaymentModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
               Ghi nhận thanh toán
             </button>
@@ -857,7 +862,7 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
         </div>
         <div class="ic-body">
           <div class="cust-mini">
-            <div class="cust-av" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">MD</div>
+            <div class="cust-av" id="disp-custav" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">MD</div>
             <div>
               <div class="cust-name" id="disp-custname">Cty TNHH VTNN Minh Đức</div>
               <div class="cust-sub" id="disp-custsub">Đại lý cấp 1 · Vĩnh Long</div>
@@ -886,6 +891,69 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeConfirm()">Huỷ</button>
       <button class="modal-confirm" id="mConfirmBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-backdrop" id="paymentModal" onclick="if(event.target===this)closePaymentModal()">
+  <div class="modal-box" style="max-width: 500px;">
+    <div class="modal-icon" style="background: #dcfce7;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </div>
+    <div class="modal-title">Ghi nhận thanh toán</div>
+    <div class="modal-desc" style="margin-bottom: 20px;">Nhập thông tin thanh toán cho hoá đơn <b id="paymentModalInvoiceId"></b></div>
+    
+    <div style="background: var(--gray-50); padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="color: var(--gray-500); font-size: 12px;">Tổng hoá đơn:</span>
+        <span style="font-weight: 700; color: var(--gray-900);" id="paymentModalTotal">0 đ</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="color: var(--gray-500); font-size: 12px;">Đã thanh toán:</span>
+        <span style="font-weight: 700; color: var(--success);" id="paymentModalPaid">0 đ</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--gray-200);">
+        <span style="color: var(--gray-700); font-size: 13px; font-weight: 600;">Còn lại:</span>
+        <span style="font-weight: 800; color: var(--blue); font-size: 15px;" id="paymentModalRemaining">0 đ</span>
+      </div>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px;">Số tiền thanh toán <span style="color: var(--danger);">*</span></label>
+      <input type="number" id="paymentAmount" class="form-input" placeholder="Nhập số tiền" style="width: 100%;" />
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px;">Ngày thanh toán <span style="color: var(--danger);">*</span></label>
+      <input type="date" id="paymentDate" class="form-input" style="width: 100%;" />
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px;">Phương thức thanh toán <span style="color: var(--danger);">*</span></label>
+      <select id="paymentMethod" class="form-input" style="width: 100%;">
+        <option value="bank">Chuyển khoản</option>
+        <option value="cash">Tiền mặt</option>
+        <option value="cod">COD</option>
+      </select>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px;">Ghi chú</label>
+      <textarea id="paymentNote" class="form-input" placeholder="Ghi chú về thanh toán (tùy chọn)" style="width: 100%; min-height: 60px; resize: vertical;"></textarea>
+    </div>
+    
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closePaymentModal()">Huỷ</button>
+      <button class="modal-confirm" onclick="recordPayment()" style="background: var(--success);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Xác nhận thanh toán
+      </button>
     </div>
   </div>
 </div>
@@ -1356,23 +1424,51 @@ body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--gray-50); co
 const urlParams = new URLSearchParams(window.location.search);
 const invoiceId = urlParams.get('id') || 'HĐ-0001'; // Default to HĐ-0001 if no ID provided
 
+console.log('=== INVOICE DETAIL DEBUG ===');
+console.log('URL:', window.location.href);
+console.log('Invoice ID from URL:', urlParams.get('id'));
+console.log('Invoice ID (with default):', invoiceId);
+
 // Invoice database - matches invoices.html
 const INVOICES = [
-  { id:'HĐ-0001', order:'ĐH-0001' }, { id:'HĐ-0002', order:'ĐH-0002' }, { id:'HĐ-0003', order:'ĐH-0003' },
-  { id:'HĐ-0004', order:'ĐH-0004' }, { id:'HĐ-0005', order:'ĐH-0005' }, { id:'HĐ-0006', order:'ĐH-0006' },
-  { id:'HĐ-0007', order:'ĐH-0007' }, { id:'HĐ-0008', order:'ĐH-0008' }, { id:'HĐ-0009', order:'ĐH-0009' },
-  { id:'HĐ-0010', order:'ĐH-0010' }, { id:'HĐ-0011', order:'ĐH-0011' }, { id:'HĐ-0012', order:'ĐH-0012' },
-  { id:'HĐ-0013', order:'ĐH-0013' }, { id:'HĐ-0014', order:'ĐH-0014' }, { id:'HĐ-0015', order:'ĐH-0015' },
-  { id:'HĐ-0016', order:'ĐH-0016' }, { id:'HĐ-0017', order:'ĐH-0017' }, { id:'HĐ-0018', order:'ĐH-0018' },
-  { id:'HĐ-0019', order:'ĐH-0019' }, { id:'HĐ-0020', order:'ĐH-0020' }, { id:'HĐ-0021', order:'ĐH-0021' },
-  { id:'HĐ-0022', order:'ĐH-0022' }, { id:'HĐ-0023', order:'ĐH-0023' }, { id:'HĐ-0024', order:'ĐH-0024' },
-  { id:'HĐ-0025', order:'ĐH-0025' }, { id:'HĐ-0026', order:'ĐH-0026' }, { id:'HĐ-0027', order:'ĐH-0027' },
-  { id:'HĐ-0028', order:'ĐH-0028' }, { id:'HĐ-0029', order:'ĐH-0029' }, { id:'HĐ-0030', order:'ĐH-0030' }
+  { id:'HĐ-0001', order:'ĐH-0001', schedule:'one', due:'16/01/2026' },
+  { id:'HĐ-0002', order:'ĐH-0002', schedule:'one', due:'17/01/2026' },
+  { id:'HĐ-0003', order:'ĐH-0003', schedule:'install', due:'18/01/2026' },
+  { id:'HĐ-0004', order:'ĐH-0004', schedule:'install', due:'19/01/2026' },
+  { id:'HĐ-0005', order:'ĐH-0005', schedule:'one', due:'20/01/2026' },
+  { id:'HĐ-0006', order:'ĐH-0006', schedule:'install', due:'21/01/2026' },
+  { id:'HĐ-0007', order:'ĐH-0007', schedule:'one', due:'22/01/2026' },
+  { id:'HĐ-0008', order:'ĐH-0008', schedule:'install', due:'23/01/2026' },
+  { id:'HĐ-0009', order:'ĐH-0009', schedule:'one', due:'24/01/2026' },
+  { id:'HĐ-0010', order:'ĐH-0010', schedule:'install', due:'25/01/2026' },
+  { id:'HĐ-0011', order:'ĐH-0011', schedule:'one', due:'26/01/2026' },
+  { id:'HĐ-0012', order:'ĐH-0012', schedule:'install', due:'27/01/2026' },
+  { id:'HĐ-0013', order:'ĐH-0013', schedule:'one', due:'28/01/2026' },
+  { id:'HĐ-0014', order:'ĐH-0014', schedule:'one', due:'29/01/2026' },
+  { id:'HĐ-0015', order:'ĐH-0015', schedule:'one', due:'30/01/2026' },
+  { id:'HĐ-0016', order:'ĐH-0016', schedule:'one', due:'31/01/2026' },
+  { id:'HĐ-0017', order:'ĐH-0017', schedule:'one', due:'01/02/2026' },
+  { id:'HĐ-0018', order:'ĐH-0018', schedule:'install', due:'02/02/2026' },
+  { id:'HĐ-0019', order:'ĐH-0019', schedule:'one', due:'06/03/2026' },
+  { id:'HĐ-0020', order:'ĐH-0020', schedule:'install', due:'08/03/2026' },
+  { id:'HĐ-0021', order:'ĐH-0021', schedule:'one', due:'11/03/2026' },
+  { id:'HĐ-0022', order:'ĐH-0022', schedule:'one', due:'14/03/2026' },
+  { id:'HĐ-0023', order:'ĐH-0023', schedule:'install', due:'16/03/2026' },
+  { id:'HĐ-0024', order:'ĐH-0024', schedule:'one', due:'19/03/2026' },
+  { id:'HĐ-0025', order:'ĐH-0025', schedule:'install', due:'22/03/2026' },
+  { id:'HĐ-0026', order:'ĐH-0026', schedule:'one', due:'24/03/2026' },
+  { id:'HĐ-0027', order:'ĐH-0027', schedule:'install', due:'29/04/2026' },
+  { id:'HĐ-0028', order:'ĐH-0028', schedule:'one', due:'02/05/2026' },
+  { id:'HĐ-0029', order:'ĐH-0029', schedule:'install', due:'06/05/2026' },
+  { id:'HĐ-0030', order:'ĐH-0030', schedule:'one', due:'09/05/2026' }
 ];
 
 // Find current invoice and get corresponding order ID
 const currentInvoice = INVOICES.find(inv => inv.id === invoiceId) || INVOICES[0];
 const orderId = currentInvoice.order;
+
+console.log('Current Invoice:', currentInvoice);
+console.log('Order ID:', orderId);
 
 // Load order data from external file
 let currentOrder = null;
@@ -1381,12 +1477,29 @@ let PROD_DATA = [];
 // Try to load from order-data.js if available
 if (typeof getOrderById === 'function') {
   currentOrder = getOrderById(orderId);
+  console.log('Loading order from order-data.js:', orderId, currentOrder);
+  
+  if (!currentOrder) {
+    console.error('❌ Order not found:', orderId);
+    console.log('Available orders: ĐH-0001 to ĐH-0030');
+  }
+} else {
+  console.warn('⚠️ getOrderById function not found - order-data.js may not be loaded');
 }
 
 // Fallback data if order-data.js is not loaded or order not found
 if (!currentOrder) {
+  console.warn('⚠️ Order not found, using fallback data for:', orderId);
+  
+  // Show error message to user
+  const errorMsg = document.createElement('div');
+  errorMsg.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#fee2e2;color:#dc2626;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;font-size:13px;font-weight:600;';
+  errorMsg.innerHTML = `⚠️ Không tìm thấy đơn hàng ${orderId}. Hiển thị dữ liệu mẫu ĐH-0001.`;
+  document.body.appendChild(errorMsg);
+  setTimeout(() => errorMsg.remove(), 5000);
+  
   currentOrder = {
-    id: orderId,
+    id: 'ĐH-0001',
     quoteId: 'BG-0001',
     customer: 'Cty TNHH VTNN Minh Đức',
     phone: '0272 391 456',
@@ -1398,20 +1511,19 @@ if (!currentOrder) {
     delivery: '15/01/2026',
     status: 'done',
     paymentStatus: 'paid',
-    staff: 'Trần Thị Hương',
+    staff: 'Phạm Thị Lan',
     paymentType: 'Chuyển khoản',
     note: 'Giao hàng trong giờ hành chính',
     products: [
-      { id:'SP-0001', name:'NPK 16-16-16',         brand:'Đất Xanh', unit:'Kg',  qty:20, price:12500, disc:0  },
-      { id:'SP-0005', name:'Lân Canxi Đất Xanh',   brand:'Đất Xanh', unit:'Bao', qty:10, price:8700,  disc:0  },
-      { id:'SP-0011', name:'NPK 18-8-18+Bo+TE',    brand:'Song Mã',  unit:'Kg',  qty:15, price:14300, disc:5  },
-      { id:'SP-0017', name:'Chuyên Cà phê – Tiêu', brand:'Song Mã',  unit:'Bao', qty:8,  price:16200, disc:0  },
+      { id:'SP-0001', name:'NPK 16-16-16', brand:'Đất Xanh', unit:'Bao', qty:250, price:250000, disc:0 },
+      { id:'SP-0002', name:'Urê 46%', brand:'Bình Điền', unit:'Bao', qty:200, price:196000, disc:0 }
     ]
   };
 }
 
 // Set product data
 PROD_DATA = currentOrder.products || [];
+console.log('PROD_DATA loaded:', PROD_DATA.length, 'products', PROD_DATA);
 
 // Add default values for missing fields
 currentOrder.staff = currentOrder.staff || 'Quản trị viên';
@@ -1496,22 +1608,11 @@ function initializeOrderPage() {
     document.getElementById('pd-address').textContent = currentOrder.address;
   }
   
-  // Update status badge
-  const statusMap = {
-    'confirm': { cls: 'sq-process', label: 'Đã xác nhận' },
-    'shipping': { cls: 'sq-ship', label: 'Đang giao' },
-    'done': { cls: 'sq-done', label: 'Hoàn thành' },
-    'cancel': { cls: 'sq-cancel', label: 'Đã hủy' }
-  };
+  // Status badge will be updated by updatePaymentDisplay() after payment history is initialized
+  // Don't set it here to avoid showing wrong status
   
-  const statusInfo = statusMap[currentOrder.status] || statusMap['confirm'];
-  ['headerStatus', 'sideStatus'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.className = 'sq ' + statusInfo.cls;
-      el.textContent = statusInfo.label;
-    }
-  });
+  // Initialize stepper to step 1 (will be updated by updatePaymentDisplay)
+  advanceStep(1);
   
   // Update customer information
   if (document.getElementById('disp-custname')) {
@@ -1519,6 +1620,17 @@ function initializeOrderPage() {
   }
   if (document.getElementById('disp-custsub')) {
     document.getElementById('disp-custsub').textContent = currentOrder.customerType + ' · ' + currentOrder.area;
+  }
+  if (document.getElementById('disp-custav')) {
+    // Generate initials from customer name
+    const initials = currentOrder.customer
+      .split(' ')
+      .filter(word => word.length > 0)
+      .map(word => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+    document.getElementById('disp-custav').textContent = initials;
   }
   if (document.getElementById('disp-phone')) {
     document.getElementById('disp-phone').textContent = currentOrder.phone;
@@ -1544,17 +1656,33 @@ function initializeOrderPage() {
     document.getElementById('disp-note').textContent = currentOrder.note;
   }
   
-  // Update payment badge
-  const paymentBadge = document.getElementById('disp-payment-badge');
-  if (paymentBadge) {
+  // Update payment badge (both main and sidebar)
+  const mainPaymentBadge = document.getElementById('main-payment-badge');
+  const sidePaymentBadge = document.getElementById('side-payment-badge');
+  if (mainPaymentBadge || sidePaymentBadge) {
     const paymentStatusMap = {
       'paid': { cls: 'pay-paid', label: 'Đã thanh toán' },
       'partial': { cls: 'pay-partial', label: 'Thanh toán 1 phần' },
       'unpaid': { cls: 'pay-unpaid', label: 'Chưa thanh toán' }
     };
     const paymentInfo = paymentStatusMap[currentOrder.paymentStatus] || paymentStatusMap['unpaid'];
-    paymentBadge.className = 'pay-badge ' + paymentInfo.cls;
-    paymentBadge.textContent = paymentInfo.label;
+    if (mainPaymentBadge) {
+      mainPaymentBadge.className = 'pay-badge ' + paymentInfo.cls;
+      mainPaymentBadge.textContent = paymentInfo.label;
+    }
+    if (sidePaymentBadge) {
+      sidePaymentBadge.className = 'pay-badge ' + paymentInfo.cls;
+      sidePaymentBadge.textContent = paymentInfo.label;
+    }
+  }
+  
+  // Update payment method in sidebar
+  const sidePayMethod = document.getElementById('sidePayMethod');
+  if (sidePayMethod) {
+    const methodMap = { 'Chuyển khoản': 'Chuyển khoản', 'Tiền mặt': 'Tiền mặt', 'COD': 'COD' };
+    const paymentMethod = methodMap[currentOrder.paymentType] || currentOrder.paymentType || 'Chuyển khoản';
+    const scheduleText = currentInvoice.schedule === 'install' ? 'Trả nhiều lần' : 'Trả 1 lần';
+    sidePayMethod.textContent = paymentMethod + ' · ' + scheduleText;
   }
   
   // Update order info fields
@@ -1562,8 +1690,7 @@ function initializeOrderPage() {
     'info-order-id': currentOrder.id,
     'info-created': currentOrder.created,
     'info-delivery': currentOrder.delivery,
-    'info-staff': currentOrder.staff,
-    'info-quote': currentOrder.quoteId
+    'info-staff': currentOrder.staff
   };
   
   Object.keys(infoFields).forEach(id => {
@@ -1575,7 +1702,7 @@ function initializeOrderPage() {
   const quoteLink = document.getElementById('quote-link');
   if (quoteLink && currentOrder.quoteId) {
     quoteLink.href = `quote-detail.html?id=${currentOrder.quoteId}`;
-    quoteLink.textContent = currentOrder.quoteId;
+    quoteLink.textContent = currentOrder.quoteId + ' ↗';
   }
   
   // Update source banner to show order information
@@ -1604,6 +1731,11 @@ function initializeOrderPage() {
   if (typeof renderProducts === 'function') {
     renderProducts();
   }
+  
+  // Initialize payment history after products are rendered
+  if (typeof initializePaymentHistory === 'function') {
+    initializePaymentHistory();
+  }
 }
 
 // Call initialization when DOM is ready
@@ -1623,19 +1755,21 @@ const BRANDS = {
 // PROD_DATA is now set from currentOrder.products in the initialization above
 // Don't redefine it here
 
-// ship status per item (0=chưa chuẩn bị, 1=sẵn sàng, 2=đang giao)
-let shipStatus = [0, 0, 0, 0];
-let currentStep = 2; // 1=tạo, 2=xử lý, 3=đang giao, 4=hoàn thành
+// Payment status tracking
+let currentStep = 2; // 1=tạo hoá đơn, 2=chờ thanh toán, 3=đã thanh toán
 
 function fmt(n) { return Math.round(n).toLocaleString('vi-VN'); }
 
 function renderProducts() {
+  console.log('renderProducts called with', PROD_DATA.length, 'products');
+  
+  if (!PROD_DATA || PROD_DATA.length === 0) {
+    console.warn('No products to render!');
+    document.getElementById('prodTbody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gray-400)">Không có sản phẩm</td></tr>';
+    return;
+  }
+  
   let subtotal = 0, discTotal = 0;
-  const shipLabels = [
-    { cls:'ship-pending', txt:'Chưa chuẩn bị' },
-    { cls:'ship-ready',   txt:'Sẵn sàng giao' },
-    { cls:'ship-out',     txt:'Đang vận chuyển' },
-  ];
   const rows = PROD_DATA.map((p, i) => {
     const b = BRANDS[p.brand] || { bg:'#f1f5f9', fg:'#94a3b8' };
     const initials = p.brand.split(' ').map(w=>w[0]).join('').slice(0,2);
@@ -1643,8 +1777,6 @@ function renderProducts() {
     const total = (p.price - discAmt) * p.qty;
     subtotal  += p.price * p.qty;
     discTotal += discAmt * p.qty;
-    const ss = shipStatus[i] || 0;
-    const sl = shipLabels[ss];
     return `<tr>
       <td class="prod-num">${i+1}</td>
       <td>
@@ -1664,38 +1796,87 @@ function renderProducts() {
       <td class="total-cell">${fmt(total)} đ</td>
     </tr>`;
   }).join('');
+  
   document.getElementById('prodTbody').innerHTML = rows;
   document.getElementById('prodCount').textContent = PROD_DATA.length + ' sản phẩm';
 
   const after = subtotal - discTotal;
   const vatPct = (parseFloat(document.getElementById('vatRate')?.value) || 0) / 100;
   const vat   = Math.round(after * vatPct);
-  const shipFee = 0; // Default shipping fee for order detail view
+  const shipFee = 0; // Default shipping fee for invoice detail view
   const total = after + vat + shipFee;
+  
+  // Update global total for payment tracking
+  totalInvoiceAmount = total;
+  
   document.getElementById('sSubtotal').textContent = fmt(subtotal) + ' đ';
   document.getElementById('sDisc').textContent     = discTotal ? '- ' + fmt(discTotal) + ' đ' : '0 đ';
   document.getElementById('sVat').textContent      = fmt(vat) + ' đ';
   document.getElementById('sShipFee').textContent  = fmt(shipFee) + ' đ';
   document.getElementById('sTotal').textContent    = fmt(total) + ' đ';
   document.getElementById('payTotal').textContent  = fmt(total) + ' đ';
+  
+  // Initialize remaining amount
+  const totalPaid = paymentHistory.reduce((sum, p) => sum + p.amount, 0);
+  const remaining = total - totalPaid;
+  document.getElementById('sideRemaining').textContent = fmt(remaining) + ' đ';
+  
+  console.log('Products rendered. Total:', fmt(total), 'đ');
 }
 
 // ── STEPPER ──
 function advanceStep(n) {
-  // reset
-  for (let i = 1; i <= 4; i++) {
+  console.log('advanceStep called with n =', n);
+  
+  // Invoice stepper has 3 steps: 1=Tạo hoá đơn, 2=Chờ thanh toán, 3=Đã thanh toán
+  // When n=3 and fully paid, all steps should be marked as done
+  
+  // Reset all steps
+  for (let i = 1; i <= 3; i++) {
     const s = document.getElementById('step'+i);
+    if (!s) continue;
     s.classList.remove('done','active');
-    s.querySelector('.step-circle').textContent = i;
+    const circle = s.querySelector('.step-circle');
+    if (circle) circle.textContent = i;
   }
-  for (let i = 1; i <= 3; i++) document.getElementById('conn'+i).classList.remove('done');
+  
+  // Reset all connectors
+  for (let i = 1; i <= 2; i++) {
+    const conn = document.getElementById('conn'+i);
+    if (conn) conn.classList.remove('done');
+  }
 
-  for (let i = 1; i <= 4; i++) {
+  // Set step states
+  for (let i = 1; i <= 3; i++) {
     const s = document.getElementById('step'+i);
-    if (i < n) { s.classList.add('done'); s.querySelector('.step-circle').textContent = '✓'; document.getElementById('conn'+i)?.classList.add('done'); }
-    else if (i === n) { s.classList.add('active'); }
+    if (!s) continue;
+    const circle = s.querySelector('.step-circle');
+    
+    if (i < n) {
+      // Steps before current: mark as done
+      s.classList.add('done'); 
+      if (circle) circle.textContent = '✓'; 
+      const conn = document.getElementById('conn'+i);
+      if (conn) conn.classList.add('done');
+    }
+    else if (i === n) {
+      // Current step
+      if (n === 3) {
+        // Step 3 (Đã thanh toán): mark as done with checkmark
+        s.classList.add('done');
+        if (circle) circle.textContent = '✓';
+        const conn = document.getElementById('conn'+(i-1));
+        if (conn) conn.classList.add('done');
+        console.log('Step 3 marked as DONE with checkmark');
+      } else {
+        // Steps 1 or 2: mark as active
+        s.classList.add('active');
+        console.log('Step', n, 'marked as ACTIVE');
+      }
+    }
   }
   currentStep = n;
+  console.log('Stepper updated. Current step:', currentStep);
 }
 
 // ── CONFIRM ACTIONS ──
@@ -1706,29 +1887,29 @@ function confirmAction(type) {
   const desc  = document.getElementById('mDesc');
   const btn   = document.getElementById('mConfirmBtn');
 
-  if (type === 'ship') {
+  if (type === 'partial') {
     icon.style.background = '#ffedd5';
-    icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8l5 3-5 3V8z"/></svg>';
-    title.textContent = 'Xác nhận giao hàng';
-    desc.textContent  = `Xác nhận đơn hàng ${orderId} đang được vận chuyển đến khách hàng?`;
-    btn.textContent   = 'Xác nhận giao';
+    icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+    title.textContent = 'Xác nhận thanh toán 1 phần';
+    desc.textContent  = `Xác nhận hoá đơn ${invoiceId} đã được thanh toán một phần?`;
+    btn.textContent   = 'Xác nhận';
     btn.style.background = '#f97316';
-    confirmCb = () => { closeConfirm(); doShip(); };
+    confirmCb = () => { closeConfirm(); doPartial(); };
 
-  } else if (type === 'done') {
+  } else if (type === 'paid') {
     icon.style.background = '#dcfce7';
     icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
-    title.textContent = 'Hoàn thành đơn hàng';
-    desc.textContent  = `Xác nhận đơn hàng ${orderId} đã giao thành công và hoàn tất?`;
-    btn.textContent   = 'Hoàn thành';
+    title.textContent = 'Xác nhận đã thanh toán';
+    desc.textContent  = `Xác nhận hoá đơn ${invoiceId} đã được thanh toán đầy đủ?`;
+    btn.textContent   = 'Xác nhận thanh toán';
     btn.style.background = '#16a34a';
-    confirmCb = () => { closeConfirm(); doDone(); };
+    confirmCb = () => { closeConfirm(); doPaid(); };
 
   } else {
     icon.style.background = '#fee2e2';
     icon.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-    title.textContent = 'Huỷ đơn hàng';
-    desc.textContent  = `Bạn có chắc muốn huỷ đơn hàng ${orderId}? Hành động này không thể hoàn tác.`;
+    title.textContent = 'Huỷ hoá đơn';
+    desc.textContent  = `Bạn có chắc muốn huỷ hoá đơn ${invoiceId}? Hành động này không thể hoàn tác.`;
     btn.textContent   = 'Xác nhận huỷ';
     btn.style.background = '#dc2626';
     confirmCb = () => { closeConfirm(); doCancel(); };
@@ -1738,48 +1919,420 @@ function confirmAction(type) {
 }
 function closeConfirm() { document.getElementById('confirmModal').classList.remove('open'); }
 
-function doShip() {
-  advanceStep(3);
-  setStatus('sq-ship', 'Đang giao');
-  shipStatus = [2, 2, 2, 2];
-  renderProducts();
-  document.getElementById('btnShip').disabled = true;
-  addTimeline('#ffedd5', '#f97316',
-    '<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8l5 3-5 3V8z"/>',
-    'Đơn hàng đang được <b>vận chuyển</b> đến khách hàng');
-  toast('🚚 Đã xác nhận giao hàng!');
+// ── PAYMENT TRACKING ──
+let paymentHistory = [];
+let totalInvoiceAmount = 0;
+
+// Initialize sample payment history based on order data
+function initializePaymentHistory() {
+  console.log('=== initializePaymentHistory START ===');
+  console.log('currentOrder.paymentStatus:', currentOrder.paymentStatus);
+  console.log('totalInvoiceAmount:', totalInvoiceAmount);
+  
+  paymentHistory = [];
+  
+  // If order is already marked as 'paid', create a full payment record
+  if (currentOrder.paymentStatus === 'paid') {
+    // For paid invoices, create a payment record with full amount
+    // totalInvoiceAmount should be set by renderProducts() before this function is called
+    const fullAmount = totalInvoiceAmount || 0;
+    
+    console.log('Order is PAID. Full amount:', fullAmount);
+    
+    if (fullAmount > 0) {
+      // Use delivery date as payment date (assuming paid on delivery)
+      paymentHistory = [
+        { 
+          date: currentOrder.delivery, 
+          amount: fullAmount, 
+          method: currentOrder.paymentType || 'Chuyển khoản', 
+          note: 'Thanh toán đầy đủ' 
+        }
+      ];
+      console.log('✅ Created full payment record:', fullAmount, 'đ on', currentOrder.delivery);
+    } else {
+      console.warn('❌ Cannot create payment record - totalInvoiceAmount is 0 or not set yet');
+    }
+  }
+  // For partial payment invoices
+  else if (currentOrder.paymentStatus === 'partial') {
+    // PARTIAL PAYMENT - Create sample payment history
+    // These invoices have been partially paid (typically 50%)
+    
+    const halfAmount = Math.floor(totalInvoiceAmount * 0.5);
+    
+    if (invoiceId === 'HĐ-0019') {
+      paymentHistory = [
+        { date: '28/02/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+    else if (invoiceId === 'HĐ-0020') {
+      paymentHistory = [
+        { date: '01/03/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+    else if (invoiceId === 'HĐ-0023') {
+      paymentHistory = [
+        { date: '10/03/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+    else if (invoiceId === 'HĐ-0025') {
+      paymentHistory = [
+        { date: '15/03/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+    else if (invoiceId === 'HĐ-0027') {
+      paymentHistory = [
+        { date: '20/03/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+    else if (invoiceId === 'HĐ-0029') {
+      paymentHistory = [
+        { date: '25/03/2026', amount: halfAmount, method: 'Chuyển khoản', note: 'Thanh toán đợt 1 - 50%' }
+      ];
+    }
+  }
+  // For unpaid invoices - no payment history
+  else if (currentOrder.paymentStatus === 'unpaid') {
+    paymentHistory = [];
+    console.log('Invoice unpaid - no payment history');
+  }
+  
+  console.log('Payment history initialized:', paymentHistory.length, 'payments');
+  console.log('Delivery date (payment deadline):', currentOrder.delivery);
+  console.log('Payment status from order:', currentOrder.paymentStatus);
+  console.log('Total invoice amount:', totalInvoiceAmount, 'đ');
+  
+  // Update payment display
+  updatePaymentDisplay();
 }
 
-function doDone() {
-  advanceStep(4);
-  setStatus('sq-done', 'Hoàn thành');
-  shipStatus = [1, 1, 1, 1];
-  renderProducts();
-  document.getElementById('btnShip').disabled = true;
-  document.getElementById('btnDone').disabled = true;
-  document.getElementById('btnCancel').disabled = true;
-  // Update payment status
-  document.querySelectorAll('.pay-unpaid').forEach(el => {
-    el.className = 'pay-badge pay-paid';
-    el.textContent = '✅ Đã thanh toán';
-  });
-  const now = new Date();
-  document.getElementById('updatedAt').textContent = now.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+function openPaymentModal() {
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('paymentDate').value = today;
+  
+  // Clear previous values
+  document.getElementById('paymentAmount').value = '';
+  document.getElementById('paymentNote').value = '';
+  document.getElementById('paymentMethod').value = 'bank';
+  
+  // Update modal with current invoice info
+  document.getElementById('paymentModalInvoiceId').textContent = invoiceId;
+  
+  // Calculate totals
+  const totalPaid = paymentHistory.reduce((sum, p) => sum + p.amount, 0);
+  const remaining = totalInvoiceAmount - totalPaid;
+  
+  // Update modal display
+  document.getElementById('paymentModalTotal').textContent = fmt(totalInvoiceAmount) + ' đ';
+  document.getElementById('paymentModalPaid').textContent = fmt(totalPaid) + ' đ';
+  document.getElementById('paymentModalRemaining').textContent = fmt(remaining) + ' đ';
+  
+  // Suggest remaining amount
+  if (remaining > 0) {
+    document.getElementById('paymentAmount').value = remaining;
+  }
+  
+  // Open modal
+  document.getElementById('paymentModal').classList.add('open');
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').classList.remove('open');
+}
+
+function recordPayment() {
+  const amount = parseFloat(document.getElementById('paymentAmount').value);
+  const date = document.getElementById('paymentDate').value;
+  const method = document.getElementById('paymentMethod').value;
+  const note = document.getElementById('paymentNote').value;
+  
+  // Validation
+  if (!amount || amount <= 0) {
+    toast('⚠️ Vui lòng nhập số tiền hợp lệ!');
+    return;
+  }
+  
+  if (!date) {
+    toast('⚠️ Vui lòng chọn ngày thanh toán!');
+    return;
+  }
+  
+  const totalPaid = paymentHistory.reduce((sum, p) => sum + p.amount, 0);
+  const remaining = totalInvoiceAmount - totalPaid;
+  
+  if (amount > remaining) {
+    toast('⚠️ Số tiền thanh toán vượt quá số tiền còn lại!');
+    return;
+  }
+  
+  // Add payment to history
+  const payment = {
+    amount: amount,
+    date: date,
+    method: method,
+    note: note,
+    timestamp: new Date().toISOString()
+  };
+  
+  paymentHistory.push(payment);
+  
+  // Update payment display
+  updatePaymentDisplay();
+  
+  // Close modal
+  closePaymentModal();
+  
+  // Show success message
+  const methodText = method === 'bank' ? 'Chuyển khoản' : method === 'cash' ? 'Tiền mặt' : 'COD';
+  toast(`✅ Đã ghi nhận thanh toán ${fmt(amount)} đ (${methodText})!`);
+  
+  // Add to timeline
   addTimeline('#dcfce7', '#16a34a',
-    '<polyline points="20 6 9 17 4 12"/>',
-    'Đơn hàng đã <b>hoàn thành</b> – Giao hàng thành công');
-  toast(`Đơn hàng ${orderId} đã hoàn thành!`);
+    '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    `Đã thanh toán <b>${fmt(amount)} đ</b> (${methodText})`);
+}
+
+function updatePaymentDisplay() {
+  const totalPaid = paymentHistory.reduce((sum, p) => sum + p.amount, 0);
+  const remaining = totalInvoiceAmount - totalPaid;
+  
+  // Update sidebar amounts
+  document.getElementById('sidePaidAmt').textContent = fmt(totalPaid) + ' đ';
+  document.getElementById('sideRemaining').textContent = fmt(remaining) + ' đ';
+  
+  // Update payment status badge (both main and sidebar)
+  const mainPaymentBadge = document.getElementById('main-payment-badge');
+  const sidePaymentBadge = document.getElementById('side-payment-badge');
+  let newStatus = 'unpaid';
+  let statusClass = 'pay-unpaid';
+  let statusText = 'Chưa thanh toán';
+  
+  // Check if fully paid first
+  if (totalPaid >= totalInvoiceAmount) {
+    // FULLY PAID - No overdue check needed
+    newStatus = 'paid';
+    statusClass = 'pay-paid';
+    statusText = 'Đã thanh toán';
+    
+    // Update stepper to final step
+    advanceStep(3);
+    
+    // Only show "Hoàn thành" if order status is 'done', otherwise "Đã thanh toán"
+    const statusLabel = currentOrder.status === 'done' ? 'Hoàn thành' : 'Đã thanh toán';
+    setStatus('sq-paid', statusLabel);
+    
+    // Disable action buttons
+    const btnPartial = document.getElementById('btnPartial');
+    const btnPaid = document.getElementById('btnPaid');
+    const btnCancel = document.getElementById('btnCancel');
+    if (btnPartial) btnPartial.disabled = true;
+    if (btnPaid) btnPaid.disabled = true;
+    if (btnCancel) btnCancel.disabled = true;
+    
+    // Hide overdue warning if exists
+    const overdueWarning = document.getElementById('overdueWarning');
+    if (overdueWarning) overdueWarning.style.display = 'none';
+    
+  } else {
+    // NOT FULLY PAID - Check for overdue based on delivery date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Use delivery date from order as the payment deadline
+    const deliveryDateParts = currentOrder.delivery.split('/');
+    const deliveryDate = new Date(deliveryDateParts[2], deliveryDateParts[1] - 1, deliveryDateParts[0]);
+    deliveryDate.setHours(0, 0, 0, 0);
+    
+    const isOverdue = today > deliveryDate;
+    const daysOverdue = isOverdue ? Math.floor((today - deliveryDate) / (1000 * 60 * 60 * 24)) : 0;
+    
+    // Determine severity: 1-3 days = warning, 4+ days = critical
+    const isCriticalOverdue = daysOverdue > 3;
+    
+    if (totalPaid > 0) {
+      // PARTIAL PAYMENT
+      newStatus = 'partial';
+      statusClass = 'pay-partial';
+      statusText = 'Thanh toán 1 phần';
+      
+      // Update stepper to step 2
+      advanceStep(2);
+      
+      if (isOverdue) {
+        // Partial payment but overdue
+        setStatus('sq-overdue', 'Quá hạn');
+        statusClass = 'pay-overdue';
+        statusText = `Quá hạn ${daysOverdue} ngày`;
+        showOverdueWarning(daysOverdue, remaining, currentOrder.delivery, isCriticalOverdue);
+      } else {
+        // Partial payment, not overdue yet
+        setStatus('sq-partial', 'Thanh toán 1 phần');
+        const overdueWarning = document.getElementById('overdueWarning');
+        if (overdueWarning) overdueWarning.style.display = 'none';
+      }
+    } else {
+      // NO PAYMENT YET
+      if (isOverdue) {
+        // Not paid and overdue
+        newStatus = 'overdue';
+        statusClass = 'pay-overdue';
+        statusText = `Quá hạn ${daysOverdue} ngày`;
+        setStatus('sq-overdue', 'Quá hạn');
+        showOverdueWarning(daysOverdue, remaining, currentOrder.delivery, isCriticalOverdue);
+      } else {
+        // Not paid but not overdue yet
+        advanceStep(1);
+        setStatus('sq-unpaid', 'Chờ thanh toán');
+        const overdueWarning = document.getElementById('overdueWarning');
+        if (overdueWarning) overdueWarning.style.display = 'none';
+      }
+    }
+  }
+  
+  // Update both payment badges
+  if (mainPaymentBadge) {
+    mainPaymentBadge.className = 'pay-badge ' + statusClass;
+    mainPaymentBadge.textContent = statusText;
+  }
+  if (sidePaymentBadge) {
+    sidePaymentBadge.className = 'pay-badge ' + statusClass;
+    sidePaymentBadge.textContent = statusText;
+  }
+  
+  // Update payment history display
+  renderPaymentHistory();
+}
+
+function showOverdueWarning(daysOverdue, remainingAmount, deliveryDate, isCritical) {
+  // Check if warning already exists
+  let overdueWarning = document.getElementById('overdueWarning');
+  
+  if (!overdueWarning) {
+    // Create warning element
+    overdueWarning = document.createElement('div');
+    overdueWarning.id = 'overdueWarning';
+    
+    // Insert after payment info card
+    const paymentCard = document.querySelector('.info-card');
+    if (paymentCard && paymentCard.parentNode) {
+      paymentCard.parentNode.insertBefore(overdueWarning, paymentCard.nextSibling);
+    }
+  }
+  
+  // Determine warning level
+  let bgColor, borderColor, iconColor, titleColor, textColor, warningLevel;
+  
+  if (isCritical) {
+    // Critical: 4+ days overdue
+    bgColor = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+    borderColor = '#dc2626';
+    iconColor = '#dc2626';
+    titleColor = '#991b1b';
+    textColor = '#7f1d1d';
+    warningLevel = '🚨 NGHIÊM TRỌNG';
+  } else {
+    // Warning: 1-3 days overdue
+    bgColor = 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)';
+    borderColor = '#f59e0b';
+    iconColor = '#f59e0b';
+    titleColor = '#92400e';
+    textColor = '#78350f';
+    warningLevel = '⚠️ CẢNH BÁO';
+  }
+  
+  overdueWarning.style.cssText = `
+    background: ${bgColor};
+    border: 2px solid ${borderColor};
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  `;
+  
+  overdueWarning.style.display = 'flex';
+  overdueWarning.innerHTML = `
+    <div style="flex-shrink: 0; width: 40px; height: 40px; background: ${iconColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <div style="flex: 1;">
+      <div style="font-weight: 700; font-size: 14px; color: ${titleColor}; margin-bottom: 6px;">
+        ${warningLevel} - Thanh toán trễ ${daysOverdue} ngày
+      </div>
+      <div style="font-size: 12px; color: ${textColor}; line-height: 1.5;">
+        Hạn thanh toán (ngày giao hàng): <strong>${deliveryDate}</strong><br>
+        Số tiền còn nợ: <strong style="color: ${iconColor};">${fmt(remainingAmount)} đ</strong><br>
+        ${isCritical 
+          ? '<strong>⚠️ Đã quá hạn nghiêm trọng! Cần liên hệ khách hàng ngay lập tức để thu hồi công nợ.</strong>' 
+          : 'Vui lòng nhắc nhở khách hàng thanh toán trong 1-2 ngày tới.'}
+      </div>
+    </div>
+  `;
+}
+
+function renderPaymentHistory() {
+  const historySection = document.getElementById('paymentHistorySection');
+  const historyList = document.getElementById('paymentHistoryList');
+  
+  if (paymentHistory.length === 0) {
+    historySection.style.display = 'none';
+    return;
+  }
+  
+  historySection.style.display = 'block';
+  
+  const methodMap = { 'Chuyển khoản': 'Chuyển khoản', 'Tiền mặt': 'Tiền mặt', 'COD': 'COD', 'bank': 'Chuyển khoản', 'cash': 'Tiền mặt', 'cod': 'COD' };
+  
+  // Sort by date (newest first) - convert DD/MM/YYYY to Date
+  const sorted = [...paymentHistory].sort((a, b) => {
+    const parseDate = (dateStr) => {
+      const parts = dateStr.split('/');
+      return new Date(parts[2], parts[1] - 1, parts[0]);
+    };
+    return parseDate(b.date) - parseDate(a.date);
+  });
+  
+  historyList.innerHTML = sorted.map((payment, index) => {
+    return `
+      <div style="background: var(--gray-50); padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-weight: 700; color: var(--success); font-size: 13px;">${fmt(payment.amount)} đ</span>
+          <span style="font-size: 11px; color: var(--gray-400);">${payment.date}</span>
+        </div>
+        <div style="font-size: 11px; color: var(--gray-500);">${methodMap[payment.method] || payment.method}</div>
+        ${payment.note ? `<div style="font-size: 11px; color: var(--gray-400); margin-top: 4px; font-style: italic;">${payment.note}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function doPartial() {
+  // Deprecated - use payment modal instead
+  openPaymentModal();
+}
+
+function doPaid() {
+  // Deprecated - use payment modal instead
+  openPaymentModal();
 }
 
 function doCancel() {
   setStatus('sq-cancel', 'Đã huỷ');
-  document.getElementById('btnShip').disabled = true;
-  document.getElementById('btnDone').disabled = true;
+  document.getElementById('btnPartial').disabled = true;
+  document.getElementById('btnPaid').disabled = true;
   document.getElementById('btnCancel').disabled = true;
   addTimeline('#fee2e2', '#dc2626',
     '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
-    `Đơn hàng <b>${orderId} đã bị huỷ</b>`);
-  toast(`🗑️ Đơn hàng ${orderId} đã bị huỷ.`);
+    `Hoá đơn <b>${invoiceId} đã bị huỷ</b>`);
+  toast(`🗑️ Hoá đơn ${invoiceId} đã bị huỷ.`);
 }
 
 function setStatus(cls, label) {
@@ -2008,9 +2561,10 @@ function saveEdit() {
   const nEl = document.getElementById('disp-note');
   if (nEl) nEl.textContent = note;
 
-  // Update payment badge
-  const badge = document.getElementById('disp-payment-badge');
-  if (badge) {
+  // Update payment badge (both main and sidebar)
+  const mainBadge = document.getElementById('main-payment-badge');
+  const sideBadge = document.getElementById('side-payment-badge');
+  if (mainBadge || sideBadge) {
     const paidAmt = parseFloat(document.getElementById('edit-paid-amount')?.value) || 0;
     const map = {
       unpaid:  { cls:'pay-unpaid',  txt:'Chưa thanh toán' },
@@ -2018,13 +2572,14 @@ function saveEdit() {
       paid:    { cls:'pay-paid',    txt:'Đã thanh toán đủ' },
     };
     const m = map[payStatus];
-    badge.className = 'pay-badge ' + m.cls;
-    badge.textContent = m.txt;
-    // sync side panel
-    document.querySelectorAll('.pay-badge').forEach(el => {
-      el.className = 'pay-badge ' + m.cls;
-      el.textContent = m.txt;
-    });
+    if (mainBadge) {
+      mainBadge.className = 'pay-badge ' + m.cls;
+      mainBadge.textContent = m.txt;
+    }
+    if (sideBadge) {
+      sideBadge.className = 'pay-badge ' + m.cls;
+      sideBadge.textContent = m.txt;
+    }
     // update "Đã thanh toán" in payment card
     const paidEl = document.getElementById('sidePaidAmt');
     if (paidEl) paidEl.textContent = paidAmt ? fmt(paidAmt) + ' đ' : '0 đ';

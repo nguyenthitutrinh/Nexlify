@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__list_connected_browsers",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "WebFetch(domain:phanbondatxanh.com)",
+      "WebFetch(domain:trangvangvietnam.com)",
+      "Bash(python3 -c ' *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(where node *)"
+    ]
+  }
+}
